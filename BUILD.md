@@ -31,7 +31,7 @@ python 05_review\build_all_outputs.py
 ## 重建分卷 PDF
 
 ```powershell
-$env:OPENBOOK_RELEASE_VERSION='v0.3'
+$env:OPENBOOK_RELEASE_VERSION='v0.32'
 python 05_review\build_chapter_pdfs.py
 ```
 
@@ -39,22 +39,22 @@ python 05_review\build_chapter_pdfs.py
 
 ```text
 06_output/chapter_pdfs/
-07_release/v0.3/01_print_ready/chapter_pdfs/
+07_release/v0.32/01_print_ready/chapter_pdfs/
 ```
 
-## 重建 v0.3 发布目录和压缩包
+## 重建 v0.32 发布目录和压缩包
 
 ```powershell
-$env:OPENBOOK_RELEASE_VERSION='v0.3'
+$env:OPENBOOK_RELEASE_VERSION='v0.32'
 python 05_review\publish_v02_release.py
 ```
 
 输出位置：
 
 ```text
-07_release/v0.3/
-07_release/openbook-v0.3.zip
-07_release/openbook-v0.3.zip.sha256.txt
+07_release/v0.32/
+07_release/openbook-v0.32.zip
+07_release/openbook-v0.32.zip.sha256.txt
 ```
 
 ## 例题运行测试
@@ -94,3 +94,4 @@ python 05_review\second_round_module_matrix.py
 - 如果发布目录里的 PDF 正在被 Adobe Acrobat 等程序打开，Windows 会拒绝覆盖。关闭 PDF 阅读器后重新运行构建脚本。
 - 如果 `pandoc` 或 `xelatex` 不在 PATH 中，PDF 构建会失败。
 - 如果没有 WSL/g++，PDF 构建不受影响，但 C++ 编译审计无法运行。
+

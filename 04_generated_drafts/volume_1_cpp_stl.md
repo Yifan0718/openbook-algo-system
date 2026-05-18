@@ -3831,3 +3831,1164 @@ dist.assign(n + 1, -1);
 输出
 30
 ```
+
+<!-- V02_EXAMPLES_START -->
+
+# v0.2 本卷例题训练区
+
+这一节是 0.2 新增的实战例题。每题都配完整可运行代码和样例；考试时优先看“覆盖模块”和“考场用途”，再复制对应代码骨架。
+
+### V01-EX01 班级成绩汇总
+
+- 归属卷：第 1 卷
+- 覆盖模块：CPP-001 主骨架与输入输出、CPP-002 vector、CPP-10 格式化输出
+- 考场用途：练习 `cin/cout` 快速骨架、1-index `vector` 存数、`fixed << setprecision` 输出平均值。
+
+**题目描述：** 给定一个班级 `n` 名同学的整数成绩，输出总分、平均分和最高分。
+
+**输入格式：** 第一行一个整数 `n`。第二行 `n` 个整数，表示每名同学的成绩。
+
+**输出格式：** 输出三行，分别为 `sum=总分`、`average=平均分`、`max=最高分`。平均分保留两位小数。
+
+**样例输入：**
+```text
+5
+80 90 75 100 95
+```
+
+**样例输出：**
+```text
+sum=440
+average=88.00
+max=100
+```
+
+**完整代码：**
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int n;
+    cin >> n;
+    vector<int> score(n + 1);
+    long long sum = 0;
+    int best = 0;
+    for (int i = 1; i <= n; i++) {
+        cin >> score[i];
+        sum += score[i];
+        best = max(best, score[i]);
+    }
+
+    double avg = 1.0 * sum / n;
+    cout << "sum=" << sum << '\n';
+    cout << fixed << setprecision(2) << "average=" << avg << '\n';
+    cout << "max=" << best << '\n';
+    return 0;
+}
+```
+
+**测试设计：**
+
+1. 输入：
+```text
+3
+1 2 3
+```
+期望输出：
+```text
+sum=6
+average=2.00
+max=3
+```
+
+2. 输入：
+```text
+1
+99
+```
+期望输出：
+```text
+sum=99
+average=99.00
+max=99
+```
+### V01-EX02 商品小票打印
+
+- 归属卷：第 1 卷
+- 覆盖模块：CPP-10 scanf/printf、格式化输出、补零、小数位
+- 考场用途：练习只使用 `scanf/printf` 的传统 IO，避免关闭同步后混用 C 和 C++ 输入输出。
+
+**题目描述：** 给定 `n` 件商品的编号、单价和数量，输出每件商品的小计和总价。商品编号按 4 位补零输出，小计和总价保留两位小数。
+
+**输入格式：** 第一行一个整数 `n`。接下来 `n` 行，每行包含整数 `id`、实数 `price`、整数 `count`。
+
+**输出格式：** 前 `n` 行输出 `编号 小计`，最后一行输出 `TOTAL 总价`。
+
+**样例输入：**
+```text
+3
+7 12.5 2
+42 3.2 5
+105 100 1
+```
+
+**样例输出：**
+```text
+0007 25.00
+0042 16.00
+0105 100.00
+TOTAL 141.00
+```
+
+**完整代码：**
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+struct Item {
+    int id;
+    double price;
+    int count;
+};
+
+int main() {
+    int n;
+    if (scanf("%d", &n) != 1) return 0;
+
+    vector<Item> item(n + 1);
+    double total = 0.0;
+    for (int i = 1; i <= n; i++) {
+        if (scanf("%d%lf%d", &item[i].id, &item[i].price, &item[i].count) != 3) return 0;
+    }
+
+    for (int i = 1; i <= n; i++) {
+        double subtotal = item[i].price * item[i].count;
+        total += subtotal;
+        printf("%04d %.2f\n", item[i].id, subtotal);
+    }
+    printf("TOTAL %.2f\n", total);
+    return 0;
+}
+```
+
+**测试设计：**
+
+1. 输入：
+```text
+2
+1 1.5 3
+23 10 2
+```
+期望输出：
+```text
+0001 4.50
+0023 20.00
+TOTAL 24.50
+```
+
+2. 输入：
+```text
+1
+9999 0.99 10
+```
+期望输出：
+```text
+9999 9.90
+TOTAL 9.90
+```
+### V01-EX03 EOF 单词频率表
+
+- 归属卷：第 1 卷
+- 覆盖模块：CPP-001 EOF、CPP-10 getline、CPP-011 string、CPP-005 map
+- 考场用途：练习 `getline` 读到 EOF、`stringstream` 拆词、`map` 自动按字典序输出。
+
+**题目描述：** 输入若干行文本，统计每个单词出现次数。单词只按空白分隔，大小写视为不同单词。
+
+**输入格式：** 若干行文本，直到文件结束。
+
+**输出格式：** 按单词字典序输出，每行一个单词和出现次数。
+
+**样例输入：**
+```text
+apple banana apple
+pear banana
+```
+
+**样例输出：**
+```text
+apple 2
+banana 2
+pear 1
+```
+
+**完整代码：**
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    map<string, int> cnt;
+    string line;
+    while (getline(cin, line)) {
+        stringstream ss(line);
+        string word;
+        while (ss >> word) {
+            cnt[word]++;
+        }
+    }
+
+    for (const auto &kv : cnt) {
+        cout << kv.first << ' ' << kv.second << '\n';
+    }
+    return 0;
+}
+```
+
+**测试设计：**
+
+1. 输入：
+```text
+one
+one two
+```
+期望输出：
+```text
+one 2
+two 1
+```
+
+2. 输入：
+```text
+z y x
+```
+期望输出：
+```text
+x 1
+y 1
+z 1
+```
+### V01-EX04 通讯录号码查询
+
+- 归属卷：第 1 卷
+- 覆盖模块：CPP-005 unordered_map、CPP-011 string、CPP-001 cin/cout
+- 考场用途：练习用 `unordered_map` 做姓名到号码的快速查询，并在大量插入前预留空间。
+
+**题目描述：** 给定通讯录中若干人的姓名和号码，再回答若干次查询。若姓名存在，输出号码；否则输出 `NOT FOUND`。
+
+**输入格式：** 第一行一个整数 `n`。接下来 `n` 行，每行一个姓名和号码。再输入整数 `q`，接下来 `q` 行每行一个待查询姓名。
+
+**输出格式：** 对每次查询输出一行结果。
+
+**样例输入：**
+```text
+3
+Alice 10086
+Bob 10010
+Cindy 95588
+4
+Bob
+David
+Alice
+Cindy
+```
+
+**样例输出：**
+```text
+10010
+NOT FOUND
+10086
+95588
+```
+
+**完整代码：**
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int n;
+    cin >> n;
+    unordered_map<string, string> phone;
+    phone.reserve(n * 2 + 10);
+    phone.max_load_factor(0.7);
+
+    for (int i = 1; i <= n; i++) {
+        string name, number;
+        cin >> name >> number;
+        phone[name] = number;
+    }
+
+    int q;
+    cin >> q;
+    for (int i = 1; i <= q; i++) {
+        string name;
+        cin >> name;
+        auto it = phone.find(name);
+        if (it == phone.end()) {
+            cout << "NOT FOUND\n";
+        } else {
+            cout << it->second << '\n';
+        }
+    }
+    return 0;
+}
+```
+
+**测试设计：**
+
+1. 输入：
+```text
+1
+Tom 123
+3
+Tom
+Jerry
+Tom
+```
+期望输出：
+```text
+123
+NOT FOUND
+123
+```
+
+2. 输入：
+```text
+2
+A 1
+B 2
+2
+B
+A
+```
+期望输出：
+```text
+2
+1
+```
+### V01-EX05 任务优先级调度
+
+- 归属卷：第 1 卷
+- 覆盖模块：CPP-004 priority_queue、CPP-002 vector/string、结构体比较
+- 考场用途：练习 `priority_queue` 默认最大堆思想：优先级越大越先处理，优先级相同则耗时短者先处理，再按输入顺序稳定打破平局。
+
+**题目描述：** 给定 `n` 个任务，每个任务有名称、优先级和耗时。按规则输出处理顺序：优先级高的先处理；优先级相同，耗时短的先处理；仍相同，先输入的先处理。
+
+**输入格式：** 第一行一个整数 `n`。接下来 `n` 行，每行包含任务名 `name`、整数优先级 `priority`、整数耗时 `time`。
+
+**输出格式：** 输出 `n` 行，每行一个任务的名称、优先级和耗时。
+
+**样例输入：**
+```text
+5
+write 2 30
+fix 5 10
+test 5 5
+read 1 1
+pack 2 20
+```
+
+**样例输出：**
+```text
+test 5 5
+fix 5 10
+pack 2 20
+write 2 30
+read 1 1
+```
+
+**完整代码：**
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+struct Task {
+    string name;
+    int priority;
+    int time;
+    int id;
+
+    bool operator<(const Task &other) const {
+        if (priority != other.priority) return priority < other.priority;
+        if (time != other.time) return time > other.time;
+        return id > other.id;
+    }
+};
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int n;
+    cin >> n;
+    priority_queue<Task> pq;
+    for (int i = 1; i <= n; i++) {
+        Task t;
+        cin >> t.name >> t.priority >> t.time;
+        t.id = i;
+        pq.push(t);
+    }
+
+    while (!pq.empty()) {
+        Task t = pq.top();
+        pq.pop();
+        cout << t.name << ' ' << t.priority << ' ' << t.time << '\n';
+    }
+    return 0;
+}
+```
+
+**测试设计：**
+
+1. 输入：
+```text
+3
+a 1 10
+b 3 20
+c 2 5
+```
+期望输出：
+```text
+b 3 20
+c 2 5
+a 1 10
+```
+
+2. 输入：
+```text
+3
+first 2 8
+second 2 8
+third 2 3
+```
+期望输出：
+```text
+third 2 3
+first 2 8
+second 2 8
+```
+### V01-EX06 整数去重排序
+
+- 归属卷：第 1 卷
+- 覆盖模块：CPP-005 set、CPP-001 cin/cout
+- 考场用途：练习 `set` 自动去重和升序输出，适合数据量中等、需要有序唯一集合的题。
+
+**题目描述：** 给定 `n` 个整数，输出不同整数的个数，并按升序输出所有不同整数。
+
+**输入格式：** 第一行一个整数 `n`。第二行 `n` 个整数。
+
+**输出格式：** 第一行输出 `count=不同整数个数`。第二行按升序输出不同整数，用一个空格分隔。
+
+**样例输入：**
+```text
+8
+5 3 5 2 3 9 2 1
+```
+
+**样例输出：**
+```text
+count=5
+1 2 3 5 9
+```
+
+**完整代码：**
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int n;
+    cin >> n;
+    set<int> values;
+    for (int i = 1; i <= n; i++) {
+        int x;
+        cin >> x;
+        values.insert(x);
+    }
+
+    cout << "count=" << values.size() << '\n';
+    bool first = true;
+    for (int x : values) {
+        if (!first) cout << ' ';
+        first = false;
+        cout << x;
+    }
+    cout << '\n';
+    return 0;
+}
+```
+
+**测试设计：**
+
+1. 输入：
+```text
+5
+4 4 4 4 4
+```
+期望输出：
+```text
+count=1
+4
+```
+
+2. 输入：
+```text
+6
+-1 3 -1 0 3 2
+```
+期望输出：
+```text
+count=4
+-1 0 2 3
+```
+### V01-EX07 排序后找第一个不小于目标的位置
+
+- 归属卷：第 1 卷
+- 覆盖模块：CPP-003 sort/lower_bound、CPP-012 STL 算法、CPP-002 vector
+- 考场用途：练习半开区间二分，输出排序后 1-index 位置，避免把迭代器差值当成原数组下标。
+
+**题目描述：** 给定 `n` 个整数和 `q` 次查询。先将数组升序排序。每次查询给定 `x`，找到排序后第一个大于等于 `x` 的数，输出它的位置和值；若不存在，输出 `-1`。
+
+**输入格式：** 第一行一个整数 `n`。第二行 `n` 个整数。第三行一个整数 `q`。接下来 `q` 行每行一个整数 `x`。
+
+**输出格式：** 每次查询输出一行。若找到，输出 `位置 值`；否则输出 `-1`。
+
+**样例输入：**
+```text
+6
+8 1 5 3 5 10
+4
+0
+5
+6
+11
+```
+
+**样例输出：**
+```text
+1 1
+3 5
+5 8
+-1
+```
+
+**完整代码：**
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int n;
+    cin >> n;
+    vector<int> a(n + 1);
+    for (int i = 1; i <= n; i++) cin >> a[i];
+
+    sort(a.begin() + 1, a.end());
+
+    int q;
+    cin >> q;
+    for (int i = 1; i <= q; i++) {
+        int x;
+        cin >> x;
+        auto it = lower_bound(a.begin() + 1, a.end(), x);
+        if (it == a.end()) {
+            cout << -1 << '\n';
+        } else {
+            int pos = (int)(it - a.begin());
+            cout << pos << ' ' << *it << '\n';
+        }
+    }
+    return 0;
+}
+```
+
+**测试设计：**
+
+1. 输入：
+```text
+4
+4 2 8 6
+3
+1
+6
+9
+```
+期望输出：
+```text
+1 2
+3 6
+-1
+```
+
+2. 输入：
+```text
+5
+5 5 5 5 5
+2
+5
+6
+```
+期望输出：
+```text
+1 5
+-1
+```
+### V01-EX08 学生成绩排行
+
+- 归属卷：第 1 卷
+- 覆盖模块：CPP-002 vector/string、CPP-003 sort 与 lambda、CPP-012 自定义比较
+- 考场用途：练习结构体数组的 1-index 存储和多关键字排序：分数降序，姓名升序。
+
+**题目描述：** 给定 `n` 名学生的姓名和成绩，按成绩从高到低排序；成绩相同按姓名字典序升序排序。输出排名、姓名和成绩。
+
+**输入格式：** 第一行一个整数 `n`。接下来 `n` 行，每行一个姓名和一个整数成绩。
+
+**输出格式：** 输出 `n` 行，每行 `排名 姓名 成绩`。
+
+**样例输入：**
+```text
+5
+Tom 90
+Amy 95
+Bob 90
+Cindy 100
+Dave 95
+```
+
+**样例输出：**
+```text
+1 Cindy 100
+2 Amy 95
+3 Dave 95
+4 Bob 90
+5 Tom 90
+```
+
+**完整代码：**
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+struct Student {
+    string name;
+    int score;
+};
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int n;
+    cin >> n;
+    vector<Student> a(n + 1);
+    for (int i = 1; i <= n; i++) {
+        cin >> a[i].name >> a[i].score;
+    }
+
+    sort(a.begin() + 1, a.end(), [](const Student &lhs, const Student &rhs) {
+        if (lhs.score != rhs.score) return lhs.score > rhs.score;
+        return lhs.name < rhs.name;
+    });
+
+    for (int i = 1; i <= n; i++) {
+        cout << i << ' ' << a[i].name << ' ' << a[i].score << '\n';
+    }
+    return 0;
+}
+```
+
+**测试设计：**
+
+1. 输入：
+```text
+3
+B 80
+A 80
+C 90
+```
+期望输出：
+```text
+1 C 90
+2 A 80
+3 B 80
+```
+
+2. 输入：
+```text
+2
+Li 100
+Wang 99
+```
+期望输出：
+```text
+1 Li 100
+2 Wang 99
+```
+### V01-EX09 整行记录统计
+
+- 归属卷：第 1 卷
+- 覆盖模块：CPP-10 getline、CPP-011 string、CPP-001 token 输入后处理换行
+- 考场用途：练习 `cin >> n` 后立刻 `getline` 前必须清掉行尾换行，适合题目含空格字符串的场景。
+
+**题目描述：** 给定 `n` 行记录。对每一行，输出行号、字符长度和单词数量。单词按空白分隔。
+
+**输入格式：** 第一行一个整数 `n`。接下来 `n` 行，每行是一条记录，可能包含空格。
+
+**输出格式：** 输出 `n` 行，每行 `行号 长度 单词数量`。
+
+**样例输入：**
+```text
+3
+Hello World
+abc 123
+A B C
+```
+
+**样例输出：**
+```text
+1 11 2
+2 7 2
+3 5 3
+```
+
+**完整代码：**
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int n;
+    cin >> n;
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+    vector<string> line(n + 1);
+    for (int i = 1; i <= n; i++) {
+        getline(cin, line[i]);
+    }
+
+    for (int i = 1; i <= n; i++) {
+        stringstream ss(line[i]);
+        string word;
+        int words = 0;
+        while (ss >> word) words++;
+        cout << i << ' ' << line[i].size() << ' ' << words << '\n';
+    }
+    return 0;
+}
+```
+
+**测试设计：**
+
+1. 输入：
+```text
+2
+single
+two words
+```
+期望输出：
+```text
+1 6 1
+2 9 2
+```
+
+2. 输入：
+```text
+1
+  lead and tail..
+```
+期望输出：
+```text
+1 17 3
+```
+### V01-EX10 闭区间计数查询
+
+- 归属卷：第 1 卷
+- 覆盖模块：CPP-003 lower_bound/upper_bound、CPP-012 sort 与二分、CPP-002 vector
+- 考场用途：练习在有序数组上统计 `[L, R]` 中元素个数，避免手写二分边界出错。
+
+**题目描述：** 给定 `n` 个整数和 `q` 个查询。每次查询给出 `L R`，输出数组中落在闭区间 `[L, R]` 内的元素个数。
+
+**输入格式：** 第一行一个整数 `n`。第二行 `n` 个整数。第三行一个整数 `q`。接下来 `q` 行每行两个整数 `L R`。
+
+**输出格式：** 对每个查询输出一行答案。
+
+**样例输入：**
+```text
+7
+1 5 2 2 8 10 5
+3
+1 2
+3 7
+6 10
+```
+
+**样例输出：**
+```text
+3
+2
+2
+```
+
+**完整代码：**
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int n;
+    cin >> n;
+    vector<int> a(n + 1);
+    for (int i = 1; i <= n; i++) cin >> a[i];
+
+    sort(a.begin() + 1, a.end());
+
+    int q;
+    cin >> q;
+    for (int i = 1; i <= q; i++) {
+        int l, r;
+        cin >> l >> r;
+        auto left_it = lower_bound(a.begin() + 1, a.end(), l);
+        auto right_it = upper_bound(a.begin() + 1, a.end(), r);
+        cout << (right_it - left_it) << '\n';
+    }
+    return 0;
+}
+```
+
+**测试设计：**
+
+1. 输入：
+```text
+5
+1 2 3 4 5
+2
+2 4
+6 9
+```
+期望输出：
+```text
+3
+0
+```
+
+2. 输入：
+```text
+4
+7 7 7 7
+2
+7 7
+1 6
+```
+期望输出：
+```text
+4
+0
+```
+
+***
+
+## 第 9 卷：Python 互补卷例题
+### V01-CEX01 多行键值记录合并
+
+- 归属卷：第 1 卷
+- 覆盖模块：getline、stringstream、map
+- 考场用途：处理含空格记录并按字典序输出。
+- 参考题型来源：参考来源：洛谷入门字符串/模拟题型。
+
+**题目描述：** 每行由若干 `名字 数值` 对组成，合并所有名字的数值。
+
+**输入格式：** 第一行 `n`，接下来 `n` 行记录。
+
+**输出格式：** 按名字字典序输出合计。
+
+**样例输入：**
+```text
+3
+alice 3 bob 2
+alice 4
+carl 5 bob 1
+```
+
+**样例输出：**
+```text
+alice 7
+bob 3
+carl 5
+```
+
+**完整代码：**
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    int n;
+    cin >> n;
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    map<string, long long> sum;
+    for (int i = 1; i <= n; i++) {
+        string line;
+        getline(cin, line);
+        stringstream ss(line);
+        string key;
+        long long value;
+        while (ss >> key >> value) sum[key] += value;
+    }
+    for (auto [k, v] : sum) cout << k << ' ' << v << '\n';
+    return 0;
+}
+```
+
+**测试设计：** 额外测试：构造最小规模、重复值、边界值各一组，和样例一起运行。
+
+***
+### V01-CEX02 固定宽度成绩表
+
+- 归属卷：第 1 卷
+- 覆盖模块：iomanip、fixed、setprecision、setw
+- 考场用途：复杂格式输出时直接套。
+- 参考题型来源：参考来源：洛谷入门格式化输出题型。
+
+**题目描述：** 输入若干学生两项成绩，左对齐姓名、右对齐总分并保留两位小数。
+
+**输入格式：** 第一行 `n`，之后 `name a b`。
+
+**输出格式：** 每行输出宽度固定的姓名和总分。
+
+**样例输入：**
+```text
+2
+Li 90 5.5
+Wang 80.25 10
+```
+
+**样例输出：**
+```text
+Li           95.50
+Wang         90.25
+```
+
+**完整代码：**
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    int n;
+    cin >> n;
+    cout << fixed << setprecision(2);
+    for (int i = 1; i <= n; i++) {
+        string name;
+        double a, b;
+        cin >> name >> a >> b;
+        cout << setw(10) << left << name << right << setw(8) << a + b << '\n';
+    }
+    return 0;
+}
+```
+
+**测试设计：** 额外测试：构造最小规模、重复值、边界值各一组，和样例一起运行。
+
+***
+### V01-CEX03 哈希表加堆 TopK
+
+- 归属卷：第 1 卷
+- 覆盖模块：unordered_map、priority_queue
+- 考场用途：词频统计后取最高频。
+- 参考题型来源：参考来源：洛谷/ICPC 常见词频 TopK 模拟。
+
+**题目描述：** 统计字符串出现次数，输出出现次数最高的前 `k` 个；次数相同按字典序大的先出。
+
+**输入格式：** 第一行 `n k`，之后 `n` 个字符串。
+
+**输出格式：** 输出前 `k` 项。
+
+**样例输入：**
+```text
+7 2
+a b a c b a c
+```
+
+**样例输出：**
+```text
+a 3
+c 2
+```
+
+**完整代码：**
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    int n, k;
+    cin >> n >> k;
+    unordered_map<string, int> cnt;
+    cnt.reserve(n * 2 + 10);
+    for (int i = 1; i <= n; i++) {
+        string s;
+        cin >> s;
+        cnt[s]++;
+    }
+    priority_queue<pair<int,string>> pq;
+    for (auto [s, c] : cnt) pq.push({c, s});
+    for (int i = 1; i <= k && !pq.empty(); i++) {
+        auto [c, s] = pq.top(); pq.pop();
+        cout << s << ' ' << c << '\n';
+    }
+    return 0;
+}
+```
+
+**测试设计：** 额外测试：构造最小规模、重复值、边界值各一组，和样例一起运行。
+
+***
+### V01-CEX04 pair 排序合并区间
+
+- 归属卷：第 1 卷
+- 覆盖模块：vector<pair>、sort
+- 考场用途：用 STL 排序把模拟题变成标准区间合并。
+- 参考题型来源：参考来源：洛谷区间合并/模拟题型。
+
+**题目描述：** 给出若干闭区间，合并相交区间并输出。
+
+**输入格式：** 第一行 `n`，之后 `n` 行 `l r`。
+
+**输出格式：** 输出合并后区间个数和区间。
+
+**样例输入：**
+```text
+4
+1 3
+2 5
+8 9
+5 7
+```
+
+**样例输出：**
+```text
+2
+1 7
+8 9
+```
+
+**完整代码：**
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    int n;
+    cin >> n;
+    vector<pair<int,int>> seg(n + 1);
+    for (int i = 1; i <= n; i++) cin >> seg[i].first >> seg[i].second;
+    sort(seg.begin() + 1, seg.end());
+    vector<pair<int,int>> ans;
+    for (int i = 1; i <= n; i++) {
+        if (ans.empty() || seg[i].first > ans.back().second) ans.push_back(seg[i]);
+        else ans.back().second = max(ans.back().second, seg[i].second);
+    }
+    cout << ans.size() << '\n';
+    for (auto [l, r] : ans) cout << l << ' ' << r << '\n';
+    return 0;
+}
+```
+
+**测试设计：** 额外测试：构造最小规模、重复值、边界值各一组，和样例一起运行。
+
+***
+### V01-CEX05 排序后二分答询问
+
+- 归属卷：第 1 卷
+- 覆盖模块：sort、lower_bound、vector 1-index
+- 考场用途：二分函数的标准调用。
+- 参考题型来源：参考来源：洛谷二分查找题型。
+
+**题目描述：** 每次询问输出数组中第一个不小于 `x` 的数。
+
+**输入格式：** 第一行 `n q`，第二行数组，之后 `q` 行询问。
+
+**输出格式：** 每行输出答案，不存在输出 `NONE`。
+
+**样例输入：**
+```text
+5 4
+7 1 5 3 9
+4
+9
+10
+1
+```
+
+**样例输出：**
+```text
+5
+9
+NONE
+1
+```
+
+**完整代码：**
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    int n, q;
+    cin >> n >> q;
+    vector<int> a(n + 1);
+    for (int i = 1; i <= n; i++) cin >> a[i];
+    sort(a.begin() + 1, a.end());
+    while (q--) {
+        int x;
+        cin >> x;
+        auto it = lower_bound(a.begin() + 1, a.end(), x);
+        if (it == a.end()) cout << "NONE\n";
+        else cout << *it << '\n';
+    }
+    return 0;
+}
+```
+
+**测试设计：** 额外测试：构造最小规模、重复值、边界值各一组，和样例一起运行。
+
+***
+
+<!-- V02_EXAMPLES_END -->

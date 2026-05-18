@@ -1,0 +1,211 @@
+{
+  "version": "0.31",
+  "kind": "chapter_pdfs",
+  "count": 14,
+  "output_dir": "06_output/chapter_pdfs",
+  "chapters": [
+    {
+      "no": "00",
+      "title": "第0卷 作战流程与题型路由",
+      "pdf": "00_route.pdf",
+      "source": "volume_-1_0A_0_ops_route.md",
+      "when": "考试开始、读题后不知道翻哪里、需要复杂度/提交策略/统一协议时先翻。",
+      "keywords": "时间分配；复杂度表；题型路由；模块拼接；1-index；提交检查。",
+      "detail": "先扫三题、判断复杂度、选择题型路由、决定先交暴力还是直接套模板；这里是全套资料的总导航。"
+    },
+    {
+      "no": "01",
+      "title": "第1卷 C++17 / STL / 输入输出",
+      "pdf": "01_cpp_stl_io.pdf",
+      "source": "volume_1_cpp_stl.md",
+      "when": "卡在语法、容器、string、格式化输出、EOF、快读快写时翻。",
+      "keywords": "cin/cout；scanf/printf；getline；EOF；string；vector；priority_queue；unordered_map；sort；lower_bound。",
+      "detail": "主查 C++ 现场写法：标准头文件、输入输出、保留小数、右对齐、EOF、string 成员函数、STL 容器和常用算法。"
+    },
+    {
+      "no": "02",
+      "title": "第2卷 暴力、枚举、记忆化与部分分",
+      "pdf": "02_brute_memo.pdf",
+      "source": "volume_2_brute_memo_partial.md",
+      "when": "不会正解、想先交小数据、DFS 能写但会超时时翻。",
+      "keywords": "枚举；全排列；子集；DFS；BFS 状态；剪枝；记忆化；折半；合法兜底输出。",
+      "detail": "主查拿分底线：全排列、子集枚举、组合 DFS、BFS 状态搜索、剪枝、DFS 加 memo、折半枚举和大数据合法兜底。"
+    },
+    {
+      "no": "03",
+      "title": "第3卷 DP 建模与模型复用",
+      "pdf": "03_dp.pdf",
+      "source": "volume_3_dp_model_reuse.md",
+      "when": "疑似 DP、需要从暴力升级到记忆化/表推、不会定义状态时翻。",
+      "keywords": "DP 五问；线性；背包；LIS/LCS/LCIS；区间；树形；DAG；状压；数位；例题推导。",
+      "detail": "主查 DP 怎么想：从暴力搜索找状态、加记忆化、再表推；覆盖背包、LIS/LCS/LCIS、区间、树形、DAG、状压、数位和高阶索引。"
+    },
+    {
+      "no": "03A",
+      "title": "第3A卷 贪心与 DP 辨析",
+      "pdf": "03A_greedy_dp.pdf",
+      "source": "volume_3A_greedy_dp_discrimination.md",
+      "when": "不知道能不能贪心、需要证明交换/反例、贪心失败要转 DP 时翻。",
+      "keywords": "排序贪心；区间；堆；局部最优；反例；DP 对照。",
+      "detail": "主查贪心能不能用：看是否有交换论证、排序依据、堆维护、区间选择；一旦局部选择影响未来就转 DP 或搜索。"
+    },
+    {
+      "no": "04",
+      "title": "第4卷 数据结构",
+      "pdf": "04_ds.pdf",
+      "source": "volume_4_data_structures.md",
+      "when": "区间查询修改、动态排名、前缀和、差分、线段树/树状数组时翻。",
+      "keywords": "前缀和；差分；双指针；单调栈队列；堆；DSU；树状数组；线段树；Sparse Table。",
+      "detail": "主查数组和区间工具：前缀和/差分、双指针、单调结构、堆、并查集、树状数组、线段树、Sparse Table 和坐标压缩拼接。"
+    },
+    {
+      "no": "05",
+      "title": "第5卷 图论与树论",
+      "pdf": "05_graph_tree.pdf",
+      "source": "volume_5_graph_tree.md",
+      "when": "图/网格/树题，最短路、连通性、拓扑、LCA、树 DP 时翻。",
+      "keywords": "BFS/DFS；Dijkstra；Floyd；Bellman-Ford；DSU；MST；Topo；SCC；LCA；树形 DP。",
+      "detail": "主查图树模板：统一 1-index 建图、无权 BFS、非负权 Dijkstra、小图 Floyd、拓扑、最小生成树、强连通、LCA 和树上 DP。"
+    },
+    {
+      "no": "06",
+      "title": "第6卷 数学与字符串模板",
+      "pdf": "06_math_string.pdf",
+      "source": "volume_6_math_string.md",
+      "when": "快速幂、组合数、筛法、方程求解、KMP、Trie、Hash、字符串 DP 时翻。",
+      "keywords": "gcd/lcm；快速幂；逆元；组合数；筛；质因数；高斯消元；二分求根；KMP；Z；Trie；Hash；Manacher。",
+      "detail": "主查常用数学与字符串：gcd/lcm、模运算、快速幂、逆元、组合数、筛法、质因数分解、方程组求解、一元方程求根、KMP/Z、Trie、Hash 和 Manacher。"
+    },
+    {
+      "no": "07",
+      "title": "第7卷 调试、对拍与训练",
+      "pdf": "07_debug.pdf",
+      "source": "volume_7_debug_training.md",
+      "when": "样例过但 WA/RE/TLE、需要自造极限数据或赛后训练时翻。",
+      "keywords": "边界；对拍；随机数据；提交前检查；常见错误。",
+      "detail": "主查最后救命检查：边界样例、随机对拍、RE/WA/TLE 排查、提交前检查清单和赛后训练方法。"
+    },
+    {
+      "no": "08",
+      "title": "第8卷 竞赛数学参考",
+      "pdf": "08_math_ref.pdf",
+      "source": "volume_8_competition_math_reference.md",
+      "when": "数学题更深，涉及同余、CRT、莫比乌斯、矩阵、概率、博弈、几何时翻。",
+      "keywords": "整除；同余；exgcd；CRT；欧拉/莫比乌斯；容斥；矩阵快速幂；期望；SG；几何。",
+      "detail": "主查 NOI/ICPC 风格数学补充：整除与取整、线性同余、exgcd、CRT、欧拉/莫比乌斯、容斥、矩阵、期望、SG 和几何精度。"
+    },
+    {
+      "no": "09",
+      "title": "第9卷 Python 互补卷",
+      "pdf": "09_python.pdf",
+      "source": "volume_9_python_complement.md",
+      "when": "只有 Python 明显更省事时翻，主力仍建议 C++。",
+      "keywords": "大整数；字典/集合；heapq；deque；itertools；输入；递归限制；适用/不适用场景。",
+      "detail": "主查 Python 是否值得用：大整数、字典集合、heapq、deque、itertools、简单模拟和状态搜索；复杂图/区间仍优先 C++。"
+    },
+    {
+      "no": "10",
+      "title": "第10卷 AI 专题与特判模型",
+      "pdf": "10_ai.pdf",
+      "source": "volume_10_ai_special_topics.md",
+      "when": "题面带 AI/ML/聚类/回归/神经网络/自动求导/模型评测时翻。",
+      "keywords": "搜索规划；KNN；TF-IDF；聚类；回归；Viterbi；DNN；SVM；反向传播；自动求导；SPJ。",
+      "detail": "主查 AI 相关模拟题：搜索规划、KNN、相似度、TF-IDF、聚类、回归、HMM/Viterbi、SVM、DNN、反向传播、自动求导和 SPJ。"
+    },
+    {
+      "no": "11",
+      "title": "第11卷 签到题百科",
+      "pdf": "11_signoff_encyclopedia.pdf",
+      "source": "volume_11_signoff_encyclopedia.md",
+      "when": "题面是公式、单位、图片大小、日期、统计指标、机器学习小模拟或计算机常识时翻。",
+      "keywords": "BMP；三角形面积；单位换算；微积分；线性代数；Markov；概率统计；F1；kNN；bit/byte；补码；浮点；流程图；AI术语；日期；Excel列号。",
+      "detail": "主查签到题常识：常用数学、微积分、线代、Markov、概率统计、机器学习指标、文件媒体大小、进制补码浮点、读程序流程图、编码网络和生活模拟模板。"
+    }
+  ],
+  "files": [
+    {
+      "file": "00_which_book_index.pdf",
+      "pages": 1,
+      "sha256": "98969ce29a6eda34d5712e856d6f7980b1f6a8203d38ffd2642d9604d20b765a",
+      "bytes": 222829
+    },
+    {
+      "file": "00_route.pdf",
+      "pages": 44,
+      "sha256": "28fa7c2e53de75d90f47a41498461180c203cc1bc99f23792d51e568c7217df8",
+      "bytes": 589549
+    },
+    {
+      "file": "01_cpp_stl_io.pdf",
+      "pages": 70,
+      "sha256": "fb9880e6f3ad38b1f7aa7641799f1f5e16c7cb3aa6357f4af9b51dd7e93d78d8",
+      "bytes": 703510
+    },
+    {
+      "file": "02_brute_memo.pdf",
+      "pages": 58,
+      "sha256": "9adb410899765f0a77d3fec3df3e7f7579e97452c9c0a14a061359e8f90017a4",
+      "bytes": 584866
+    },
+    {
+      "file": "03_dp.pdf",
+      "pages": 138,
+      "sha256": "14b1b02be45485a5b47c221a647572887856eb7156301d46bd09da1ec7305c7e",
+      "bytes": 1008935
+    },
+    {
+      "file": "03A_greedy_dp.pdf",
+      "pages": 28,
+      "sha256": "83f114d2d881c088774b65ac3f29bdd59af20c4c964a7a60baee128fe16fbcd3",
+      "bytes": 437855
+    },
+    {
+      "file": "04_ds.pdf",
+      "pages": 48,
+      "sha256": "5628c583cc8f6a21c50c8726f146150ff7144dba65bd47492c51f7912326f559",
+      "bytes": 530651
+    },
+    {
+      "file": "05_graph_tree.pdf",
+      "pages": 83,
+      "sha256": "805de2741882d473ec233c2337f9fb54e8d42c73a6c4fa9999396b10a1e81740",
+      "bytes": 693863
+    },
+    {
+      "file": "06_math_string.pdf",
+      "pages": 111,
+      "sha256": "30aa1e11dcb75ac8ba03a0b2f93fedbf6a49b718c86fc67e3af8508186b50c2d",
+      "bytes": 818470
+    },
+    {
+      "file": "07_debug.pdf",
+      "pages": 24,
+      "sha256": "dc4261144a65bf28d23c1776073aa9b9b96b1a37768d07778bc5ece3e0ecb03c",
+      "bytes": 458218
+    },
+    {
+      "file": "08_math_ref.pdf",
+      "pages": 48,
+      "sha256": "cca4f2f21d81bffd2d3c6f1c5962eed34fe4bc16e0d90c49f209892e492209ed",
+      "bytes": 549188
+    },
+    {
+      "file": "09_python.pdf",
+      "pages": 37,
+      "sha256": "439156c2de57dd662e1ecc6cc6b60bbf31e7c466ab348a8866bf564f21431abf",
+      "bytes": 532233
+    },
+    {
+      "file": "10_ai.pdf",
+      "pages": 61,
+      "sha256": "2501a9a1dc84fcbbac2cb02fda7bebc8dcb5cf19027f380551f04c99667653de",
+      "bytes": 643161
+    },
+    {
+      "file": "11_signoff_encyclopedia.pdf",
+      "pages": 58,
+      "sha256": "354523cebcd489e1435f898ba7fbec1019c7d738ff8552ddd68e3df6a6134bb9",
+      "bytes": 749691
+    }
+  ]
+}

@@ -3025,3 +3025,1213 @@ if (dfs(next_state)) return memo[state] = true;
 5. 答案为负数
 6. 有重复状态的小例子
 ```
+
+<!-- V02_EXAMPLES_START -->
+
+# v0.2 本卷例题训练区
+
+这一节是 0.2 新增的实战例题。每题都配完整可运行代码和样例；考试时优先看“覆盖模块”和“考场用途”，再复制对应代码骨架。
+
+### V02-EX01 全排列最短访问序列
+
+- 归属卷：第 2 卷
+- 覆盖模块：全排列、`next_permutation`、小数据精确解
+- 考场用途：`n <= 9` 且顺序可任意排列时，先用全排列写出正确答案。
+
+**题目描述：** 有 `n` 个点，访问顺序可以任意决定。已知从点 `i` 到点 `j` 的代价 `w[i][j]`，要求访问每个点恰好一次，使相邻两点之间总代价最小。若有多种最优顺序，输出字典序最小的顺序。
+
+**输入格式：** 第一行一个整数 `n`。接下来 `n` 行，每行 `n` 个整数，表示代价矩阵。
+
+**输出格式：** 第一行输出最小总代价。第二行输出最优访问顺序。
+
+**样例输入：**
+```text
+3
+0 5 1
+5 0 2
+1 2 0
+```
+
+**样例输出：**
+```text
+3
+1 3 2
+```
+
+**完整代码：**
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int n;
+    cin >> n;
+    vector<vector<long long>> w(n + 1, vector<long long>(n + 1));
+    for (int i = 1; i <= n; i++) {
+        for (int j = 1; j <= n; j++) {
+            cin >> w[i][j];
+        }
+    }
+
+    vector<int> p(n + 1);
+    for (int i = 1; i <= n; i++) p[i] = i;
+
+    long long best = (1LL << 62);
+    vector<int> bestPath;
+    do {
+        long long cost = 0;
+        for (int i = 1; i < n; i++) {
+            cost += w[p[i]][p[i + 1]];
+        }
+        vector<int> cur(p.begin() + 1, p.end());
+        if (cost < best || (cost == best && cur < bestPath)) {
+            best = cost;
+            bestPath = cur;
+        }
+    } while (next_permutation(p.begin() + 1, p.end()));
+
+    cout << best << '\n';
+    for (int i = 0; i < n; i++) {
+        if (i) cout << ' ';
+        cout << bestPath[i];
+    }
+    cout << '\n';
+    return 0;
+}
+```
+
+**测试设计：**
+
+测试 1 输入：
+```text
+3
+0 5 1
+5 0 2
+1 2 0
+```
+期望输出：
+```text
+3
+1 3 2
+```
+
+测试 2 输入：
+```text
+4
+0 1 10 10
+1 0 1 10
+10 1 0 1
+10 10 1 0
+```
+期望输出：
+```text
+3
+1 2 3 4
+```
+### V02-EX02 子集目标和计数
+
+- 归属卷：第 2 卷
+- 覆盖模块：子集枚举、位运算、`2^n` 暴力
+- 考场用途：`n <= 20` 时直接枚举所有选或不选，给目标和类问题拿稳小数据分。
+
+**题目描述：** 给定 `n` 个正整数和目标值 `S`，统计有多少个子集的元素和恰好等于 `S`。
+
+**输入格式：** 第一行两个整数 `n S`。第二行 `n` 个整数。
+
+**输出格式：** 输出一个整数，表示满足条件的子集数量。
+
+**样例输入：**
+```text
+4 5
+1 2 3 4
+```
+
+**样例输出：**
+```text
+2
+```
+
+**完整代码：**
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int n;
+    long long target;
+    cin >> n >> target;
+    vector<long long> a(n + 1);
+    for (int i = 1; i <= n; i++) cin >> a[i];
+
+    long long ans = 0;
+    int totalMask = 1 << n;
+    for (int mask = 0; mask < totalMask; mask++) {
+        long long sum = 0;
+        for (int i = 1; i <= n; i++) {
+            if (mask & (1 << (i - 1))) {
+                sum += a[i];
+            }
+        }
+        if (sum == target) ans++;
+    }
+
+    cout << ans << '\n';
+    return 0;
+}
+```
+
+**测试设计：**
+
+测试 1 输入：
+```text
+4 5
+1 2 3 4
+```
+期望输出：
+```text
+2
+```
+
+测试 2 输入：
+```text
+3 3
+1 1 2
+```
+期望输出：
+```text
+2
+```
+### V02-EX03 组合 DFS 选 k 个数
+
+- 归属卷：第 2 卷
+- 覆盖模块：组合 DFS、递归枚举、剩余数量剪枝
+- 考场用途：题目要求“从 n 个里面选 k 个”时，用 DFS 避免枚举所有排列。
+
+**题目描述：** 给定 `n` 个整数，从中选出恰好 `k` 个数，使它们的和等于 `S`。统计方案数。不同下标视为不同元素。
+
+**输入格式：** 第一行三个整数 `n k S`。第二行 `n` 个整数。
+
+**输出格式：** 输出方案数。
+
+**样例输入：**
+```text
+5 2 5
+1 2 3 4 5
+```
+
+**样例输出：**
+```text
+2
+```
+
+**完整代码：**
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int n, k;
+long long target;
+vector<long long> a;
+long long ans = 0;
+
+void dfs(int start, int chosen, long long sum) {
+    if (chosen == k) {
+        if (sum == target) ans++;
+        return;
+    }
+    if (start > n) return;
+    int need = k - chosen;
+    if (n - start + 1 < need) return;
+
+    for (int i = start; i <= n; i++) {
+        dfs(i + 1, chosen + 1, sum + a[i]);
+    }
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    cin >> n >> k >> target;
+    a.assign(n + 1, 0);
+    for (int i = 1; i <= n; i++) cin >> a[i];
+
+    dfs(1, 0, 0);
+    cout << ans << '\n';
+    return 0;
+}
+```
+
+**测试设计：**
+
+测试 1 输入：
+```text
+5 2 5
+1 2 3 4 5
+```
+期望输出：
+```text
+2
+```
+
+测试 2 输入：
+```text
+6 3 10
+1 2 3 4 5 6
+```
+期望输出：
+```text
+3
+```
+### V02-EX04 N 皇后方案数
+
+- 归属卷：第 2 卷
+- 覆盖模块：回溯、冲突检查、搜索树剪枝
+- 考场用途：棋盘摆放、每行每列限制、不能互相攻击类问题的经典回溯模板。
+
+**题目描述：** 在 `n * n` 棋盘上放置 `n` 个皇后，要求任意两个皇后不在同一行、同一列或同一条对角线上。输出方案数。
+
+**输入格式：** 一个整数 `n`。
+
+**输出格式：** 输出方案数。
+
+**样例输入：**
+```text
+4
+```
+
+**样例输出：**
+```text
+2
+```
+
+**完整代码：**
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int n;
+long long ans = 0;
+vector<int> colUsed, diag1Used, diag2Used;
+
+void dfs(int row) {
+    if (row == n + 1) {
+        ans++;
+        return;
+    }
+    for (int col = 1; col <= n; col++) {
+        int d1 = row + col;
+        int d2 = row - col + n;
+        if (colUsed[col] || diag1Used[d1] || diag2Used[d2]) continue;
+        colUsed[col] = diag1Used[d1] = diag2Used[d2] = 1;
+        dfs(row + 1);
+        colUsed[col] = diag1Used[d1] = diag2Used[d2] = 0;
+    }
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    cin >> n;
+    colUsed.assign(n + 1, 0);
+    diag1Used.assign(2 * n + 2, 0);
+    diag2Used.assign(2 * n + 2, 0);
+
+    dfs(1);
+    cout << ans << '\n';
+    return 0;
+}
+```
+
+**测试设计：**
+
+测试 1 输入：
+```text
+4
+```
+期望输出：
+```text
+2
+```
+
+测试 2 输入：
+```text
+5
+```
+期望输出：
+```text
+10
+```
+### V02-EX05 三位密码锁 BFS 状态搜索
+
+- 归属卷：第 2 卷
+- 覆盖模块：BFS 状态、最短步数、访问判重
+- 考场用途：状态数量有限、每步代价相同、问最少操作次数时，直接建图 BFS。
+
+**题目描述：** 一个三位密码锁初始为 `000`。每次可以选择一位数字加一或减一，数字在 `0` 到 `9` 间循环。给定目标状态和若干禁用状态，求从 `000` 到目标状态的最少步数；若无法到达，输出 `-1`。
+
+**输入格式：** 第一行一个三位字符串 `target`。第二行一个整数 `m`。接下来 `m` 行，每行一个禁用状态。
+
+**输出格式：** 输出最少步数，无法到达输出 `-1`。
+
+**样例输入：**
+```text
+002
+0
+```
+
+**样例输出：**
+```text
+2
+```
+
+**完整代码：**
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int parseState(const string &s) {
+    return (s[0] - '0') * 100 + (s[1] - '0') * 10 + (s[2] - '0');
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    string targetStr;
+    int m;
+    cin >> targetStr >> m;
+
+    vector<int> forbidden(1000, 0);
+    for (int i = 1; i <= m; i++) {
+        string s;
+        cin >> s;
+        forbidden[parseState(s)] = 1;
+    }
+
+    int start = 0;
+    int target = parseState(targetStr);
+    if (forbidden[start] || forbidden[target]) {
+        cout << -1 << '\n';
+        return 0;
+    }
+
+    vector<int> dist(1000, -1);
+    queue<int> q;
+    dist[start] = 0;
+    q.push(start);
+
+    int base[3] = {100, 10, 1};
+    while (!q.empty()) {
+        int cur = q.front();
+        q.pop();
+        if (cur == target) break;
+
+        for (int pos = 0; pos < 3; pos++) {
+            int digit = (cur / base[pos]) % 10;
+            for (int delta : {-1, 1}) {
+                int nd = (digit + delta + 10) % 10;
+                int nxt = cur + (nd - digit) * base[pos];
+                if (!forbidden[nxt] && dist[nxt] == -1) {
+                    dist[nxt] = dist[cur] + 1;
+                    q.push(nxt);
+                }
+            }
+        }
+    }
+
+    cout << dist[target] << '\n';
+    return 0;
+}
+```
+
+**测试设计：**
+
+测试 1 输入：
+```text
+002
+0
+```
+期望输出：
+```text
+2
+```
+
+测试 2 输入：
+```text
+010
+1
+010
+```
+期望输出：
+```text
+-1
+```
+### V02-EX06 装载问题的 DFS 剪枝
+
+- 归属卷：第 2 卷
+- 覆盖模块：DFS、上界剪枝、排序剪枝
+- 考场用途：背包容量较小或物品数不大时，先用搜索；加上剩余和剪枝后能多拿一档数据。
+
+**题目描述：** 有 `n` 个物品，第 `i` 个重量为 `w[i]`。选择若干物品放入容量为 `C` 的箱子，使总重量不超过 `C` 且尽量大。输出最大可装重量。
+
+**输入格式：** 第一行两个整数 `n C`。第二行 `n` 个整数表示重量。
+
+**输出格式：** 输出最大可装重量。
+
+**样例输入：**
+```text
+5 10
+2 3 4 5 9
+```
+
+**样例输出：**
+```text
+10
+```
+
+**完整代码：**
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int n;
+long long C;
+vector<long long> w, suffixSum;
+long long best = 0;
+
+void dfs(int idx, long long cur) {
+    if (cur > C) return;
+    if (idx == n + 1) {
+        best = max(best, cur);
+        return;
+    }
+    if (cur + suffixSum[idx] <= best) return;
+
+    dfs(idx + 1, cur + w[idx]);
+    dfs(idx + 1, cur);
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    cin >> n >> C;
+    w.assign(n + 1, 0);
+    for (int i = 1; i <= n; i++) cin >> w[i];
+    sort(w.begin() + 1, w.end(), greater<long long>());
+
+    suffixSum.assign(n + 2, 0);
+    for (int i = n; i >= 1; i--) {
+        suffixSum[i] = suffixSum[i + 1] + w[i];
+    }
+
+    dfs(1, 0);
+    cout << best << '\n';
+    return 0;
+}
+```
+
+**测试设计：**
+
+测试 1 输入：
+```text
+5 10
+2 3 4 5 9
+```
+期望输出：
+```text
+10
+```
+
+测试 2 输入：
+```text
+6 15
+6 7 8 2 3 4
+```
+期望输出：
+```text
+15
+```
+### V02-EX07 数字串加号的记忆化搜索
+
+- 归属卷：第 2 卷
+- 覆盖模块：暴力切分、记忆化搜索、状态压缩
+- 考场用途：先写从左到右切字符串的 DFS，再把 `(位置, 当前和)` 存起来，避免重复搜索。
+
+**题目描述：** 给定只含数字的字符串 `s` 和目标值 `T`。可以在相邻数字之间插入若干个加号，把字符串切成若干非负整数，要求这些整数之和等于 `T`。求最少需要插入多少个加号；若无法做到，输出 `-1`。
+
+**输入格式：** 第一行字符串 `s`。第二行整数 `T`。
+
+**输出格式：** 输出最少加号数，无法做到输出 `-1`。
+
+**样例输入：**
+```text
+99999
+45
+```
+
+**样例输出：**
+```text
+4
+```
+
+**完整代码：**
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int INF = 1000000000;
+
+string s;
+long long target;
+int n;
+vector<unordered_map<long long, int>> memo;
+
+int dfs(int pos, long long sum) {
+    if (sum > target) return INF;
+    if (pos == n) {
+        return sum == target ? 0 : INF;
+    }
+    if (memo[pos].count(sum)) return memo[pos][sum];
+
+    long long val = 0;
+    int best = INF;
+    for (int nxt = pos; nxt < n; nxt++) {
+        val = val * 10 + (s[nxt] - '0');
+        if (sum + val > target) break;
+        int add = (pos == 0 ? 0 : 1);
+        best = min(best, add + dfs(nxt + 1, sum + val));
+    }
+    memo[pos][sum] = best;
+    return best;
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    cin >> s >> target;
+    n = (int)s.size();
+    memo.assign(n + 1, unordered_map<long long, int>());
+
+    int ans = dfs(0, 0);
+    cout << (ans >= INF ? -1 : ans) << '\n';
+    return 0;
+}
+```
+
+**测试设计：**
+
+测试 1 输入：
+```text
+99999
+45
+```
+期望输出：
+```text
+4
+```
+
+测试 2 输入：
+```text
+1234
+10
+```
+期望输出：
+```text
+3
+```
+### V02-EX08 网格最大礼物的记忆化搜索
+
+- 归属卷：第 2 卷
+- 覆盖模块：记忆化 DFS、二维状态、不可达状态
+- 考场用途：能自然写出“从当前位置走到终点”的递归时，先用 memo 快速变成 DP。
+
+**题目描述：** 给定 `n * m` 网格，每个格子有一个整数价值，`-1` 表示障碍。你从 `(1,1)` 出发，只能向下或向右走到 `(n,m)`。求路径价值和最大值；若无法到达，输出 `-1`。
+
+**输入格式：** 第一行两个整数 `n m`。接下来 `n` 行，每行 `m` 个整数。
+
+**输出格式：** 输出最大路径和，无法到达输出 `-1`。
+
+**样例输入：**
+```text
+3 3
+1 2 3
+4 -1 5
+1 2 10
+```
+
+**样例输出：**
+```text
+21
+```
+
+**完整代码：**
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const long long NEG = -(1LL << 60);
+
+int n, m;
+vector<vector<long long>> grid, memo;
+vector<vector<int>> vis;
+
+long long dfs(int i, int j) {
+    if (i > n || j > m) return NEG;
+    if (grid[i][j] == -1) return NEG;
+    if (i == n && j == m) return grid[i][j];
+    if (vis[i][j]) return memo[i][j];
+    vis[i][j] = 1;
+
+    long long bestNext = max(dfs(i + 1, j), dfs(i, j + 1));
+    if (bestNext == NEG) memo[i][j] = NEG;
+    else memo[i][j] = grid[i][j] + bestNext;
+    return memo[i][j];
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    cin >> n >> m;
+    grid.assign(n + 1, vector<long long>(m + 1, 0));
+    memo.assign(n + 1, vector<long long>(m + 1, NEG));
+    vis.assign(n + 1, vector<int>(m + 1, 0));
+
+    for (int i = 1; i <= n; i++) {
+        for (int j = 1; j <= m; j++) {
+            cin >> grid[i][j];
+        }
+    }
+
+    long long ans = dfs(1, 1);
+    cout << (ans == NEG ? -1 : ans) << '\n';
+    return 0;
+}
+```
+
+**测试设计：**
+
+测试 1 输入：
+```text
+3 3
+1 2 3
+4 -1 5
+1 2 10
+```
+期望输出：
+```text
+21
+```
+
+测试 2 输入：
+```text
+2 2
+1 -1
+-1 2
+```
+期望输出：
+```text
+-1
+```
+### V02-EX09 折半枚举不超过容量的最大和
+
+- 归属卷：第 2 卷
+- 覆盖模块：折半枚举、二分、`n <= 40`
+- 考场用途：`2^40` 直接枚举爆炸时，把集合拆成两半，各枚举 `2^20` 后合并。
+
+**题目描述：** 给定 `n` 个正整数和容量 `C`，选择若干数使总和不超过 `C` 且尽量大。输出最大总和。
+
+**输入格式：** 第一行两个整数 `n C`。第二行 `n` 个正整数。
+
+**输出格式：** 输出不超过 `C` 的最大子集和。
+
+**样例输入：**
+```text
+6 20
+7 8 9 10 11 12
+```
+
+**样例输出：**
+```text
+20
+```
+
+**完整代码：**
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+void genSums(const vector<long long> &a, int l, int r, long long C, vector<long long> &sums) {
+    int len = r - l + 1;
+    int totalMask = 1 << len;
+    for (int mask = 0; mask < totalMask; mask++) {
+        long long sum = 0;
+        for (int i = 0; i < len; i++) {
+            if (mask & (1 << i)) {
+                sum += a[l + i];
+            }
+        }
+        if (sum <= C) sums.push_back(sum);
+    }
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int n;
+    long long C;
+    cin >> n >> C;
+    vector<long long> a(n + 1);
+    for (int i = 1; i <= n; i++) cin >> a[i];
+
+    int mid = n / 2;
+    vector<long long> leftSums, rightSums;
+    genSums(a, 1, mid, C, leftSums);
+    genSums(a, mid + 1, n, C, rightSums);
+
+    sort(rightSums.begin(), rightSums.end());
+    long long ans = 0;
+    for (long long x : leftSums) {
+        long long remain = C - x;
+        auto it = upper_bound(rightSums.begin(), rightSums.end(), remain);
+        if (it == rightSums.begin()) {
+            ans = max(ans, x);
+        } else {
+            --it;
+            ans = max(ans, x + *it);
+        }
+    }
+
+    cout << ans << '\n';
+    return 0;
+}
+```
+
+**测试设计：**
+
+测试 1 输入：
+```text
+6 20
+7 8 9 10 11 12
+```
+期望输出：
+```text
+20
+```
+
+测试 2 输入：
+```text
+4 10
+1 3 4 8
+```
+期望输出：
+```text
+9
+```
+### V02-EX10 部分分兜底提交策略模拟
+
+- 归属卷：第 2 卷
+- 覆盖模块：部分分兜底、小数据精确解、大数据合法输出
+- 考场用途：正解来不及写时，保留一个能过小数据、且大数据也不会 RE/格式错的版本。
+
+**题目描述：** 给定 `n` 个物品重量和容量 `C`。本例模拟部分分提交策略：当 `n <= 20` 时输出不超过 `C` 的最大子集和；当 `n > 20` 时输出按输入顺序能放就放得到的合法子集和。这个程序不是满分背包正解，而是“先活下来”的兜底版本。
+
+**输入格式：** 第一行两个整数 `n C`。第二行 `n` 个正整数。
+
+**输出格式：** 输出本策略得到的子集和。
+
+**样例输入：**
+```text
+5 10
+2 7 4 6 3
+```
+
+**样例输出：**
+```text
+10
+```
+
+**完整代码：**
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+long long exactSmall(const vector<long long> &a, int n, long long C) {
+    long long best = 0;
+    int totalMask = 1 << n;
+    for (int mask = 0; mask < totalMask; mask++) {
+        long long sum = 0;
+        for (int i = 1; i <= n; i++) {
+            if (mask & (1 << (i - 1))) {
+                sum += a[i];
+            }
+        }
+        if (sum <= C) best = max(best, sum);
+    }
+    return best;
+}
+
+long long fallbackLarge(const vector<long long> &a, int n, long long C) {
+    long long sum = 0;
+    for (int i = 1; i <= n; i++) {
+        if (sum + a[i] <= C) {
+            sum += a[i];
+        }
+    }
+    return sum;
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int n;
+    long long C;
+    cin >> n >> C;
+    vector<long long> a(n + 1);
+    for (int i = 1; i <= n; i++) cin >> a[i];
+
+    if (n <= 20) {
+        cout << exactSmall(a, n, C) << '\n';
+    } else {
+        cout << fallbackLarge(a, n, C) << '\n';
+    }
+    return 0;
+}
+```
+
+**测试设计：**
+
+测试 1 输入：
+```text
+5 10
+2 7 4 6 3
+```
+期望输出：
+```text
+10
+```
+
+测试 2 输入：
+```text
+21 10
+6 6 6 6 6 6 6 6 6 6 6 6 6 6 6 6 6 6 6 6 6
+```
+期望输出：
+```text
+6
+```
+
+## 第 3A 卷例题
+### V02-CEX01 全排列最小相邻差
+
+- 归属卷：第 2 卷
+- 覆盖模块：next_permutation、暴力
+- 考场用途：n 小时直接枚举顺序拿满小数据。
+- 参考题型来源：参考来源：洛谷搜索/排列枚举题型。
+
+**题目描述：** 重排数组，使相邻差绝对值之和最小。
+
+**输入格式：** 第一行 `n`，第二行 `n` 个数，保证 `n<=8`。
+
+**输出格式：** 输出最小代价。
+
+**样例输入：**
+```text
+4
+10 1 4 7
+```
+
+**样例输出：**
+```text
+9
+```
+
+**完整代码：**
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+
+int n;
+vector<int> a;
+long long best = (long long)4e18;
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    cin >> n;
+    a.assign(n + 1, 0);
+    for (int i = 1; i <= n; i++) cin >> a[i];
+    vector<int> p(n);
+    iota(p.begin(), p.end(), 1);
+    do {
+        long long cost = 0;
+        for (int i = 1; i < n; i++) cost += abs(a[p[i]] - a[p[i - 1]]);
+        best = min(best, cost);
+    } while (next_permutation(p.begin(), p.end()));
+    cout << best << '\n';
+    return 0;
+}
+```
+
+**测试设计：** 额外测试：构造最小规模、重复值、边界值各一组，和样例一起运行。
+
+***
+### V02-CEX02 子集覆盖最小选择
+
+- 归属卷：第 2 卷
+- 覆盖模块：子集枚举、位运算
+- 考场用途：把小集合覆盖问题压成 bitmask。
+- 参考题型来源：参考来源：洛谷状态压缩/集合覆盖题型。
+
+**题目描述：** 有 `n` 个工具，每个工具覆盖若干能力位；给出 `m` 个需求掩码，求最少选几个工具满足所有需求。
+
+**输入格式：** 第一行 `n m`，第二行 `m` 个需求掩码，第三行 `n` 个工具掩码。
+
+**输出格式：** 输出最少工具数。
+
+**样例输入：**
+```text
+4 2
+3 12
+1 2 4 8
+```
+
+**样例输出：**
+```text
+4
+```
+
+**完整代码：**
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    int n, m;
+    cin >> n >> m;
+    vector<int> need(m + 1), cover(n + 1);
+    for (int i = 1; i <= m; i++) cin >> need[i];
+    for (int i = 1; i <= n; i++) cin >> cover[i];
+    int ans = n + 1;
+    for (int mask = 0; mask < (1 << n); mask++) {
+        int have = 0, cnt = 0;
+        for (int i = 1; i <= n; i++) if (mask & (1 << (i - 1))) {
+            have |= cover[i];
+            cnt++;
+        }
+        bool ok = true;
+        for (int i = 1; i <= m; i++) if ((have & need[i]) != need[i]) ok = false;
+        if (ok) ans = min(ans, cnt);
+    }
+    cout << (ans == n + 1 ? -1 : ans) << '\n';
+    return 0;
+}
+```
+
+**测试设计：** 额外测试：构造最小规模、重复值、边界值各一组，和样例一起运行。
+
+***
+### V02-CEX03 加减号记忆化搜索
+
+- 归属卷：第 2 卷
+- 覆盖模块：DFS、记忆化、map 状态
+- 考场用途：暴力每个数加/减，直接加 memo 升级。
+- 参考题型来源：参考来源：经典 Target Sum 搜索题型。
+
+**题目描述：** 给每个数前放 `+` 或 `-`，统计表达式值等于目标的方案数。
+
+**输入格式：** 第一行 `n target`，第二行数组。
+
+**输出格式：** 输出方案数。
+
+**样例输入：**
+```text
+5 3
+1 1 1 1 1
+```
+
+**样例输出：**
+```text
+5
+```
+
+**完整代码：**
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+
+int n, target;
+vector<int> a;
+map<pair<int,int>, long long> memo;
+long long dfs(int i, int sum) {
+    if (i == n + 1) return sum == target;
+    auto key = make_pair(i, sum);
+    if (memo.count(key)) return memo[key];
+    long long ans = dfs(i + 1, sum + a[i]) + dfs(i + 1, sum - a[i]);
+    return memo[key] = ans;
+}
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    cin >> n >> target;
+    a.assign(n + 1, 0);
+    for (int i = 1; i <= n; i++) cin >> a[i];
+    cout << dfs(1, 0) << '\n';
+    return 0;
+}
+```
+
+**测试设计：** 额外测试：构造最小规模、重复值、边界值各一组，和样例一起运行。
+
+***
+### V02-CEX04 网格破墙一次 BFS
+
+- 归属卷：第 2 卷
+- 覆盖模块：BFS 状态搜索、状态升维
+- 考场用途：把“是否用过一次破墙”作为状态。
+- 参考题型来源：参考来源：洛谷/ICPC 网格 BFS 变体。
+
+**题目描述：** 从左上走到右下，可经过至多一个障碍，求最少步数。
+
+**输入格式：** 第一行 `n m`，之后网格，`.` 可走，`#` 障碍。
+
+**输出格式：** 输出最少步数，不可达输出 `-1`。
+
+**样例输入：**
+```text
+3 3
+.#.
+##.
+...
+```
+
+**样例输出：**
+```text
+4
+```
+
+**完整代码：**
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+
+struct State { int x, y, k; };
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    int n, m;
+    cin >> n >> m;
+    vector<string> g(n + 1);
+    for (int i = 1; i <= n; i++) { cin >> g[i]; g[i] = " " + g[i]; }
+    vector<vector<array<int,2>>> dist(n + 1, vector<array<int,2>>(m + 1, { -1, -1 }));
+    queue<State> q;
+    dist[1][1][0] = 0;
+    q.push({1, 1, 0});
+    int dx[4] = {1, -1, 0, 0};
+    int dy[4] = {0, 0, 1, -1};
+    while (!q.empty()) {
+        auto cur = q.front(); q.pop();
+        for (int d = 0; d < 4; d++) {
+            int nx = cur.x + dx[d], ny = cur.y + dy[d];
+            if (nx < 1 || nx > n || ny < 1 || ny > m) continue;
+            int nk = cur.k;
+            if (g[nx][ny] == '#') {
+                if (nk) continue;
+                nk = 1;
+            }
+            if (dist[nx][ny][nk] == -1) {
+                dist[nx][ny][nk] = dist[cur.x][cur.y][cur.k] + 1;
+                q.push({nx, ny, nk});
+            }
+        }
+    }
+    int a = dist[n][m][0], b = dist[n][m][1];
+    if (a == -1) cout << b << '\n';
+    else if (b == -1) cout << a << '\n';
+    else cout << min(a, b) << '\n';
+    return 0;
+}
+```
+
+**测试设计：** 额外测试：构造最小规模、重复值、边界值各一组，和样例一起运行。
+
+***
+### V02-CEX05 折半统计子集和不超过 S
+
+- 归属卷：第 2 卷
+- 覆盖模块：meet-in-the-middle、二分
+- 考场用途：n 约 40 时替代 2^n 暴力。
+- 参考题型来源：参考来源：洛谷折半搜索题型。
+
+**题目描述：** 统计子集和不超过 `S` 的方案数。
+
+**输入格式：** 第一行 `n S`，第二行数组，`n<=40`。
+
+**输出格式：** 输出方案数。
+
+**样例输入：**
+```text
+4 5
+1 2 3 4
+```
+
+**样例输出：**
+```text
+9
+```
+
+**完整代码：**
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    int n;
+    long long S;
+    cin >> n >> S;
+    int n1 = n / 2, n2 = n - n1;
+    vector<long long> a(n + 1), left, right;
+    for (int i = 1; i <= n; i++) cin >> a[i];
+    for (int mask = 0; mask < (1 << n1); mask++) {
+        long long s = 0;
+        for (int i = 0; i < n1; i++) if (mask & (1 << i)) s += a[i + 1];
+        left.push_back(s);
+    }
+    for (int mask = 0; mask < (1 << n2); mask++) {
+        long long s = 0;
+        for (int i = 0; i < n2; i++) if (mask & (1 << i)) s += a[n1 + i + 1];
+        right.push_back(s);
+    }
+    sort(right.begin(), right.end());
+    long long ans = 0;
+    for (long long x : left) ans += upper_bound(right.begin(), right.end(), S - x) - right.begin();
+    cout << ans << '\n';
+    return 0;
+}
+```
+
+**测试设计：** 额外测试：构造最小规模、重复值、边界值各一组，和样例一起运行。
+
+***
+
+<!-- V02_EXAMPLES_END -->

@@ -13,6 +13,7 @@ BUILD_STEPS = [
     "build_volume_3A_greedy_dp.py",
     "build_volume_4_data_structures.py",
     "build_volume_5_graph_tree.py",
+    "integrate_v02_examples.py",
     "build_core_markdown.py",
     "build_combined_markdown.py",
     "build_printable_full.py",

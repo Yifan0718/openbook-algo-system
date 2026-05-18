@@ -596,3 +596,1016 @@ TLE：
 升级版本：预处理 `fac/ifac`，每问 `O(1)`。
 
 最小验错：`k=0`；`k=n`；`k>n`；`n` 等于预处理上界。
+
+<!-- V02_EXAMPLES_START -->
+
+# v0.2 本卷例题训练区
+
+这一节是 0.2 新增的实战例题。每题都配完整可运行代码和样例；考试时优先看“覆盖模块”和“考场用途”，再复制对应代码骨架。
+
+### V07-EX01 多组图连通块清空
+
+- 归属卷：第 7 卷
+- 覆盖模块：TRAIN-00、TRAIN-01、GRAPH-01
+- 考场用途：训练多组数据时每组重新建图、清空 `visited` 和邻接表。
+
+**题目描述：** 给定 `T` 组无向图，分别输出每组图的连通块个数。
+
+**输入格式：** 第一行一个整数 `T`。每组第一行两个整数 `n m`，接下来 `m` 行每行一条无向边 `u v`。
+
+**输出格式：** 每组输出一行连通块个数。
+
+**样例输入：**
+```text
+2
+4 2
+1 2
+3 4
+3 0
+```
+
+**样例输出：**
+```text
+2
+3
+```
+
+**完整代码：**
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int T;
+    cin >> T;
+    while (T--) {
+        int n, m;
+        cin >> n >> m;
+        vector<vector<int>> graph(n + 1);
+        for (int i = 1; i <= m; i++) {
+            int u, v;
+            cin >> u >> v;
+            graph[u].push_back(v);
+            graph[v].push_back(u);
+        }
+        vector<int> visited(n + 1, 0);
+        int components = 0;
+        for (int start = 1; start <= n; start++) {
+            if (visited[start]) continue;
+            components++;
+            queue<int> q;
+            q.push(start);
+            visited[start] = 1;
+            while (!q.empty()) {
+                int u = q.front();
+                q.pop();
+                for (int v : graph[u]) {
+                    if (!visited[v]) {
+                        visited[v] = 1;
+                        q.push(v);
+                    }
+                }
+            }
+        }
+        cout << components << '\n';
+    }
+    return 0;
+}
+```
+
+**测试设计：**
+
+- 测试 1 输入：
+```text
+1
+1 0
+```
+期望输出：
+```text
+1
+```
+- 测试 2 输入：
+```text
+2
+3 2
+1 2
+2 3
+2 0
+```
+期望输出：
+```text
+1
+2
+```
+### V07-EX02 前缀和暴力核验
+
+- 归属卷：第 7 卷
+- 覆盖模块：TRAIN-00、TRAIN-02、DS-01
+- 考场用途：训练优化版写完后保留暴力版，对每个查询做小规模核验。
+
+**题目描述：** 给定数组和若干区间和询问。程序同时用前缀和与暴力循环计算答案；若发现不一致，输出 `CHECK_FAILED` 并结束，否则输出每次询问答案。
+
+**输入格式：** 第一行两个整数 `n q`。第二行 `n` 个整数。接下来 `q` 行，每行两个整数 `l r`。
+
+**输出格式：** 若核验通过，每个询问输出一行答案；否则输出 `CHECK_FAILED`。
+
+**样例输入：**
+```text
+4 3
+2 -1 5 3
+1 4
+2 3
+4 4
+```
+
+**样例输出：**
+```text
+9
+4
+3
+```
+
+**完整代码：**
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+using ll = long long;
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int n, q;
+    cin >> n >> q;
+    vector<ll> a(n + 1), prefix(n + 1, 0);
+    for (int i = 1; i <= n; i++) {
+        cin >> a[i];
+        prefix[i] = prefix[i - 1] + a[i];
+    }
+    while (q--) {
+        int l, r;
+        cin >> l >> r;
+        ll fast = prefix[r] - prefix[l - 1];
+        ll slow = 0;
+        for (int i = l; i <= r; i++) slow += a[i];
+        if (fast != slow) {
+            cout << "CHECK_FAILED\n";
+            return 0;
+        }
+        cout << fast << '\n';
+    }
+    return 0;
+}
+```
+
+**测试设计：**
+
+- 测试 1 输入：
+```text
+1 1
+-8
+1 1
+```
+期望输出：
+```text
+-8
+```
+- 测试 2 输入：
+```text
+3 2
+10 20 30
+1 1
+1 3
+```
+期望输出：
+```text
+10
+60
+```
+### V07-EX03 背包循环顺序反例
+
+- 归属卷：第 7 卷
+- 覆盖模块：TRAIN-01、DP-06、BRUTE-15
+- 考场用途：训练用最小反例识别 0/1 背包容量正序导致重复选择的问题。
+
+**题目描述：** 给定 0/1 背包数据。程序输出正确答案，并判断“错误的容量正序写法”是否会得到不同结果。若不同，第二行输出 `LOOP_RISK`，否则输出 `SAME`。
+
+**输入格式：** 第一行两个整数 `n W`。接下来 `n` 行，每行 `w v`。
+
+**输出格式：** 第一行输出 0/1 背包正确最大价值。第二行输出 `LOOP_RISK` 或 `SAME`。
+
+**样例输入：**
+```text
+1 2
+1 1
+```
+
+**样例输出：**
+```text
+1
+LOOP_RISK
+```
+
+**完整代码：**
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+using ll = long long;
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int n, W;
+    cin >> n >> W;
+    vector<int> w(n + 1);
+    vector<ll> v(n + 1);
+    for (int i = 1; i <= n; i++) cin >> w[i] >> v[i];
+
+    vector<ll> correct(W + 1, 0), forward_wrong(W + 1, 0);
+    for (int i = 1; i <= n; i++) {
+        for (int cap = W; cap >= w[i]; cap--) {
+            correct[cap] = max(correct[cap], correct[cap - w[i]] + v[i]);
+        }
+        for (int cap = w[i]; cap <= W; cap++) {
+            forward_wrong[cap] = max(forward_wrong[cap], forward_wrong[cap - w[i]] + v[i]);
+        }
+    }
+
+    cout << correct[W] << '\n';
+    cout << (correct[W] == forward_wrong[W] ? "SAME" : "LOOP_RISK") << '\n';
+    return 0;
+}
+```
+
+**测试设计：**
+
+- 测试 1 输入：
+```text
+2 3
+2 5
+3 7
+```
+期望输出：
+```text
+7
+SAME
+```
+- 测试 2 输入：
+```text
+1 3
+1 2
+```
+期望输出：
+```text
+2
+LOOP_RISK
+```
+### V07-EX04 最短路双算法核验
+
+- 归属卷：第 7 卷
+- 覆盖模块：TRAIN-00、GRAPH-03、GRAPH-04
+- 考场用途：训练用慢速 Bellman-Ford 核验 Dijkstra，抓旧堆状态、重边和不可达输出问题。
+
+**题目描述：** 给定无向非负权图和起点 `s`。程序分别用 Dijkstra 和 Bellman-Ford 求最短路；若结果不一致，输出 `CHECK_FAILED`，否则输出从 `s` 到每个点的最短距离，不可达输出 `-1`。
+
+**输入格式：** 第一行三个整数 `n m s`。接下来 `m` 行，每行 `u v w`。
+
+**输出格式：** 输出一行 `n` 个整数，表示到 `1..n` 的距离。
+
+**样例输入：**
+```text
+4 4 1
+1 2 10
+1 2 3
+2 3 4
+4 4 0
+```
+
+**样例输出：**
+```text
+0 3 7 -1
+```
+
+**完整代码：**
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+using ll = long long;
+const ll INF = 4'000'000'000'000'000'000LL;
+
+struct Edge {
+    int u;
+    int v;
+    ll w;
+};
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int n, m, s;
+    cin >> n >> m >> s;
+    vector<vector<pair<int, ll>>> graph(n + 1);
+    vector<Edge> edges;
+    for (int i = 1; i <= m; i++) {
+        int u, v;
+        ll w;
+        cin >> u >> v >> w;
+        graph[u].push_back({v, w});
+        graph[v].push_back({u, w});
+        edges.push_back({u, v, w});
+        edges.push_back({v, u, w});
+    }
+
+    vector<ll> dijkstra(n + 1, INF);
+    priority_queue<pair<ll, int>, vector<pair<ll, int>>, greater<pair<ll, int>>> pq;
+    dijkstra[s] = 0;
+    pq.push({0, s});
+    while (!pq.empty()) {
+        auto [du, u] = pq.top();
+        pq.pop();
+        if (du != dijkstra[u]) continue;
+        for (auto [v, w] : graph[u]) {
+            if (dijkstra[v] > du + w) {
+                dijkstra[v] = du + w;
+                pq.push({dijkstra[v], v});
+            }
+        }
+    }
+
+    vector<ll> bellman(n + 1, INF);
+    bellman[s] = 0;
+    for (int round = 1; round <= n - 1; round++) {
+        bool changed = false;
+        for (const Edge &e : edges) {
+            if (bellman[e.u] == INF) continue;
+            if (bellman[e.v] > bellman[e.u] + e.w) {
+                bellman[e.v] = bellman[e.u] + e.w;
+                changed = true;
+            }
+        }
+        if (!changed) break;
+    }
+
+    for (int i = 1; i <= n; i++) {
+        if (dijkstra[i] != bellman[i]) {
+            cout << "CHECK_FAILED\n";
+            return 0;
+        }
+    }
+    for (int i = 1; i <= n; i++) {
+        if (i > 1) cout << ' ';
+        cout << (dijkstra[i] == INF ? -1 : dijkstra[i]);
+    }
+    cout << '\n';
+    return 0;
+}
+```
+
+**测试设计：**
+
+- 测试 1 输入：
+```text
+3 1 1
+1 2 5
+```
+期望输出：
+```text
+0 5 -1
+```
+- 测试 2 输入：
+```text
+3 3 1
+1 2 0
+2 3 2
+1 3 5
+```
+期望输出：
+```text
+0 0 2
+```
+### V07-EX05 KMP 与暴力重叠核验
+
+- 归属卷：第 7 卷
+- 覆盖模块：TRAIN-00、STR-02、CPP-011
+- 考场用途：训练字符串算法用暴力版核验，重点覆盖重叠匹配。
+
+**题目描述：** 给定文本串 `s` 和模式串 `p`。程序用 KMP 和暴力匹配分别统计出现次数；若不一致，输出 `CHECK_FAILED`，否则输出出现次数。
+
+**输入格式：** 第一行字符串 `s`。第二行字符串 `p`。
+
+**输出格式：** 输出核验后的出现次数，或 `CHECK_FAILED`。
+
+**样例输入：**
+```text
+aaaaa
+aa
+```
+
+**样例输出：**
+```text
+4
+```
+
+**完整代码：**
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    string s_raw, p_raw;
+    cin >> s_raw >> p_raw;
+    string s = " " + s_raw;
+    string p = " " + p_raw;
+    int n = (int)s_raw.size();
+    int m = (int)p_raw.size();
+
+    vector<int> pi(m + 1, 0);
+    for (int i = 2; i <= m; i++) {
+        int j = pi[i - 1];
+        while (j > 0 && p[i] != p[j + 1]) j = pi[j];
+        if (p[i] == p[j + 1]) j++;
+        pi[i] = j;
+    }
+
+    int kmp_count = 0;
+    int j = 0;
+    for (int i = 1; i <= n; i++) {
+        while (j > 0 && s[i] != p[j + 1]) j = pi[j];
+        if (s[i] == p[j + 1]) j++;
+        if (j == m) {
+            kmp_count++;
+            j = pi[j];
+        }
+    }
+
+    int brute_count = 0;
+    for (int i = 1; i + m - 1 <= n; i++) {
+        bool ok = true;
+        for (int t = 1; t <= m; t++) {
+            if (s[i + t - 1] != p[t]) ok = false;
+        }
+        if (ok) brute_count++;
+    }
+
+    if (kmp_count != brute_count) {
+        cout << "CHECK_FAILED\n";
+    } else {
+        cout << kmp_count << '\n';
+    }
+    return 0;
+}
+```
+
+**测试设计：**
+
+- 测试 1 输入：
+```text
+abababa
+aba
+```
+期望输出：
+```text
+3
+```
+- 测试 2 输入：
+```text
+abcde
+f
+```
+期望输出：
+```text
+0
+```
+### V07-EX06 空栈保护括号匹配
+
+- 归属卷：第 7 卷
+- 覆盖模块：TRAIN-00、CPP-004、CPP-009
+- 考场用途：训练访问 `top` 前先判空，避免空容器运行错误。
+
+**题目描述：** 给定 `T` 个只含括号字符的字符串，判断每个字符串是否合法。括号包含 `()[]{} ` 三种，必须正确嵌套。
+
+**输入格式：** 第一行一个整数 `T`。接下来 `T` 行，每行一个字符串。
+
+**输出格式：** 每个字符串输出 `YES` 或 `NO`。
+
+**样例输入：**
+```text
+3
+([])
+([)]
+)(
+```
+
+**样例输出：**
+```text
+YES
+NO
+NO
+```
+
+**完整代码：**
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+bool match(char left, char right) {
+    return (left == '(' && right == ')') ||
+           (left == '[' && right == ']') ||
+           (left == '{' && right == '}');
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int T;
+    cin >> T;
+    while (T--) {
+        string s;
+        cin >> s;
+        stack<char> st;
+        bool ok = true;
+        for (char c : s) {
+            if (c == '(' || c == '[' || c == '{') {
+                st.push(c);
+            } else {
+                if (st.empty() || !match(st.top(), c)) {
+                    ok = false;
+                    break;
+                }
+                st.pop();
+            }
+        }
+        if (!st.empty()) ok = false;
+        cout << (ok ? "YES" : "NO") << '\n';
+    }
+    return 0;
+}
+```
+
+**测试设计：**
+
+- 测试 1 输入：
+```text
+2
+()
+(
+```
+期望输出：
+```text
+YES
+NO
+```
+- 测试 2 输入：
+```text
+2
+]
+{[]}
+```
+期望输出：
+```text
+NO
+YES
+```
+### V07-EX07 乘法溢出上限判断
+
+- 归属卷：第 7 卷
+- 覆盖模块：TRAIN-00、CPP-008、MATH-02
+- 考场用途：训练大数乘法比较时使用 `__int128`，避免 `long long` 中间乘法溢出。
+
+**题目描述：** 给定 `q` 个询问，每个询问包含非负整数 `a b limit`。判断 `a*b` 是否不超过 `limit`。
+
+**输入格式：** 第一行一个整数 `q`。接下来 `q` 行，每行三个整数 `a b limit`。
+
+**输出格式：** 每个询问输出 `YES` 或 `NO`。
+
+**样例输入：**
+```text
+3
+3 4 12
+3 5 14
+1000000000000 1000000000000 1000000000000000000
+```
+
+**样例输出：**
+```text
+YES
+NO
+NO
+```
+
+**完整代码：**
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+using ll = long long;
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int q;
+    cin >> q;
+    while (q--) {
+        ll a, b, limit;
+        cin >> a >> b >> limit;
+        __int128 product = (__int128)a * b;
+        cout << (product <= limit ? "YES" : "NO") << '\n';
+    }
+    return 0;
+}
+```
+
+**测试设计：**
+
+- 测试 1 输入：
+```text
+2
+0 999999999999999999 0
+1 999999999999999999 999999999999999999
+```
+期望输出：
+```text
+YES
+YES
+```
+- 测试 2 输入：
+```text
+1
+3037000500 3037000500 9223372036854775807
+```
+期望输出：
+```text
+NO
+```
+### V07-EX08 二分答案边界核验
+
+- 归属卷：第 7 卷
+- 覆盖模块：TRAIN-02、ROUTE-00、GREEDY-02
+- 考场用途：训练二分答案的左右边界、`check` 单调性和 `k=1`、`k=n` 反例。
+
+**题目描述：** 给定 `n` 个正整数任务量，按原顺序分成不超过 `k` 个连续段。最小化所有段和的最大值。
+
+**输入格式：** 第一行两个整数 `n k`。第二行 `n` 个正整数。
+
+**输出格式：** 输出最小可能的最大段和。
+
+**样例输入：**
+```text
+5 2
+7 2 5 10 8
+```
+
+**样例输出：**
+```text
+18
+```
+
+**完整代码：**
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+using ll = long long;
+
+bool can_split(const vector<ll> &a, int n, int k, ll limit) {
+    int groups = 1;
+    ll current = 0;
+    for (int i = 1; i <= n; i++) {
+        if (a[i] > limit) return false;
+        if (current + a[i] <= limit) {
+            current += a[i];
+        } else {
+            groups++;
+            current = a[i];
+        }
+    }
+    return groups <= k;
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int n, k;
+    cin >> n >> k;
+    vector<ll> a(n + 1);
+    ll left = 0, right = 0;
+    for (int i = 1; i <= n; i++) {
+        cin >> a[i];
+        left = max(left, a[i]);
+        right += a[i];
+    }
+    while (left < right) {
+        ll mid = left + (right - left) / 2;
+        if (can_split(a, n, k, mid)) right = mid;
+        else left = mid + 1;
+    }
+    cout << left << '\n';
+    return 0;
+}
+```
+
+**测试设计：**
+
+- 测试 1 输入：
+```text
+3 1
+1 2 3
+```
+期望输出：
+```text
+6
+```
+- 测试 2 输入：
+```text
+3 3
+1 2 3
+```
+期望输出：
+```text
+3
+```
+### V07-EX09 RMQ 暴力对拍
+
+- 归属卷：第 7 卷
+- 覆盖模块：TRAIN-00、DS-03、TRAIN-01
+- 考场用途：训练静态区间最小值用 Sparse Table，并用暴力循环核验边界。
+
+**题目描述：** 给定数组和若干区间最小值询问。程序用 Sparse Table 和暴力分别计算；若不一致输出 `CHECK_FAILED`，否则输出每个询问的最小值。
+
+**输入格式：** 第一行两个整数 `n q`。第二行 `n` 个整数。接下来 `q` 行，每行 `l r`。
+
+**输出格式：** 每个询问输出一行最小值，或输出 `CHECK_FAILED`。
+
+**样例输入：**
+```text
+5 3
+4 2 7 1 3
+1 5
+2 3
+4 4
+```
+
+**样例输出：**
+```text
+1
+2
+1
+```
+
+**完整代码：**
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int n, q;
+    cin >> n >> q;
+    vector<int> a(n + 1);
+    for (int i = 1; i <= n; i++) cin >> a[i];
+
+    vector<int> lg(n + 1, 0);
+    for (int i = 2; i <= n; i++) lg[i] = lg[i / 2] + 1;
+    int K = lg[n] + 1;
+    vector<vector<int>> st(K, vector<int>(n + 1));
+    for (int i = 1; i <= n; i++) st[0][i] = a[i];
+    for (int k = 1; k < K; k++) {
+        for (int i = 1; i + (1 << k) - 1 <= n; i++) {
+            st[k][i] = min(st[k - 1][i], st[k - 1][i + (1 << (k - 1))]);
+        }
+    }
+
+    while (q--) {
+        int l, r;
+        cin >> l >> r;
+        int len = r - l + 1;
+        int k = lg[len];
+        int fast = min(st[k][l], st[k][r - (1 << k) + 1]);
+        int slow = a[l];
+        for (int i = l; i <= r; i++) slow = min(slow, a[i]);
+        if (fast != slow) {
+            cout << "CHECK_FAILED\n";
+            return 0;
+        }
+        cout << fast << '\n';
+    }
+    return 0;
+}
+```
+
+**测试设计：**
+
+- 测试 1 输入：
+```text
+1 1
+-5
+1 1
+```
+期望输出：
+```text
+-5
+```
+- 测试 2 输入：
+```text
+4 2
+8 8 8 8
+1 4
+2 2
+```
+期望输出：
+```text
+8
+8
+```
+### V07-CEX01 快慢算法核验逆序对
+
+- 归属卷：第 7 卷
+- 覆盖模块：对拍、暴力核验
+- 考场用途：写完高级算法先用慢算法对照小数据。
+- 参考题型来源：参考来源：竞赛对拍常规做法。
+
+**题目描述：** 同时用 O(n^2) 和树状数组算逆序对，输出是否一致。
+
+**输入格式：** 第一行 n，第二行数组。
+
+**输出格式：** 输出 OK/BAD 和答案。
+
+**样例输入：**
+```text
+5
+3 1 2 5 4
+```
+
+**样例输出：**
+```text
+OK 3
+```
+
+**完整代码：**
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+
+long long slow(vector<int>a){long long ans=0;for(int i=0;i<(int)a.size();i++)for(int j=i+1;j<(int)a.size();j++)if(a[i]>a[j])ans++;return ans;}
+long long fast(vector<int>a){int n=a.size();vector<int>xs=a;sort(xs.begin(),xs.end());xs.erase(unique(xs.begin(),xs.end()),xs.end());vector<int>bit(xs.size()+2);auto add=[&](int x){for(;x<(int)bit.size();x+=x&-x)bit[x]++;};auto sum=[&](int x){int r=0;for(;x>0;x-=x&-x)r+=bit[x];return r;};long long ans=0;for(int i=n-1;i>=0;i--){int id=lower_bound(xs.begin(),xs.end(),a[i])-xs.begin()+1;ans+=sum(id-1);add(id);}return ans;}
+int main(){ios::sync_with_stdio(false);cin.tie(nullptr);int n;cin>>n;vector<int>a(n);for(int&i:a)cin>>i;cout<<(slow(a)==fast(a)?"OK":"BAD")<<" "<<fast(a)<<"\n";return 0;}
+```
+
+**测试设计：** 额外测试：构造最小规模、重复值、边界值各一组，和样例一起运行。
+
+***
+### V07-CEX02 输入范围守卫
+
+- 归属卷：第 7 卷
+- 覆盖模块：边界检查、调试
+- 考场用途：本地调试时先检查数据是否满足题面。
+- 参考题型来源：参考来源：调试训练经验。
+
+**题目描述：** 检查数组元素是否都在 [-1e9,1e9]。
+
+**输入格式：** 第一行 n，第二行数组。
+
+**输出格式：** 输出检查结果。
+
+**样例输入：**
+```text
+3
+1 -2 1000000001
+```
+
+**样例输出：**
+```text
+INPUT_OUT_OF_RANGE
+```
+
+**完整代码：**
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+
+int main(){ios::sync_with_stdio(false);cin.tie(nullptr);int n;cin>>n;vector<long long>a(n+1);for(int i=1;i<=n;i++)cin>>a[i];bool ok=true;for(int i=1;i<=n;i++){if(a[i]<-1000000000LL||a[i]>1000000000LL)ok=false;}cout<<(ok?"INPUT_OK":"INPUT_OUT_OF_RANGE")<<"\n";return 0;}
+```
+
+**测试设计：** 额外测试：构造最小规模、重复值、边界值各一组，和样例一起运行。
+
+***
+### V07-CEX03 二分边界可视化
+
+- 归属卷：第 7 卷
+- 覆盖模块：二分答案、边界
+- 考场用途：用最小满足模型避免死循环。
+- 参考题型来源：参考来源：二分答案常见错误清单。
+
+**题目描述：** 求最小 x，使 x^2 >= target，范围 1..100。
+
+**输入格式：** 输入 target。
+
+**输出格式：** 输出 x。
+
+**样例输入：**
+```text
+50
+```
+
+**样例输出：**
+```text
+8
+```
+
+**完整代码：**
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+
+int main(){ios::sync_with_stdio(false);cin.tie(nullptr);long long l=1,r=100,ans=-1,target;cin>>target;while(l<=r){long long mid=(l+r)/2;if(mid*mid>=target){ans=mid;r=mid-1;}else l=mid+1;}cout<<ans<<"\n";return 0;}
+```
+
+**测试设计：** 额外测试：构造最小规模、重复值、边界值各一组，和样例一起运行。
+
+***
+### V07-CEX04 乘法溢出探针
+
+- 归属卷：第 7 卷
+- 覆盖模块：__int128、防溢出
+- 考场用途：判断乘积时不要先溢出。
+- 参考题型来源：参考来源：数值边界调试经验。
+
+**题目描述：** 判断 a*b 是否超过 limit。
+
+**输入格式：** 输入 a b limit。
+
+**输出格式：** 输出 OK 或 OVER。
+
+**样例输入：**
+```text
+1000000000000 1000000000000 1000000000000000000
+```
+
+**样例输出：**
+```text
+OVER
+```
+
+**完整代码：**
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+
+int main(){ios::sync_with_stdio(false);cin.tie(nullptr);long long a,b,limit;cin>>a>>b>>limit;__int128 prod=(__int128)a*b;cout<<(prod>limit?"OVER":"OK")<<"\n";return 0;}
+```
+
+**测试设计：** 额外测试：构造最小规模、重复值、边界值各一组，和样例一起运行。
+
+***
+### V07-CEX05 空容器访问保护
+
+- 归属卷：第 7 卷
+- 覆盖模块：stack、RE 防御
+- 考场用途：top/pop 前先判空。
+- 参考题型来源：参考来源：括号匹配调试题型。
+
+**题目描述：** 判断只含括号的字符串是否合法。
+
+**输入格式：** 输入字符串。
+
+**输出格式：** 输出 YES/NO。
+
+**样例输入：**
+```text
+([]())
+```
+
+**样例输出：**
+```text
+YES
+```
+
+**完整代码：**
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+
+int main(){ios::sync_with_stdio(false);cin.tie(nullptr);string s;cin>>s;vector<char>st;for(char c:s){if(c=='('||c=='[')st.push_back(c);else{if(st.empty()){cout<<"NO\n";return 0;}char t=st.back();st.pop_back();if((c==')'&&t!='(')||(c==']'&&t!='[')){cout<<"NO\n";return 0;}}}cout<<(st.empty()?"YES":"NO")<<"\n";return 0;}
+```
+
+**测试设计：** 额外测试：构造最小规模、重复值、边界值各一组，和样例一起运行。
+
+***
+
+<!-- V02_EXAMPLES_END -->

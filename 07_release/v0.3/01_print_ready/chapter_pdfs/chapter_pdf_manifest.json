@@ -126,86 +126,86 @@
     {
       "file": "00_which_book_index.pdf",
       "pages": 1,
-      "sha256": "7ceede366bd4752ab4a06b7f2abc93fe6625079cb4361f8517c1b215ca24abef",
-      "bytes": 222827
+      "sha256": "25f7286b66e80bf40520009a726e136289f7a71ac497af2372b85ce309fb6f7f",
+      "bytes": 222829
     },
     {
       "file": "00_route.pdf",
-      "pages": 26,
-      "sha256": "f87e6d6849efe5044b088d3db269153ff40ed979e3429b12ea54e1413ce58a09",
-      "bytes": 509675
+      "pages": 44,
+      "sha256": "4bf1f3aca62e73a4949c5ea3d027929cf66edebfbef59746dc1c6b0ee8ea53d6",
+      "bytes": 589551
     },
     {
       "file": "01_cpp_stl_io.pdf",
-      "pages": 54,
-      "sha256": "774e8bf3f944b3df2c1f98266dbfd5d67aad6527cb4f39c81c7f7294adaf99ef",
-      "bytes": 635766
+      "pages": 70,
+      "sha256": "778270d95f9739502ab7a7d1e36f4f8617d3e3556234012438b3b61289b261ff",
+      "bytes": 703503
     },
     {
       "file": "02_brute_memo.pdf",
-      "pages": 41,
-      "sha256": "461991ceffb95111f1397e7b7ce7ed3861c83e2cda180e465dd8f62d1616a8b9",
-      "bytes": 497170
+      "pages": 58,
+      "sha256": "bdadeb36231490b46ad60609b10849556d9eb4227e5a8728138490e20833f022",
+      "bytes": 584870
     },
     {
       "file": "03_dp.pdf",
-      "pages": 116,
-      "sha256": "9bbf497c4ca1ecca123b7dc60757a36615bc40f0c68d74252b5b04c5a1e12fe7",
-      "bytes": 924868
+      "pages": 138,
+      "sha256": "88c8f95b9bbfbe8d9723b66de3be8fcb1e946e4846e0cdbe0455dfb12c1f8776",
+      "bytes": 1008948
     },
     {
       "file": "03A_greedy_dp.pdf",
-      "pages": 13,
-      "sha256": "38364509e7626d1c9cf0314cf87b5d98562bce2c1571a618d85011320a57d2a7",
-      "bytes": 354577
+      "pages": 28,
+      "sha256": "c8abf038ee7ccfd76000290cb850baf4749bf7f51ec30a575b48c84d2aeba7eb",
+      "bytes": 437872
     },
     {
       "file": "04_ds.pdf",
-      "pages": 29,
-      "sha256": "9b0baf3601755539f73ab46cd9dc66a5be241f106d30ed94285ebb247da6e543",
-      "bytes": 434621
+      "pages": 48,
+      "sha256": "a560b44ad341106b94788d53872282b2427ca7f8c98893a3656a585587ea4d63",
+      "bytes": 530657
     },
     {
       "file": "05_graph_tree.pdf",
-      "pages": 62,
-      "sha256": "2aba6358c254af1f24eb316c53bc363493a5e59d5dfb28a94ea56ae65cd51eea",
-      "bytes": 600117
+      "pages": 83,
+      "sha256": "15a7690eb6ac1312c6702194b5aad1a49f1202172fa9eeb2bc8960103ce771c0",
+      "bytes": 693854
     },
     {
       "file": "06_math_string.pdf",
-      "pages": 94,
-      "sha256": "f6cf77d6c1ce713beab49543796dfcac43fa395c3481af7cbc7478015ade758a",
-      "bytes": 741734
+      "pages": 111,
+      "sha256": "fb45588fd3ab1d0e6c2ca27368eec56ed7c725a4d7a61f378f6b05b91a08cbca",
+      "bytes": 818465
     },
     {
       "file": "07_debug.pdf",
-      "pages": 10,
-      "sha256": "22bf2d20503158a13d9e29e9b4e952116fc2973edbde9891d7ae613ac4194f4d",
-      "bytes": 368279
+      "pages": 24,
+      "sha256": "560a7280a1a6816e510ef726770d32a11217f05b6b961cb940c7b01af23fd83e",
+      "bytes": 458225
     },
     {
       "file": "08_math_ref.pdf",
-      "pages": 33,
-      "sha256": "33120d06c42713391134b0ee0ce2ec118d90750ab443e09072323754aa273faa",
-      "bytes": 473459
+      "pages": 48,
+      "sha256": "bf72856b5967496fa433f58ce0ad1c3a30f03f442aaff3d1d19ae53b1e88e24b",
+      "bytes": 549175
     },
     {
       "file": "09_python.pdf",
-      "pages": 24,
-      "sha256": "4721f8dd25333c0f2cbe375096fabd1c55ed1543d02b2e45b3f194b78a20ef18",
-      "bytes": 467053
+      "pages": 37,
+      "sha256": "441f60a09b8a707c920a59177adce8408b9f3ca19c41aba018d870a30ee1c685",
+      "bytes": 532232
     },
     {
       "file": "10_ai.pdf",
-      "pages": 43,
-      "sha256": "0eb2207acaa7b703e4586b95f7a10999cd99562c5cff0fc67dfbd4b3ecb6eb65",
-      "bytes": 557347
+      "pages": 61,
+      "sha256": "74c245b0a724ddf12cf23415ff951cd05b7907f6ab8b6a5effe8333109979503",
+      "bytes": 643160
     },
     {
       "file": "11_signoff_encyclopedia.pdf",
       "pages": 58,
-      "sha256": "2ea4aa9d20e6f4925fc71812b5363088eadafff9cad14a8a47cc9f66efe7e44d",
-      "bytes": 749688
+      "sha256": "b88aaa7092e21f8337bccf8f9762657c7c1c14c382d7896d2e743279d1015c39",
+      "bytes": 749682
     }
   ]
 }

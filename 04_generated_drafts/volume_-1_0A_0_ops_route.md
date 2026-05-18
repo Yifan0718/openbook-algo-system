@@ -1773,3 +1773,1283 @@ cout << l << "\n";
 升级版本：二分答案，复杂度 `O(check * logV)`。
 
 最小验错：边界是否包含答案；`mid` 是否溢出；check 单调方向；输出 `l` 还是 `r`。
+
+<!-- V02_EXAMPLES_START -->
+
+# v0.2 本卷例题训练区
+
+这一节是 0.2 新增的实战例题。每题都配完整可运行代码和样例；考试时优先看“覆盖模块”和“考场用途”，再复制对应代码骨架。
+
+### V00-EX01 静态区间和路由
+
+- 归属卷：第 0 卷
+- 覆盖模块：ROUTE-00、DS-01、OPS-00
+- 考场用途：训练看到“数组不修改，多次问区间和”时立即路由到前缀和。
+
+**题目描述：** 给定长度为 `n` 的整数数组，回答 `q` 次闭区间 `[l,r]` 的元素和。数组不会修改。
+
+**输入格式：** 第一行两个整数 `n q`。第二行 `n` 个整数。接下来 `q` 行，每行两个整数 `l r`。
+
+**输出格式：** 每次询问输出一行区间和。
+
+**样例输入：**
+```text
+5 3
+1 -2 3 4 5
+1 3
+2 5
+4 4
+```
+
+**样例输出：**
+```text
+2
+10
+4
+```
+
+**完整代码：**
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+using ll = long long;
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int n, q;
+    cin >> n >> q;
+    vector<ll> prefix(n + 1, 0);
+    for (int i = 1; i <= n; i++) {
+        ll x;
+        cin >> x;
+        prefix[i] = prefix[i - 1] + x;
+    }
+    while (q--) {
+        int l, r;
+        cin >> l >> r;
+        cout << prefix[r] - prefix[l - 1] << '\n';
+    }
+    return 0;
+}
+```
+
+**测试设计：**
+
+- 测试 1 输入：
+```text
+1 2
+7
+1 1
+1 1
+```
+期望输出：
+```text
+7
+7
+```
+- 测试 2 输入：
+```text
+3 1
+-5 -6 -7
+1 3
+```
+期望输出：
+```text
+-18
+```
+### V00-EX02 离线区间加最终数组
+
+- 归属卷：第 0 卷
+- 覆盖模块：ROUTE-00、DS-01、OPS-00
+- 考场用途：训练“区间加但只在最后输出”路由到差分数组。
+
+**题目描述：** 给定数组，执行 `q` 次操作：把闭区间 `[l,r]` 内所有数加上 `x`。所有操作结束后输出最终数组。
+
+**输入格式：** 第一行两个整数 `n q`。第二行 `n` 个整数。接下来 `q` 行，每行 `l r x`。
+
+**输出格式：** 输出一行 `n` 个整数，表示最终数组。
+
+**样例输入：**
+```text
+5 3
+1 2 3 4 5
+1 3 2
+2 5 -1
+5 5 10
+```
+
+**样例输出：**
+```text
+3 3 4 3 14
+```
+
+**完整代码：**
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+using ll = long long;
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int n, q;
+    cin >> n >> q;
+    vector<ll> a(n + 1), diff(n + 2, 0);
+    for (int i = 1; i <= n; i++) cin >> a[i];
+    while (q--) {
+        int l, r;
+        ll x;
+        cin >> l >> r >> x;
+        diff[l] += x;
+        diff[r + 1] -= x;
+    }
+    ll add = 0;
+    for (int i = 1; i <= n; i++) {
+        add += diff[i];
+        if (i > 1) cout << ' ';
+        cout << a[i] + add;
+    }
+    cout << '\n';
+    return 0;
+}
+```
+
+**测试设计：**
+
+- 测试 1 输入：
+```text
+4 1
+0 0 0 0
+1 4 5
+```
+期望输出：
+```text
+5 5 5 5
+```
+- 测试 2 输入：
+```text
+3 2
+1 1 1
+1 2 -3
+2 3 4
+```
+期望输出：
+```text
+-2 2 5
+```
+### V00-EX03 单点赋值与区间和
+
+- 归属卷：第 0 卷
+- 覆盖模块：ROUTE-00、DS-02、OPS-00
+- 考场用途：训练“单点赋值加区间和”路由到 树状数组，并把赋值转换成差量。
+
+**题目描述：** 维护一个数组，支持两种操作：`S p x` 表示把 `a[p]` 赋值为 `x`；`Q l r` 表示查询 `[l,r]` 的和。
+
+**输入格式：** 第一行两个整数 `n q`。第二行 `n` 个整数。接下来 `q` 行，每行一个操作。
+
+**输出格式：** 每个 `Q` 操作输出一行答案。
+
+**样例输入：**
+```text
+5 5
+1 2 3 4 5
+Q 1 5
+S 3 10
+Q 2 4
+S 1 -1
+Q 1 3
+```
+
+**样例输出：**
+```text
+15
+16
+11
+```
+
+**完整代码：**
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+using ll = long long;
+
+struct BIT {
+    int n;
+    vector<ll> bit;
+
+    void init(int n_) {
+        n = n_;
+        bit.assign(n + 1, 0);
+    }
+
+    void add(int pos, ll delta) {
+        for (int i = pos; i <= n; i += i & -i) bit[i] += delta;
+    }
+
+    ll prefix(int pos) const {
+        ll res = 0;
+        for (int i = pos; i > 0; i -= i & -i) res += bit[i];
+        return res;
+    }
+
+    ll query(int l, int r) const {
+        return prefix(r) - prefix(l - 1);
+    }
+};
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int n, q;
+    cin >> n >> q;
+    vector<ll> a(n + 1);
+    BIT fw;
+    fw.init(n);
+    for (int i = 1; i <= n; i++) {
+        cin >> a[i];
+        fw.add(i, a[i]);
+    }
+    while (q--) {
+        char op;
+        cin >> op;
+        if (op == 'S') {
+            int p;
+            ll x;
+            cin >> p >> x;
+            fw.add(p, x - a[p]);
+            a[p] = x;
+        } else {
+            int l, r;
+            cin >> l >> r;
+            cout << fw.query(l, r) << '\n';
+        }
+    }
+    return 0;
+}
+```
+
+**测试设计：**
+
+- 测试 1 输入：
+```text
+1 4
+5
+Q 1 1
+S 1 7
+S 1 -2
+Q 1 1
+```
+期望输出：
+```text
+5
+-2
+```
+- 测试 2 输入：
+```text
+3 2
+1 2 3
+Q 1 1
+Q 3 3
+```
+期望输出：
+```text
+1
+3
+```
+### V00-EX04 大坐标频次统计
+
+- 归属卷：第 0 卷
+- 覆盖模块：ROUTE-00、CPP-007、DS-02
+- 考场用途：训练“值域巨大但出现值有限”路由到离散化加 树状数组。
+
+**题目描述：** 依次处理 `q` 个操作：`A x` 表示加入一个值为 `x` 的数，可重复加入；`C l r` 表示询问当前数中有多少个值落在 `[l,r]`。
+
+**输入格式：** 第一行一个整数 `q`。接下来 `q` 行，每行一个操作。
+
+**输出格式：** 每个 `C` 操作输出一行答案。
+
+**样例输入：**
+```text
+6
+A 1000000000
+A -5
+C -10 100
+A 7
+C 7 1000000000
+C 8 9
+```
+
+**样例输出：**
+```text
+1
+2
+0
+```
+
+**完整代码：**
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+using ll = long long;
+
+struct BIT {
+    int n;
+    vector<int> bit;
+
+    void init(int n_) {
+        n = n_;
+        bit.assign(n + 1, 0);
+    }
+
+    void add(int pos, int delta) {
+        for (int i = pos; i <= n; i += i & -i) bit[i] += delta;
+    }
+
+    int prefix(int pos) const {
+        int res = 0;
+        for (int i = pos; i > 0; i -= i & -i) res += bit[i];
+        return res;
+    }
+};
+
+struct Operation {
+    char type;
+    ll x;
+    ll y;
+};
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int q;
+    cin >> q;
+    vector<Operation> ops(q + 1);
+    vector<ll> coords;
+    for (int i = 1; i <= q; i++) {
+        cin >> ops[i].type >> ops[i].x;
+        if (ops[i].type == 'A') {
+            ops[i].y = 0;
+            coords.push_back(ops[i].x);
+        } else {
+            cin >> ops[i].y;
+        }
+    }
+    sort(coords.begin(), coords.end());
+    coords.erase(unique(coords.begin(), coords.end()), coords.end());
+
+    BIT fw;
+    fw.init((int)coords.size());
+    for (int i = 1; i <= q; i++) {
+        if (ops[i].type == 'A') {
+            int id = int(lower_bound(coords.begin(), coords.end(), ops[i].x) - coords.begin()) + 1;
+            fw.add(id, 1);
+        } else {
+            int right = int(upper_bound(coords.begin(), coords.end(), ops[i].y) - coords.begin());
+            int left = int(lower_bound(coords.begin(), coords.end(), ops[i].x) - coords.begin());
+            cout << fw.prefix(right) - fw.prefix(left) << '\n';
+        }
+    }
+    return 0;
+}
+```
+
+**测试设计：**
+
+- 测试 1 输入：
+```text
+4
+A 5
+A 5
+C 5 5
+C 6 7
+```
+期望输出：
+```text
+2
+0
+```
+- 测试 2 输入：
+```text
+3
+A -100
+A 0
+C -200 -1
+```
+期望输出：
+```text
+1
+```
+### V00-EX05 网格最少步数
+
+- 归属卷：第 0 卷
+- 覆盖模块：ROUTE-00、GRAPH-02、OPS-00
+- 考场用途：训练“无权最少步数”路由到 BFS，而不是 DFS。
+
+**题目描述：** 给定 `n` 行 `m` 列网格，`.` 可走，`#` 不可走，`S` 是起点，`T` 是终点。每步可向上下左右走一格，求最少步数。不可达输出 `-1`。
+
+**输入格式：** 第一行两个整数 `n m`。接下来 `n` 行，每行一个长度为 `m` 的字符串。
+
+**输出格式：** 输出最少步数。
+
+**样例输入：**
+```text
+3 4
+S..#
+.#..
+..T.
+```
+
+**样例输出：**
+```text
+4
+```
+
+**完整代码：**
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int n, m;
+    cin >> n >> m;
+    vector<string> grid(n + 1);
+    pair<int, int> start = {-1, -1};
+    pair<int, int> target = {-1, -1};
+    for (int i = 1; i <= n; i++) {
+        string row;
+        cin >> row;
+        grid[i] = " " + row;
+        for (int j = 1; j <= m; j++) {
+            if (grid[i][j] == 'S') start = {i, j};
+            if (grid[i][j] == 'T') target = {i, j};
+        }
+    }
+
+    vector<vector<int>> dist(n + 1, vector<int>(m + 1, -1));
+    queue<pair<int, int>> q;
+    dist[start.first][start.second] = 0;
+    q.push(start);
+    int dx[4] = {1, -1, 0, 0};
+    int dy[4] = {0, 0, 1, -1};
+    while (!q.empty()) {
+        auto [x, y] = q.front();
+        q.pop();
+        for (int d = 0; d < 4; d++) {
+            int nx = x + dx[d];
+            int ny = y + dy[d];
+            if (nx < 1 || nx > n || ny < 1 || ny > m) continue;
+            if (grid[nx][ny] == '#') continue;
+            if (dist[nx][ny] != -1) continue;
+            dist[nx][ny] = dist[x][y] + 1;
+            q.push({nx, ny});
+        }
+    }
+    cout << dist[target.first][target.second] << '\n';
+    return 0;
+}
+```
+
+**测试设计：**
+
+- 测试 1 输入：
+```text
+1 2
+ST
+```
+期望输出：
+```text
+1
+```
+- 测试 2 输入：
+```text
+1 3
+S#T
+```
+期望输出：
+```text
+-1
+```
+### V00-EX06 非负权道路最短路
+
+- 归属卷：第 0 卷
+- 覆盖模块：ROUTE-00、GRAPH-03、CPP-004
+- 考场用途：训练“非负边权最短路”路由到 Dijkstra 和小根堆。
+
+**题目描述：** 给定无向非负权图和起点 `s`，回答若干目标点的最短距离。不可达输出 `-1`。
+
+**输入格式：** 第一行三个整数 `n m s`。接下来 `m` 行为 `u v w`。然后一行整数 `q`。接下来 `q` 行每行一个目标点。
+
+**输出格式：** 每个目标点输出一行距离。
+
+**样例输入：**
+```text
+4 5 1
+1 2 5
+1 3 2
+3 2 1
+2 4 2
+3 4 10
+3
+2
+4
+1
+```
+
+**样例输出：**
+```text
+3
+5
+0
+```
+
+**完整代码：**
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+using ll = long long;
+const ll INF = 4'000'000'000'000'000'000LL;
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int n, m, s;
+    cin >> n >> m >> s;
+    vector<vector<pair<int, ll>>> graph(n + 1);
+    for (int i = 1; i <= m; i++) {
+        int u, v;
+        ll w;
+        cin >> u >> v >> w;
+        graph[u].push_back({v, w});
+        graph[v].push_back({u, w});
+    }
+
+    vector<ll> dist(n + 1, INF);
+    priority_queue<pair<ll, int>, vector<pair<ll, int>>, greater<pair<ll, int>>> pq;
+    dist[s] = 0;
+    pq.push({0, s});
+    while (!pq.empty()) {
+        auto [du, u] = pq.top();
+        pq.pop();
+        if (du != dist[u]) continue;
+        for (auto [v, w] : graph[u]) {
+            if (dist[v] > du + w) {
+                dist[v] = du + w;
+                pq.push({dist[v], v});
+            }
+        }
+    }
+
+    int q;
+    cin >> q;
+    while (q--) {
+        int t;
+        cin >> t;
+        cout << (dist[t] == INF ? -1 : dist[t]) << '\n';
+    }
+    return 0;
+}
+```
+
+**测试设计：**
+
+- 测试 1 输入：
+```text
+3 1 1
+1 2 5
+1
+3
+```
+期望输出：
+```text
+-1
+```
+- 测试 2 输入：
+```text
+2 2 1
+1 2 10
+1 2 3
+1
+2
+```
+期望输出：
+```text
+3
+```
+### V00-EX07 依赖任务排序
+
+- 归属卷：第 0 卷
+- 覆盖模块：ROUTE-00、GRAPH-05、OPS-00
+- 考场用途：训练“先后依赖”路由到拓扑排序，并检查有环。
+
+**题目描述：** 有 `n` 个任务和 `m` 条依赖关系 `u v`，表示任务 `u` 必须在任务 `v` 前完成。输出字典序尽量小的合法顺序；如果不存在，输出 `CYCLE`。
+
+**输入格式：** 第一行两个整数 `n m`。接下来 `m` 行，每行两个整数 `u v`。
+
+**输出格式：** 合法时输出一行任务顺序；否则输出 `CYCLE`。
+
+**样例输入：**
+```text
+4 3
+1 3
+2 3
+3 4
+```
+
+**样例输出：**
+```text
+1 2 3 4
+```
+
+**完整代码：**
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int n, m;
+    cin >> n >> m;
+    vector<vector<int>> graph(n + 1);
+    vector<int> indeg(n + 1, 0);
+    for (int i = 1; i <= m; i++) {
+        int u, v;
+        cin >> u >> v;
+        graph[u].push_back(v);
+        indeg[v]++;
+    }
+
+    priority_queue<int, vector<int>, greater<int>> pq;
+    for (int i = 1; i <= n; i++) {
+        if (indeg[i] == 0) pq.push(i);
+    }
+
+    vector<int> order;
+    while (!pq.empty()) {
+        int u = pq.top();
+        pq.pop();
+        order.push_back(u);
+        for (int v : graph[u]) {
+            indeg[v]--;
+            if (indeg[v] == 0) pq.push(v);
+        }
+    }
+
+    if ((int)order.size() != n) {
+        cout << "CYCLE\n";
+    } else {
+        for (int i = 0; i < n; i++) {
+            if (i) cout << ' ';
+            cout << order[i];
+        }
+        cout << '\n';
+    }
+    return 0;
+}
+```
+
+**测试设计：**
+
+- 测试 1 输入：
+```text
+3 3
+1 2
+2 3
+3 1
+```
+期望输出：
+```text
+CYCLE
+```
+- 测试 2 输入：
+```text
+3 1
+2 3
+```
+期望输出：
+```text
+1 2 3
+```
+### V00-EX08 容量选择路线
+
+- 归属卷：第 0 卷
+- 覆盖模块：ROUTE-00、DP-06、OPS-00
+- 考场用途：训练“每个物品最多选一次”路由到 0/1 背包，容量循环倒序。
+
+**题目描述：** 有 `n` 个物品，每个物品有重量 `w` 和价值 `v`，每个物品最多选一次。背包容量为 `W`，求最大总价值。
+
+**输入格式：** 第一行两个整数 `n W`。接下来 `n` 行，每行两个整数 `w v`。
+
+**输出格式：** 输出最大价值。
+
+**样例输入：**
+```text
+4 7
+3 4
+4 5
+2 3
+3 7
+```
+
+**样例输出：**
+```text
+12
+```
+
+**完整代码：**
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+using ll = long long;
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int n, W;
+    cin >> n >> W;
+    vector<ll> dp(W + 1, 0);
+    for (int i = 1; i <= n; i++) {
+        int w;
+        ll v;
+        cin >> w >> v;
+        for (int cap = W; cap >= w; cap--) {
+            dp[cap] = max(dp[cap], dp[cap - w] + v);
+        }
+    }
+    cout << dp[W] << '\n';
+    return 0;
+}
+```
+
+**测试设计：**
+
+- 测试 1 输入：
+```text
+1 2
+1 1
+```
+期望输出：
+```text
+1
+```
+- 测试 2 输入：
+```text
+2 3
+4 10
+5 20
+```
+期望输出：
+```text
+0
+```
+### V00-EX09 模式串出现次数
+
+- 归属卷：第 0 卷
+- 覆盖模块：ROUTE-00、STR-02、CPP-011
+- 考场用途：训练“长文本查模式串”路由到 KMP，并处理重叠出现。
+
+**题目描述：** 给定文本串 `s` 和模式串 `p`，统计 `p` 在 `s` 中出现了多少次，允许重叠。
+
+**输入格式：** 第一行一个字符串 `s`。第二行一个字符串 `p`。
+
+**输出格式：** 输出出现次数。
+
+**样例输入：**
+```text
+aaaaa
+aa
+```
+
+**样例输出：**
+```text
+4
+```
+
+**完整代码：**
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    string s_raw, p_raw;
+    cin >> s_raw >> p_raw;
+    string s = " " + s_raw;
+    string p = " " + p_raw;
+    int n = (int)s_raw.size();
+    int m = (int)p_raw.size();
+    vector<int> pi(m + 1, 0);
+    for (int i = 2; i <= m; i++) {
+        int j = pi[i - 1];
+        while (j > 0 && p[i] != p[j + 1]) j = pi[j];
+        if (p[i] == p[j + 1]) j++;
+        pi[i] = j;
+    }
+
+    int ans = 0;
+    int j = 0;
+    for (int i = 1; i <= n; i++) {
+        while (j > 0 && s[i] != p[j + 1]) j = pi[j];
+        if (s[i] == p[j + 1]) j++;
+        if (j == m) {
+            ans++;
+            j = pi[j];
+        }
+    }
+    cout << ans << '\n';
+    return 0;
+}
+```
+
+**测试设计：**
+
+- 测试 1 输入：
+```text
+abc
+d
+```
+期望输出：
+```text
+0
+```
+- 测试 2 输入：
+```text
+abababa
+aba
+```
+期望输出：
+```text
+3
+```
+### V00-EX10 提交版本选择器
+
+- 归属卷：第 0 卷
+- 覆盖模块：OPS-01、ROUTE-01、TRAIN-00
+- 考场用途：训练“先保分，再修正解”的提交路线选择。
+
+**题目描述：** 你有 `k` 个候选提交版本。每个版本有预计得分 `score`、风险值 `risk` 和剩余调试时间 `time`。只考虑 `risk <= R` 且 `time <= M` 的版本。在可选版本中，优先选得分最高；得分相同选风险更低；仍相同选用时更短；仍相同选编号更小。若没有可选版本，输出 `HOLD`。
+
+**输入格式：** 第一行三个整数 `k R M`。接下来 `k` 行，每行三个整数 `score risk time`。
+
+**输出格式：** 可选时输出版本编号和预计得分；不可选时输出 `HOLD`。
+
+**样例输入：**
+```text
+4 30 20
+60 10 8
+80 40 12
+80 25 25
+70 20 18
+```
+
+**样例输出：**
+```text
+4 70
+```
+
+**完整代码：**
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+struct Version {
+    int id;
+    int score;
+    int risk;
+    int time_need;
+};
+
+bool better(const Version &a, const Version &b) {
+    if (a.score != b.score) return a.score > b.score;
+    if (a.risk != b.risk) return a.risk < b.risk;
+    if (a.time_need != b.time_need) return a.time_need < b.time_need;
+    return a.id < b.id;
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int k, R, M;
+    cin >> k >> R >> M;
+    bool has = false;
+    Version best{0, 0, 0, 0};
+    for (int i = 1; i <= k; i++) {
+        Version cur;
+        cur.id = i;
+        cin >> cur.score >> cur.risk >> cur.time_need;
+        if (cur.risk > R || cur.time_need > M) continue;
+        if (!has || better(cur, best)) {
+            best = cur;
+            has = true;
+        }
+    }
+
+    if (!has) {
+        cout << "HOLD\n";
+    } else {
+        cout << best.id << ' ' << best.score << '\n';
+    }
+    return 0;
+}
+```
+
+**测试设计：**
+
+- 测试 1 输入：
+```text
+2 10 5
+100 20 1
+80 5 6
+```
+期望输出：
+```text
+HOLD
+```
+- 测试 2 输入：
+```text
+2 50 50
+90 30 10
+90 20 20
+```
+期望输出：
+```text
+2 90
+```
+
+## 第 7 卷：调试、反例与对拍训练
+### V00-CEX01 数据范围路由卡
+
+- 归属卷：第 0 卷
+- 覆盖模块：ROUTE-00、复杂度表、题型信号
+- 考场用途：把题面关键词和数据范围直接映射到第一本该翻的书。
+- 参考题型来源：参考来源：洛谷官方题单的基础/进阶分类、OI Wiki 算法分类。
+
+**题目描述：** 给出若干组 `n m feature`，输出建议优先翻的模块。
+
+**输入格式：** 多行，每行 `n m feature`，读到 EOF。
+
+**输出格式：** 每行输出一个模块建议。
+
+**样例输入：**
+```text
+5 4 unweighted_graph
+200000 300000 weighted_nonnegative
+18 0 subset
+100 1000 capacity
+```
+
+**样例输出：**
+```text
+GRAPH-02 BFS
+GRAPH-03 Dijkstra
+BRUTE-02 Bitmask
+DP-06 Knapsack
+```
+
+**完整代码：**
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    long long n, m;
+    string feature;
+    while (cin >> n >> m >> feature) {
+        if (feature == "unweighted_graph") cout << "GRAPH-02 BFS\n";
+        else if (feature == "weighted_nonnegative") cout << "GRAPH-03 Dijkstra\n";
+        else if (feature == "range_sum_static") cout << "DS-01 PrefixSum\n";
+        else if (feature == "range_update") cout << "DS-01 Difference\n";
+        else if (n <= 20 && feature == "subset") cout << "BRUTE-02 Bitmask\n";
+        else if (feature == "capacity") cout << "DP-06 Knapsack\n";
+        else cout << "ROUTE-00 Read constraints again\n";
+    }
+    return 0;
+}
+```
+
+**测试设计：** 额外测试：构造最小规模、重复值、边界值各一组，和样例一起运行。
+
+***
+### V00-CEX02 先交差分部分分
+
+- 归属卷：第 0 卷
+- 覆盖模块：DS-01 差分、提交策略
+- 考场用途：看到大量区间加，先写差分拿稳分。
+- 参考题型来源：参考来源：洛谷入门数组/前缀差分题型。
+
+**题目描述：** 长度为 `n` 的数组初始全 0，执行区间加，输出最终最大值第一次出现的位置和值。
+
+**输入格式：** 第一行 `n q`，之后 `q` 行 `l r v`。
+
+**输出格式：** 输出 `pos maxValue`。
+
+**样例输入：**
+```text
+5 3
+1 3 2
+2 5 1
+4 4 10
+```
+
+**样例输出：**
+```text
+4 11
+```
+
+**完整代码：**
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    int n, q;
+    cin >> n >> q;
+    vector<long long> diff(n + 3, 0);
+    for (int i = 1; i <= q; i++) {
+        int l, r;
+        long long v;
+        cin >> l >> r >> v;
+        diff[l] += v;
+        diff[r + 1] -= v;
+    }
+    long long cur = 0, mx = LLONG_MIN;
+    int pos = 1;
+    for (int i = 1; i <= n; i++) {
+        cur += diff[i];
+        if (cur > mx) {
+            mx = cur;
+            pos = i;
+        }
+    }
+    cout << pos << ' ' << mx << '\n';
+    return 0;
+}
+```
+
+**测试设计：** 额外测试：构造最小规模、重复值、边界值各一组，和样例一起运行。
+
+***
+### V00-CEX03 BFS 与 Dijkstra 路由合并
+
+- 归属卷：第 0 卷
+- 覆盖模块：GRAPH-02 BFS、GRAPH-03 Dijkstra
+- 考场用途：同一份题面先判断边权是否全 1，再决定翻哪本图论页。
+- 参考题型来源：参考来源：洛谷图论题单最短路分类、OI Wiki 最短路。
+
+**题目描述：** 给无向图，如果所有边权都是 1 用 BFS，否则用 Dijkstra，求 `s` 到 `t` 最短距离。
+
+**输入格式：** 第一行 `n m s t`，之后 `m` 行 `u v w`。
+
+**输出格式：** 输出最短距离，不可达输出 `-1`。
+
+**样例输入：**
+```text
+4 4 1 4
+1 2 1
+2 4 1
+1 3 5
+3 4 1
+```
+
+**样例输出：**
+```text
+2
+```
+
+**完整代码：**
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    int n, m, s, t;
+    cin >> n >> m >> s >> t;
+    vector<vector<pair<int,int>>> g(n + 1);
+    bool all_one = true;
+    for (int i = 1; i <= m; i++) {
+        int u, v, w;
+        cin >> u >> v >> w;
+        g[u].push_back({v, w});
+        g[v].push_back({u, w});
+        if (w != 1) all_one = false;
+    }
+    const long long INF = (long long)4e18;
+    vector<long long> dist(n + 1, INF);
+    if (all_one) {
+        queue<int> q;
+        dist[s] = 0;
+        q.push(s);
+        while (!q.empty()) {
+            int u = q.front(); q.pop();
+            for (auto [v, w] : g[u]) {
+                if (dist[v] == INF) {
+                    dist[v] = dist[u] + 1;
+                    q.push(v);
+                }
+            }
+        }
+    } else {
+        priority_queue<pair<long long,int>, vector<pair<long long,int>>, greater<pair<long long,int>>> pq;
+        dist[s] = 0;
+        pq.push({0, s});
+        while (!pq.empty()) {
+            auto [d, u] = pq.top(); pq.pop();
+            if (d != dist[u]) continue;
+            for (auto [v, w] : g[u]) {
+                if (dist[v] > d + w) {
+                    dist[v] = d + w;
+                    pq.push({dist[v], v});
+                }
+            }
+        }
+    }
+    cout << (dist[t] == INF ? -1 : dist[t]) << '\n';
+    return 0;
+}
+```
+
+**测试设计：** 额外测试：构造最小规模、重复值、边界值各一组，和样例一起运行。
+
+***
+### V00-CEX04 小数据暴力与大数据特判
+
+- 归属卷：第 0 卷
+- 覆盖模块：BRUTE 子集、哈希表、部分分策略
+- 考场用途：同一题先写小数据精确，再给大数据特殊版。
+- 参考题型来源：参考来源：洛谷搜索/哈希题型、部分分赛制策略。
+
+**题目描述：** 若 `n<=25`，统计子集和等于目标的方案数；否则只统计两数和等于目标的对数，模拟部分分兜底。
+
+**输入格式：** 第一行 `n target`，第二行 `n` 个整数。
+
+**输出格式：** 输出统计结果。
+
+**样例输入：**
+```text
+4 5
+1 2 3 4
+```
+
+**样例输出：**
+```text
+2
+```
+
+**完整代码：**
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    int n;
+    long long target;
+    cin >> n >> target;
+    vector<long long> a(n + 1);
+    for (int i = 1; i <= n; i++) cin >> a[i];
+    long long ans = 0;
+    if (n <= 25) {
+        for (int mask = 0; mask < (1 << n); mask++) {
+            long long sum = 0;
+            for (int i = 1; i <= n; i++) if (mask & (1 << (i - 1))) sum += a[i];
+            if (sum == target) ans++;
+        }
+    } else {
+        unordered_map<long long, long long> cnt;
+        cnt.reserve(n * 2 + 10);
+        for (int i = 1; i <= n; i++) {
+            ans += cnt[target - a[i]];
+            cnt[a[i]]++;
+        }
+    }
+    cout << ans << '\n';
+    return 0;
+}
+```
+
+**测试设计：** 额外测试：构造最小规模、重复值、边界值各一组，和样例一起运行。
+
+***
+### V00-CEX05 最高分提交统计
+
+- 归属卷：第 0 卷
+- 覆盖模块：考试策略、最高分提交规则、数组
+- 考场用途：把每题多次提交取最高的规则变成程序，强化先交部分分。
+- 参考题型来源：参考来源：本次机考规则。
+
+**题目描述：** 有 `p` 道题、`s` 次提交记录，每条记录是题号和得分，输出最终总分。
+
+**输入格式：** 第一行 `p s`，之后 `s` 行 `id score`。
+
+**输出格式：** 输出最终总分。
+
+**样例输入：**
+```text
+3 6
+1 20
+2 30
+1 50
+3 10
+2 25
+3 80
+```
+
+**样例输出：**
+```text
+160
+```
+
+**完整代码：**
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    int p, s;
+    cin >> p >> s;
+    vector<int> best(p + 1, -1);
+    for (int i = 1; i <= s; i++) {
+        int id, score;
+        cin >> id >> score;
+        best[id] = max(best[id], score);
+    }
+    int total = 0;
+    for (int i = 1; i <= p; i++) total += max(0, best[i]);
+    cout << total << '\n';
+    return 0;
+}
+```
+
+**测试设计：** 额外测试：构造最小规模、重复值、边界值各一组，和样例一起运行。
+
+***
+
+<!-- V02_EXAMPLES_END -->

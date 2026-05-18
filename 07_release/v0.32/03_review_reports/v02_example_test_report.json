@@ -1,0 +1,1699 @@
+{
+  "total": 188,
+  "passed": 188,
+  "failed": 0,
+  "results": [
+    {
+      "index": 1,
+      "title": "V00-EX01 静态区间和路由",
+      "source": "04_generated_drafts\\volume_-1_0A_0_ops_route.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "2\n10\n4",
+      "actual": "2\n10\n4"
+    },
+    {
+      "index": 2,
+      "title": "V00-EX02 离线区间加最终数组",
+      "source": "04_generated_drafts\\volume_-1_0A_0_ops_route.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "3 3 4 3 14",
+      "actual": "3 3 4 3 14"
+    },
+    {
+      "index": 3,
+      "title": "V00-EX03 单点赋值与区间和",
+      "source": "04_generated_drafts\\volume_-1_0A_0_ops_route.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "15\n16\n11",
+      "actual": "15\n16\n11"
+    },
+    {
+      "index": 4,
+      "title": "V00-EX04 大坐标频次统计",
+      "source": "04_generated_drafts\\volume_-1_0A_0_ops_route.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "1\n2\n0",
+      "actual": "1\n2\n0"
+    },
+    {
+      "index": 5,
+      "title": "V00-EX05 网格最少步数",
+      "source": "04_generated_drafts\\volume_-1_0A_0_ops_route.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "4",
+      "actual": "4"
+    },
+    {
+      "index": 6,
+      "title": "V00-EX06 非负权道路最短路",
+      "source": "04_generated_drafts\\volume_-1_0A_0_ops_route.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "3\n5\n0",
+      "actual": "3\n5\n0"
+    },
+    {
+      "index": 7,
+      "title": "V00-EX07 依赖任务排序",
+      "source": "04_generated_drafts\\volume_-1_0A_0_ops_route.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "1 2 3 4",
+      "actual": "1 2 3 4"
+    },
+    {
+      "index": 8,
+      "title": "V00-EX08 容量选择路线",
+      "source": "04_generated_drafts\\volume_-1_0A_0_ops_route.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "12",
+      "actual": "12"
+    },
+    {
+      "index": 9,
+      "title": "V00-EX09 模式串出现次数",
+      "source": "04_generated_drafts\\volume_-1_0A_0_ops_route.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "4",
+      "actual": "4"
+    },
+    {
+      "index": 10,
+      "title": "V00-EX10 提交版本选择器",
+      "source": "04_generated_drafts\\volume_-1_0A_0_ops_route.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "4 70",
+      "actual": "4 70"
+    },
+    {
+      "index": 11,
+      "title": "V00-CEX01 数据范围路由卡",
+      "source": "04_generated_drafts\\volume_-1_0A_0_ops_route.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "GRAPH-02 BFS\nGRAPH-03 Dijkstra\nBRUTE-02 Bitmask\nDP-06 Knapsack",
+      "actual": "GRAPH-02 BFS\nGRAPH-03 Dijkstra\nBRUTE-02 Bitmask\nDP-06 Knapsack"
+    },
+    {
+      "index": 12,
+      "title": "V00-CEX02 先交差分部分分",
+      "source": "04_generated_drafts\\volume_-1_0A_0_ops_route.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "4 11",
+      "actual": "4 11"
+    },
+    {
+      "index": 13,
+      "title": "V00-CEX03 BFS 与 Dijkstra 路由合并",
+      "source": "04_generated_drafts\\volume_-1_0A_0_ops_route.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "2",
+      "actual": "2"
+    },
+    {
+      "index": 14,
+      "title": "V00-CEX04 小数据暴力与大数据特判",
+      "source": "04_generated_drafts\\volume_-1_0A_0_ops_route.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "2",
+      "actual": "2"
+    },
+    {
+      "index": 15,
+      "title": "V00-CEX05 最高分提交统计",
+      "source": "04_generated_drafts\\volume_-1_0A_0_ops_route.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "160",
+      "actual": "160"
+    },
+    {
+      "index": 16,
+      "title": "V10-EX01 kNN 分类器",
+      "source": "04_generated_drafts\\volume_10_ai_special_topics.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "1\n2",
+      "actual": "1\n2"
+    },
+    {
+      "index": 17,
+      "title": "V10-EX02 TF-IDF 文档检索",
+      "source": "04_generated_drafts\\volume_10_ai_special_topics.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "1 0.959146",
+      "actual": "1 0.959146"
+    },
+    {
+      "index": 18,
+      "title": "V10-EX03 k-means 一维聚类",
+      "source": "04_generated_drafts\\volume_10_ai_special_topics.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "1 1 1 2 2\n1.000000 10.500000",
+      "actual": "1 1 1 2 2\n1.000000 10.500000"
+    },
+    {
+      "index": 19,
+      "title": "V10-EX04 线性回归在线训练",
+      "source": "04_generated_drafts\\volume_10_ai_special_topics.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "1.420000\n3.180000",
+      "actual": "1.420000\n3.180000"
+    },
+    {
+      "index": 20,
+      "title": "V10-EX05 感知机二分类",
+      "source": "04_generated_drafts\\volume_10_ai_special_topics.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "1\n-1\n1",
+      "actual": "1\n-1\n1"
+    },
+    {
+      "index": 21,
+      "title": "V10-EX06 简化 SVM 更新",
+      "source": "04_generated_drafts\\volume_10_ai_special_topics.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "-1\n1\n1",
+      "actual": "-1\n1\n1"
+    },
+    {
+      "index": 22,
+      "title": "V10-EX07 DNN 前向传播",
+      "source": "04_generated_drafts\\volume_10_ai_special_topics.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "2\n0.268941 0.731059",
+      "actual": "2\n0.268941 0.731059"
+    },
+    {
+      "index": 23,
+      "title": "V10-EX08 二层网络反向传播一轮",
+      "source": "04_generated_drafts\\volume_10_ai_special_topics.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "1.600000 0.300000 1.600000 0.300000",
+      "actual": "1.600000 0.300000 1.600000 0.300000"
+    },
+    {
+      "index": 24,
+      "title": "V10-EX09 反向模式自动求导",
+      "source": "04_generated_drafts\\volume_10_ai_special_topics.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "6.909297\n2.583853 2.000000",
+      "actual": "6.909297\n2.583853 2.000000"
+    },
+    {
+      "index": 25,
+      "title": "V10-EX10 Viterbi 与 accuracy 评分",
+      "source": "04_generated_drafts\\volume_10_ai_special_topics.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "1 2 2\n1.000000",
+      "actual": "1 2 2\n1.000000"
+    },
+    {
+      "index": 26,
+      "title": "V10-CEX01 余弦相似度",
+      "source": "04_generated_drafts\\volume_10_ai_special_topics.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "0.200000",
+      "actual": "0.200000"
+    },
+    {
+      "index": 27,
+      "title": "V10-CEX02 最近邻分类",
+      "source": "04_generated_drafts\\volume_10_ai_special_topics.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "1",
+      "actual": "1"
+    },
+    {
+      "index": 28,
+      "title": "V10-CEX03 逻辑回归一轮 SGD",
+      "source": "04_generated_drafts\\volume_10_ai_special_topics.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "0.622459 0.122459",
+      "actual": "0.622459 0.122459"
+    },
+    {
+      "index": 29,
+      "title": "V10-CEX04 单神经元反向传播",
+      "source": "04_generated_drafts\\volume_10_ai_special_topics.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "1.0000 1.4000 0.2000",
+      "actual": "1.0000 1.4000 0.2000"
+    },
+    {
+      "index": 30,
+      "title": "V10-CEX05 手算反向模式自动求导",
+      "source": "04_generated_drafts\\volume_10_ai_special_topics.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "64.0000 64.0000 32.0000",
+      "actual": "64.0000 64.0000 32.0000"
+    },
+    {
+      "index": 31,
+      "title": "V01-EX01 班级成绩汇总",
+      "source": "04_generated_drafts\\volume_1_cpp_stl.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "sum=440\naverage=88.00\nmax=100",
+      "actual": "sum=440\naverage=88.00\nmax=100"
+    },
+    {
+      "index": 32,
+      "title": "V01-EX02 商品小票打印",
+      "source": "04_generated_drafts\\volume_1_cpp_stl.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "0007 25.00\n0042 16.00\n0105 100.00\nTOTAL 141.00",
+      "actual": "0007 25.00\n0042 16.00\n0105 100.00\nTOTAL 141.00"
+    },
+    {
+      "index": 33,
+      "title": "V01-EX03 EOF 单词频率表",
+      "source": "04_generated_drafts\\volume_1_cpp_stl.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "apple 2\nbanana 2\npear 1",
+      "actual": "apple 2\nbanana 2\npear 1"
+    },
+    {
+      "index": 34,
+      "title": "V01-EX04 通讯录号码查询",
+      "source": "04_generated_drafts\\volume_1_cpp_stl.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "10010\nNOT FOUND\n10086\n95588",
+      "actual": "10010\nNOT FOUND\n10086\n95588"
+    },
+    {
+      "index": 35,
+      "title": "V01-EX05 任务优先级调度",
+      "source": "04_generated_drafts\\volume_1_cpp_stl.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "test 5 5\nfix 5 10\npack 2 20\nwrite 2 30\nread 1 1",
+      "actual": "test 5 5\nfix 5 10\npack 2 20\nwrite 2 30\nread 1 1"
+    },
+    {
+      "index": 36,
+      "title": "V01-EX06 整数去重排序",
+      "source": "04_generated_drafts\\volume_1_cpp_stl.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "count=5\n1 2 3 5 9",
+      "actual": "count=5\n1 2 3 5 9"
+    },
+    {
+      "index": 37,
+      "title": "V01-EX07 排序后找第一个不小于目标的位置",
+      "source": "04_generated_drafts\\volume_1_cpp_stl.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "1 1\n3 5\n5 8\n-1",
+      "actual": "1 1\n3 5\n5 8\n-1"
+    },
+    {
+      "index": 38,
+      "title": "V01-EX08 学生成绩排行",
+      "source": "04_generated_drafts\\volume_1_cpp_stl.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "1 Cindy 100\n2 Amy 95\n3 Dave 95\n4 Bob 90\n5 Tom 90",
+      "actual": "1 Cindy 100\n2 Amy 95\n3 Dave 95\n4 Bob 90\n5 Tom 90"
+    },
+    {
+      "index": 39,
+      "title": "V01-EX09 整行记录统计",
+      "source": "04_generated_drafts\\volume_1_cpp_stl.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "1 11 2\n2 7 2\n3 5 3",
+      "actual": "1 11 2\n2 7 2\n3 5 3"
+    },
+    {
+      "index": 40,
+      "title": "V01-EX10 闭区间计数查询",
+      "source": "04_generated_drafts\\volume_1_cpp_stl.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "3\n2\n2",
+      "actual": "3\n2\n2"
+    },
+    {
+      "index": 41,
+      "title": "V01-CEX01 多行键值记录合并",
+      "source": "04_generated_drafts\\volume_1_cpp_stl.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "alice 7\nbob 3\ncarl 5",
+      "actual": "alice 7\nbob 3\ncarl 5"
+    },
+    {
+      "index": 42,
+      "title": "V01-CEX02 固定宽度成绩表",
+      "source": "04_generated_drafts\\volume_1_cpp_stl.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "Li           95.50\nWang         90.25",
+      "actual": "Li           95.50\nWang         90.25"
+    },
+    {
+      "index": 43,
+      "title": "V01-CEX03 哈希表加堆 TopK",
+      "source": "04_generated_drafts\\volume_1_cpp_stl.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "a 3\nc 2",
+      "actual": "a 3\nc 2"
+    },
+    {
+      "index": 44,
+      "title": "V01-CEX04 pair 排序合并区间",
+      "source": "04_generated_drafts\\volume_1_cpp_stl.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "2\n1 7\n8 9",
+      "actual": "2\n1 7\n8 9"
+    },
+    {
+      "index": 45,
+      "title": "V01-CEX05 排序后二分答询问",
+      "source": "04_generated_drafts\\volume_1_cpp_stl.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "5\n9\nNONE\n1",
+      "actual": "5\n9\nNONE\n1"
+    },
+    {
+      "index": 46,
+      "title": "V02-EX01 全排列最短访问序列",
+      "source": "04_generated_drafts\\volume_2_brute_memo_partial.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "3\n1 3 2",
+      "actual": "3\n1 3 2"
+    },
+    {
+      "index": 47,
+      "title": "V02-EX02 子集目标和计数",
+      "source": "04_generated_drafts\\volume_2_brute_memo_partial.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "2",
+      "actual": "2"
+    },
+    {
+      "index": 48,
+      "title": "V02-EX03 组合 DFS 选 k 个数",
+      "source": "04_generated_drafts\\volume_2_brute_memo_partial.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "2",
+      "actual": "2"
+    },
+    {
+      "index": 49,
+      "title": "V02-EX04 N 皇后方案数",
+      "source": "04_generated_drafts\\volume_2_brute_memo_partial.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "2",
+      "actual": "2"
+    },
+    {
+      "index": 50,
+      "title": "V02-EX05 三位密码锁 BFS 状态搜索",
+      "source": "04_generated_drafts\\volume_2_brute_memo_partial.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "2",
+      "actual": "2"
+    },
+    {
+      "index": 51,
+      "title": "V02-EX06 装载问题的 DFS 剪枝",
+      "source": "04_generated_drafts\\volume_2_brute_memo_partial.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "10",
+      "actual": "10"
+    },
+    {
+      "index": 52,
+      "title": "V02-EX07 数字串加号的记忆化搜索",
+      "source": "04_generated_drafts\\volume_2_brute_memo_partial.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "4",
+      "actual": "4"
+    },
+    {
+      "index": 53,
+      "title": "V02-EX08 网格最大礼物的记忆化搜索",
+      "source": "04_generated_drafts\\volume_2_brute_memo_partial.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "21",
+      "actual": "21"
+    },
+    {
+      "index": 54,
+      "title": "V02-EX09 折半枚举不超过容量的最大和",
+      "source": "04_generated_drafts\\volume_2_brute_memo_partial.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "20",
+      "actual": "20"
+    },
+    {
+      "index": 55,
+      "title": "V02-EX10 部分分兜底提交策略模拟",
+      "source": "04_generated_drafts\\volume_2_brute_memo_partial.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "10",
+      "actual": "10"
+    },
+    {
+      "index": 56,
+      "title": "V02-CEX01 全排列最小相邻差",
+      "source": "04_generated_drafts\\volume_2_brute_memo_partial.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "9",
+      "actual": "9"
+    },
+    {
+      "index": 57,
+      "title": "V02-CEX02 子集覆盖最小选择",
+      "source": "04_generated_drafts\\volume_2_brute_memo_partial.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "4",
+      "actual": "4"
+    },
+    {
+      "index": 58,
+      "title": "V02-CEX03 加减号记忆化搜索",
+      "source": "04_generated_drafts\\volume_2_brute_memo_partial.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "5",
+      "actual": "5"
+    },
+    {
+      "index": 59,
+      "title": "V02-CEX04 网格破墙一次 BFS",
+      "source": "04_generated_drafts\\volume_2_brute_memo_partial.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "4",
+      "actual": "4"
+    },
+    {
+      "index": 60,
+      "title": "V02-CEX05 折半统计子集和不超过 S",
+      "source": "04_generated_drafts\\volume_2_brute_memo_partial.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "9",
+      "actual": "9"
+    },
+    {
+      "index": 61,
+      "title": "V03-EX01 最小体力跳石子",
+      "source": "04_generated_drafts\\volume_3_dp_model_reuse.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "17",
+      "actual": "17"
+    },
+    {
+      "index": 62,
+      "title": "V03-EX02 快速求和最少加号",
+      "source": "04_generated_drafts\\volume_3_dp_model_reuse.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "4",
+      "actual": "4"
+    },
+    {
+      "index": 63,
+      "title": "V03-EX03 编辑距离",
+      "source": "04_generated_drafts\\volume_3_dp_model_reuse.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "3",
+      "actual": "3"
+    },
+    {
+      "index": 64,
+      "title": "V03-EX04 0/1 背包最大价值",
+      "source": "04_generated_drafts\\volume_3_dp_model_reuse.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "12",
+      "actual": "12"
+    },
+    {
+      "index": 65,
+      "title": "V03-EX05 完全背包最大价值",
+      "source": "04_generated_drafts\\volume_3_dp_model_reuse.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "16",
+      "actual": "16"
+    },
+    {
+      "index": 66,
+      "title": "V03-EX06 分组背包最大价值",
+      "source": "04_generated_drafts\\volume_3_dp_model_reuse.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "15",
+      "actual": "15"
+    },
+    {
+      "index": 67,
+      "title": "V03-EX07 最长不下降子序列与最少删除",
+      "source": "04_generated_drafts\\volume_3_dp_model_reuse.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "5 2",
+      "actual": "5 2"
+    },
+    {
+      "index": 68,
+      "title": "V03-EX08 最长公共子序列长度",
+      "source": "04_generated_drafts\\volume_3_dp_model_reuse.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "4",
+      "actual": "4"
+    },
+    {
+      "index": 69,
+      "title": "V03-EX09 最长公共上升子序列",
+      "source": "04_generated_drafts\\volume_3_dp_model_reuse.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "4",
+      "actual": "4"
+    },
+    {
+      "index": 70,
+      "title": "V03-EX10 石子合并区间 DP",
+      "source": "04_generated_drafts\\volume_3_dp_model_reuse.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "44",
+      "actual": "44"
+    },
+    {
+      "index": 71,
+      "title": "V03-EX11 树上最大独立集",
+      "source": "04_generated_drafts\\volume_3_dp_model_reuse.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "21",
+      "actual": "21"
+    },
+    {
+      "index": 72,
+      "title": "V03-EX12 DAG 最长路径",
+      "source": "04_generated_drafts\\volume_3_dp_model_reuse.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "12",
+      "actual": "12"
+    },
+    {
+      "index": 73,
+      "title": "V03-EX13 状压最短访问路径",
+      "source": "04_generated_drafts\\volume_3_dp_model_reuse.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "65",
+      "actual": "65"
+    },
+    {
+      "index": 74,
+      "title": "V03-EX14 数位 DP 统计无相邻相同数字",
+      "source": "04_generated_drafts\\volume_3_dp_model_reuse.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "19",
+      "actual": "19"
+    },
+    {
+      "index": 75,
+      "title": "V03-EX15 股票冷冻期状态升维",
+      "source": "04_generated_drafts\\volume_3_dp_model_reuse.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "3",
+      "actual": "3"
+    },
+    {
+      "index": 76,
+      "title": "V03-CEX01 分成 k 段最小化最大段和",
+      "source": "04_generated_drafts\\volume_3_dp_model_reuse.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "18",
+      "actual": "18"
+    },
+    {
+      "index": 77,
+      "title": "V03-CEX02 多重背包二进制拆分",
+      "source": "04_generated_drafts\\volume_3_dp_model_reuse.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "13",
+      "actual": "13"
+    },
+    {
+      "index": 78,
+      "title": "V03-CEX03 相同字符一起删除",
+      "source": "04_generated_drafts\\volume_3_dp_model_reuse.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "2",
+      "actual": "2"
+    },
+    {
+      "index": 79,
+      "title": "V03-CEX04 依赖树背包",
+      "source": "04_generated_drafts\\volume_3_dp_model_reuse.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "9",
+      "actual": "9"
+    },
+    {
+      "index": 80,
+      "title": "V03-CEX05 数位 DP 统计数字和被 3 整除",
+      "source": "04_generated_drafts\\volume_3_dp_model_reuse.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "6",
+      "actual": "6"
+    },
+    {
+      "index": 81,
+      "title": "V03A-EX01 最少总等待时间排序贪心",
+      "source": "04_generated_drafts\\volume_3A_greedy_dp_discrimination.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "4",
+      "actual": "4"
+    },
+    {
+      "index": 82,
+      "title": "V03A-EX02 最多不重叠活动",
+      "source": "04_generated_drafts\\volume_3A_greedy_dp_discrimination.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "2",
+      "actual": "2"
+    },
+    {
+      "index": 83,
+      "title": "V03A-EX03 最少点覆盖闭区间",
+      "source": "04_generated_drafts\\volume_3A_greedy_dp_discrimination.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "1\n3",
+      "actual": "1\n3"
+    },
+    {
+      "index": 84,
+      "title": "V03A-EX04 合并果子的堆贪心",
+      "source": "04_generated_drafts\\volume_3A_greedy_dp_discrimination.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "19",
+      "actual": "19"
+    },
+    {
+      "index": 85,
+      "title": "V03A-EX05 最少会议室",
+      "source": "04_generated_drafts\\volume_3A_greedy_dp_discrimination.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "3",
+      "actual": "3"
+    },
+    {
+      "index": 86,
+      "title": "V03A-EX06 截止时间课程的反悔贪心",
+      "source": "04_generated_drafts\\volume_3A_greedy_dp_discrimination.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "3",
+      "actual": "3"
+    },
+    {
+      "index": 87,
+      "title": "V03A-EX07 0/1 背包反例转 DP",
+      "source": "04_generated_drafts\\volume_3A_greedy_dp_discrimination.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "220",
+      "actual": "220"
+    },
+    {
+      "index": 88,
+      "title": "V03A-EX08 普通硬币找零反例转完全背包",
+      "source": "04_generated_drafts\\volume_3A_greedy_dp_discrimination.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "2",
+      "actual": "2"
+    },
+    {
+      "index": 89,
+      "title": "V03A-EX09 加权区间选择转 DP",
+      "source": "04_generated_drafts\\volume_3A_greedy_dp_discrimination.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "20",
+      "actual": "20"
+    },
+    {
+      "index": 90,
+      "title": "V03A-EX10 相邻限制选择转线性 DP",
+      "source": "04_generated_drafts\\volume_3A_greedy_dp_discrimination.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "12",
+      "actual": "12"
+    },
+    {
+      "index": 91,
+      "title": "V03A-CEX01 活动选择结束时间贪心",
+      "source": "04_generated_drafts\\volume_3A_greedy_dp_discrimination.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "3",
+      "actual": "3"
+    },
+    {
+      "index": 92,
+      "title": "V03A-CEX02 会议室最少数量",
+      "source": "04_generated_drafts\\volume_3A_greedy_dp_discrimination.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "2",
+      "actual": "2"
+    },
+    {
+      "index": 93,
+      "title": "V03A-CEX03 最少点刺破区间",
+      "source": "04_generated_drafts\\volume_3A_greedy_dp_discrimination.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "2",
+      "actual": "2"
+    },
+    {
+      "index": 94,
+      "title": "V03A-CEX04 单价贪心失败的 0/1 背包",
+      "source": "04_generated_drafts\\volume_3A_greedy_dp_discrimination.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "220",
+      "actual": "220"
+    },
+    {
+      "index": 95,
+      "title": "V03A-CEX05 截止日任务反悔贪心",
+      "source": "04_generated_drafts\\volume_3A_greedy_dp_discrimination.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "40",
+      "actual": "40"
+    },
+    {
+      "index": 96,
+      "title": "V04-EX01 区间和查询",
+      "source": "04_generated_drafts\\volume_4_data_structures.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "6\n14\n4",
+      "actual": "6\n14\n4"
+    },
+    {
+      "index": 97,
+      "title": "V04-EX02 矩形区域求和",
+      "source": "04_generated_drafts\\volume_4_data_structures.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "10\n34\n78",
+      "actual": "10\n34\n78"
+    },
+    {
+      "index": 98,
+      "title": "V04-EX03 批量区间加",
+      "source": "04_generated_drafts\\volume_4_data_structures.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "11 10 11 9 3",
+      "actual": "11 10 11 9 3"
+    },
+    {
+      "index": 99,
+      "title": "V04-EX04 最长和不超过 S 的连续子数组",
+      "source": "04_generated_drafts\\volume_4_data_structures.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "3",
+      "actual": "3"
+    },
+    {
+      "index": 100,
+      "title": "V04-EX05 左侧最近严格更大元素",
+      "source": "04_generated_drafts\\volume_4_data_structures.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "0 1 0 3 0",
+      "actual": "0 1 0 3 0"
+    },
+    {
+      "index": 101,
+      "title": "V04-EX06 滑动窗口最大值",
+      "source": "04_generated_drafts\\volume_4_data_structures.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "3 3 5 5 6 7",
+      "actual": "3 3 5 5 6 7"
+    },
+    {
+      "index": 102,
+      "title": "V04-EX07 合并果子最小代价",
+      "source": "04_generated_drafts\\volume_4_data_structures.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "19",
+      "actual": "19"
+    },
+    {
+      "index": 103,
+      "title": "V04-EX08 在线合并与连通查询",
+      "source": "04_generated_drafts\\volume_4_data_structures.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "No\nYes\nYes",
+      "actual": "No\nYes\nYes"
+    },
+    {
+      "index": 104,
+      "title": "V04-EX09 逆序对数量",
+      "source": "04_generated_drafts\\volume_4_data_structures.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "8",
+      "actual": "8"
+    },
+    {
+      "index": 105,
+      "title": "V04-EX10 区间加与区间和",
+      "source": "04_generated_drafts\\volume_4_data_structures.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "15\n26\n17",
+      "actual": "15\n26\n17"
+    },
+    {
+      "index": 106,
+      "title": "V04-EX11 静态区间最小值",
+      "source": "04_generated_drafts\\volume_4_data_structures.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "2\n1\n1",
+      "actual": "2\n1\n1"
+    },
+    {
+      "index": 107,
+      "title": "V04-EX12 矩形批量加",
+      "source": "04_generated_drafts\\volume_4_data_structures.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "5 5 0\n5 6 1\n0 1 1",
+      "actual": "5 5 0\n5 6 1\n0 1 1"
+    },
+    {
+      "index": 108,
+      "title": "V04-CEX01 坐标压缩加树状数组逆序对",
+      "source": "04_generated_drafts\\volume_4_data_structures.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "6",
+      "actual": "6"
+    },
+    {
+      "index": 109,
+      "title": "V04-CEX02 线段树区间加区间和",
+      "source": "04_generated_drafts\\volume_4_data_structures.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "4\n8",
+      "actual": "4\n8"
+    },
+    {
+      "index": 110,
+      "title": "V04-CEX03 单调队列优化 DP",
+      "source": "04_generated_drafts\\volume_4_data_structures.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "10",
+      "actual": "10"
+    },
+    {
+      "index": 111,
+      "title": "V04-CEX04 离线删边转加边",
+      "source": "04_generated_drafts\\volume_4_data_structures.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "2\n3",
+      "actual": "2\n3"
+    },
+    {
+      "index": 112,
+      "title": "V04-CEX05 Sparse Table 静态 RMQ",
+      "source": "04_generated_drafts\\volume_4_data_structures.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "2\n1\n1",
+      "actual": "2\n1\n1"
+    },
+    {
+      "index": 113,
+      "title": "V05-EX01 统一 1-index 建图统计",
+      "source": "04_generated_drafts\\volume_5_graph_tree.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "2 6\n2 12\n1 7\n1 1",
+      "actual": "2 6\n2 12\n1 7\n1 1"
+    },
+    {
+      "index": 114,
+      "title": "V05-EX02 无权最短路",
+      "source": "04_generated_drafts\\volume_5_graph_tree.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "2",
+      "actual": "2"
+    },
+    {
+      "index": 115,
+      "title": "V05-EX03 非负权单源最短路",
+      "source": "04_generated_drafts\\volume_5_graph_tree.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "0 2 3 7",
+      "actual": "0 2 3 7"
+    },
+    {
+      "index": 116,
+      "title": "V05-EX04 小图任意两点最短路",
+      "source": "04_generated_drafts\\volume_5_graph_tree.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "2\n-1\n4",
+      "actual": "2\n-1\n4"
+    },
+    {
+      "index": 117,
+      "title": "V05-EX05 负权单源最短路与负环检测",
+      "source": "04_generated_drafts\\volume_5_graph_tree.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "0 4 2",
+      "actual": "0 4 2"
+    },
+    {
+      "index": 118,
+      "title": "V05-EX06 DAG 最长路",
+      "source": "04_generated_drafts\\volume_5_graph_tree.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "9",
+      "actual": "9"
+    },
+    {
+      "index": 119,
+      "title": "V05-EX07 最小生成树总权值",
+      "source": "04_generated_drafts\\volume_5_graph_tree.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "6",
+      "actual": "6"
+    },
+    {
+      "index": 120,
+      "title": "V05-EX08 二分图最大匹配",
+      "source": "04_generated_drafts\\volume_5_graph_tree.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "2",
+      "actual": "2"
+    },
+    {
+      "index": 121,
+      "title": "V05-EX09 强连通分量大小",
+      "source": "04_generated_drafts\\volume_5_graph_tree.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "3\n1 1 2",
+      "actual": "3\n1 1 2"
+    },
+    {
+      "index": 122,
+      "title": "V05-EX10 LCA 与树上距离",
+      "source": "04_generated_drafts\\volume_5_graph_tree.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "2 5\n1 9\n1 5",
+      "actual": "2 5\n1 9\n1 5"
+    },
+    {
+      "index": 123,
+      "title": "V05-EX11 树上最大独立集",
+      "source": "04_generated_drafts\\volume_5_graph_tree.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "12",
+      "actual": "12"
+    },
+    {
+      "index": 124,
+      "title": "V05-EX12 无向图桥边",
+      "source": "04_generated_drafts\\volume_5_graph_tree.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "2\n4 5",
+      "actual": "2\n4 5"
+    },
+    {
+      "index": 125,
+      "title": "V05-CEX01 Dijkstra 同时统计最短路条数",
+      "source": "04_generated_drafts\\volume_5_graph_tree.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "2 2",
+      "actual": "2 2"
+    },
+    {
+      "index": 126,
+      "title": "V05-CEX02 0-1 BFS",
+      "source": "04_generated_drafts\\volume_5_graph_tree.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "1",
+      "actual": "1"
+    },
+    {
+      "index": 127,
+      "title": "V05-CEX03 Kruskal 输出总权和最大边",
+      "source": "04_generated_drafts\\volume_5_graph_tree.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "6 3",
+      "actual": "6 3"
+    },
+    {
+      "index": 128,
+      "title": "V05-CEX04 拓扑排序最少学期",
+      "source": "04_generated_drafts\\volume_5_graph_tree.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "3",
+      "actual": "3"
+    },
+    {
+      "index": 129,
+      "title": "V05-CEX05 LCA 查询路径最小边",
+      "source": "04_generated_drafts\\volume_5_graph_tree.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "4\n4",
+      "actual": "4\n4"
+    },
+    {
+      "index": 130,
+      "title": "V06-EX01 多数 gcd 与有界 lcm",
+      "source": "04_generated_drafts\\volume_6_math_string.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "1\n30",
+      "actual": "1\n30"
+    },
+    {
+      "index": 131,
+      "title": "V06-EX02 快速幂取模",
+      "source": "04_generated_drafts\\volume_6_math_string.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "24\n2\n1",
+      "actual": "24\n2\n1"
+    },
+    {
+      "index": 132,
+      "title": "V06-EX03 组合数多次查询",
+      "source": "04_generated_drafts\\volume_6_math_string.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "10\n1\n0\n252",
+      "actual": "10\n1\n0\n252"
+    },
+    {
+      "index": 133,
+      "title": "V06-EX04 素数筛与质数计数",
+      "source": "04_generated_drafts\\volume_6_math_string.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "0\n1\n4\n8",
+      "actual": "0\n1\n4\n8"
+    },
+    {
+      "index": 134,
+      "title": "V06-EX05 质因数分解与约数个数",
+      "source": "04_generated_drafts\\volume_6_math_string.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "2^3 3^2 5^1\n24\n97^1\n2",
+      "actual": "2^3 3^2 5^1\n24\n97^1\n2"
+    },
+    {
+      "index": 135,
+      "title": "V06-EX06 KMP 多次匹配",
+      "source": "04_generated_drafts\\volume_6_math_string.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "1 3",
+      "actual": "1 3"
+    },
+    {
+      "index": 136,
+      "title": "V06-EX07 Z 函数求最短循环节",
+      "source": "04_generated_drafts\\volume_6_math_string.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "2",
+      "actual": "2"
+    },
+    {
+      "index": 137,
+      "title": "V06-EX08 Trie 前缀统计",
+      "source": "04_generated_drafts\\volume_6_math_string.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "2\n1\n2",
+      "actual": "2\n1\n2"
+    },
+    {
+      "index": 138,
+      "title": "V06-EX09 Rolling Hash 子串相等",
+      "source": "04_generated_drafts\\volume_6_math_string.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "YES\nNO\nYES",
+      "actual": "YES\nNO\nYES"
+    },
+    {
+      "index": 139,
+      "title": "V06-EX10 Manacher 回文询问",
+      "source": "04_generated_drafts\\volume_6_math_string.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "YES\nYES\nNO\nYES",
+      "actual": "YES\nYES\nNO\nYES"
+    },
+    {
+      "index": 140,
+      "title": "V06-CEX01 组合数查询",
+      "source": "04_generated_drafts\\volume_6_math_string.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "10\n1\n0",
+      "actual": "10\n1\n0"
+    },
+    {
+      "index": 141,
+      "title": "V06-CEX02 筛法加哥德巴赫拆分",
+      "source": "04_generated_drafts\\volume_6_math_string.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "8\n3 17",
+      "actual": "8\n3 17"
+    },
+    {
+      "index": 142,
+      "title": "V06-CEX03 KMP 统计出现次数",
+      "source": "04_generated_drafts\\volume_6_math_string.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "3",
+      "actual": "3"
+    },
+    {
+      "index": 143,
+      "title": "V06-CEX04 Trie 前缀数量查询",
+      "source": "04_generated_drafts\\volume_6_math_string.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "3\n2\n1",
+      "actual": "3\n2\n1"
+    },
+    {
+      "index": 144,
+      "title": "V06-CEX05 Manacher 最长回文子串",
+      "source": "04_generated_drafts\\volume_6_math_string.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "3",
+      "actual": "3"
+    },
+    {
+      "index": 145,
+      "title": "V07-EX01 多组图连通块清空",
+      "source": "04_generated_drafts\\volume_7_debug_training.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "2\n3",
+      "actual": "2\n3"
+    },
+    {
+      "index": 146,
+      "title": "V07-EX02 前缀和暴力核验",
+      "source": "04_generated_drafts\\volume_7_debug_training.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "9\n4\n3",
+      "actual": "9\n4\n3"
+    },
+    {
+      "index": 147,
+      "title": "V07-EX03 背包循环顺序反例",
+      "source": "04_generated_drafts\\volume_7_debug_training.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "1\nLOOP_RISK",
+      "actual": "1\nLOOP_RISK"
+    },
+    {
+      "index": 148,
+      "title": "V07-EX04 最短路双算法核验",
+      "source": "04_generated_drafts\\volume_7_debug_training.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "0 3 7 -1",
+      "actual": "0 3 7 -1"
+    },
+    {
+      "index": 149,
+      "title": "V07-EX05 KMP 与暴力重叠核验",
+      "source": "04_generated_drafts\\volume_7_debug_training.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "4",
+      "actual": "4"
+    },
+    {
+      "index": 150,
+      "title": "V07-EX06 空栈保护括号匹配",
+      "source": "04_generated_drafts\\volume_7_debug_training.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "YES\nNO\nNO",
+      "actual": "YES\nNO\nNO"
+    },
+    {
+      "index": 151,
+      "title": "V07-EX07 乘法溢出上限判断",
+      "source": "04_generated_drafts\\volume_7_debug_training.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "YES\nNO\nNO",
+      "actual": "YES\nNO\nNO"
+    },
+    {
+      "index": 152,
+      "title": "V07-EX08 二分答案边界核验",
+      "source": "04_generated_drafts\\volume_7_debug_training.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "18",
+      "actual": "18"
+    },
+    {
+      "index": 153,
+      "title": "V07-EX09 RMQ 暴力对拍",
+      "source": "04_generated_drafts\\volume_7_debug_training.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "1\n2\n1",
+      "actual": "1\n2\n1"
+    },
+    {
+      "index": 154,
+      "title": "V07-CEX01 快慢算法核验逆序对",
+      "source": "04_generated_drafts\\volume_7_debug_training.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "OK 3",
+      "actual": "OK 3"
+    },
+    {
+      "index": 155,
+      "title": "V07-CEX02 输入范围守卫",
+      "source": "04_generated_drafts\\volume_7_debug_training.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "INPUT_OUT_OF_RANGE",
+      "actual": "INPUT_OUT_OF_RANGE"
+    },
+    {
+      "index": 156,
+      "title": "V07-CEX03 二分边界可视化",
+      "source": "04_generated_drafts\\volume_7_debug_training.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "8",
+      "actual": "8"
+    },
+    {
+      "index": 157,
+      "title": "V07-CEX04 乘法溢出探针",
+      "source": "04_generated_drafts\\volume_7_debug_training.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "OVER",
+      "actual": "OVER"
+    },
+    {
+      "index": 158,
+      "title": "V07-CEX05 空容器访问保护",
+      "source": "04_generated_drafts\\volume_7_debug_training.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "YES",
+      "actual": "YES"
+    },
+    {
+      "index": 159,
+      "title": "V08-EX01 扩展 gcd 解线性方程",
+      "source": "04_generated_drafts\\volume_8_competition_math_reference.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "YES\n-2 4",
+      "actual": "YES\n-2 4"
+    },
+    {
+      "index": 160,
+      "title": "V08-EX02 扩展 CRT 合并同余",
+      "source": "04_generated_drafts\\volume_8_competition_math_reference.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "8",
+      "actual": "8"
+    },
+    {
+      "index": 161,
+      "title": "V08-EX03 矩阵快速幂求 Fibonacci",
+      "source": "04_generated_drafts\\volume_8_competition_math_reference.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "55",
+      "actual": "55"
+    },
+    {
+      "index": 162,
+      "title": "V08-EX04 倍数容斥计数",
+      "source": "04_generated_drafts\\volume_8_competition_math_reference.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "7",
+      "actual": "7"
+    },
+    {
+      "index": 163,
+      "title": "V08-EX05 骰子到终点的期望步数",
+      "source": "04_generated_drafts\\volume_8_competition_math_reference.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "1.000000",
+      "actual": "1.000000"
+    },
+    {
+      "index": 164,
+      "title": "V08-EX06 取石子 SG 判胜",
+      "source": "04_generated_drafts\\volume_8_competition_math_reference.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "WIN",
+      "actual": "WIN"
+    },
+    {
+      "index": 165,
+      "title": "V08-EX07 点在线段上与多边形面积",
+      "source": "04_generated_drafts\\volume_8_competition_math_reference.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "4\nYES",
+      "actual": "4\nYES"
+    },
+    {
+      "index": 166,
+      "title": "V08-EX08 日期相差天数",
+      "source": "04_generated_drafts\\volume_8_competition_math_reference.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "2",
+      "actual": "2"
+    },
+    {
+      "index": 167,
+      "title": "V08-EX09 地板除与天花板除",
+      "source": "04_generated_drafts\\volume_8_competition_math_reference.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "2 3\n-3 -2\n-3 -2",
+      "actual": "2 3\n-3 -2\n-3 -2"
+    },
+    {
+      "index": 168,
+      "title": "V08-EX10 互质对数量",
+      "source": "04_generated_drafts\\volume_8_competition_math_reference.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "7",
+      "actual": "7"
+    },
+    {
+      "index": 169,
+      "title": "V08-CEX01 线性丢番图方程",
+      "source": "04_generated_drafts\\volume_8_competition_math_reference.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "-1 1",
+      "actual": "-1 1"
+    },
+    {
+      "index": 170,
+      "title": "V08-CEX02 矩阵快速幂 Fibonacci",
+      "source": "04_generated_drafts\\volume_8_competition_math_reference.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "55",
+      "actual": "55"
+    },
+    {
+      "index": 171,
+      "title": "V08-CEX03 容斥统计倍数",
+      "source": "04_generated_drafts\\volume_8_competition_math_reference.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "13",
+      "actual": "13"
+    },
+    {
+      "index": 172,
+      "title": "V08-CEX04 日期差天数",
+      "source": "04_generated_drafts\\volume_8_competition_math_reference.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "2",
+      "actual": "2"
+    },
+    {
+      "index": 173,
+      "title": "V08-CEX05 多边形面积",
+      "source": "04_generated_drafts\\volume_8_competition_math_reference.md",
+      "lang": "cpp",
+      "status": "ok",
+      "expected": "4.0",
+      "actual": "4.0"
+    },
+    {
+      "index": 174,
+      "title": "V09-EX01 大整数 Fibonacci",
+      "source": "04_generated_drafts\\volume_9_python_complement.md",
+      "lang": "python",
+      "status": "ok",
+      "expected": "354224848179261915075",
+      "actual": "354224848179261915075"
+    },
+    {
+      "index": 175,
+      "title": "V09-EX02 EOF 词频 TopK",
+      "source": "04_generated_drafts\\volume_9_python_complement.md",
+      "lang": "python",
+      "status": "ok",
+      "expected": "apple 3\nbanana 2\npear 2",
+      "actual": "apple 3\nbanana 2\npear 2"
+    },
+    {
+      "index": 176,
+      "title": "V09-EX03 坐标点判重",
+      "source": "04_generated_drafts\\volume_9_python_complement.md",
+      "lang": "python",
+      "status": "ok",
+      "expected": "4\n-1 0\n1 2\n2 1\n3 3",
+      "actual": "4\n-1 0\n1 2\n2 1\n3 3"
+    },
+    {
+      "index": 177,
+      "title": "V09-EX04 合并石子最小代价",
+      "source": "04_generated_drafts\\volume_9_python_complement.md",
+      "lang": "python",
+      "status": "ok",
+      "expected": "19",
+      "actual": "19"
+    },
+    {
+      "index": 178,
+      "title": "V09-EX05 迷宫最短路",
+      "source": "04_generated_drafts\\volume_9_python_complement.md",
+      "lang": "python",
+      "status": "ok",
+      "expected": "5",
+      "actual": "5"
+    },
+    {
+      "index": 179,
+      "title": "V09-EX06 小集合相邻差排列计数",
+      "source": "04_generated_drafts\\volume_9_python_complement.md",
+      "lang": "python",
+      "status": "ok",
+      "expected": "2",
+      "actual": "2"
+    },
+    {
+      "index": 180,
+      "title": "V09-EX07 EOF 每行求和",
+      "source": "04_generated_drafts\\volume_9_python_complement.md",
+      "lang": "python",
+      "status": "ok",
+      "expected": "6\n5\n7",
+      "actual": "6\n5\n7"
+    },
+    {
+      "index": 181,
+      "title": "V09-EX08 树的子树大小",
+      "source": "04_generated_drafts\\volume_9_python_complement.md",
+      "lang": "python",
+      "status": "ok",
+      "expected": "5 1 3 1 1",
+      "actual": "5 1 3 1 1"
+    },
+    {
+      "index": 182,
+      "title": "V09-EX09 障碍网格路径数",
+      "source": "04_generated_drafts\\volume_9_python_complement.md",
+      "lang": "python",
+      "status": "ok",
+      "expected": "2",
+      "actual": "2"
+    },
+    {
+      "index": 183,
+      "title": "V09-EX10 滑动窗口最大值",
+      "source": "04_generated_drafts\\volume_9_python_complement.md",
+      "lang": "python",
+      "status": "ok",
+      "expected": "3 3 5 5 6 7",
+      "actual": "3 3 5 5 6 7"
+    },
+    {
+      "index": 184,
+      "title": "V09-CEX01 Python 大组合数",
+      "source": "04_generated_drafts\\volume_9_python_complement.md",
+      "lang": "python",
+      "status": "ok",
+      "expected": "15890700",
+      "actual": "15890700"
+    },
+    {
+      "index": 185,
+      "title": "V09-CEX02 Python 双堆中位数",
+      "source": "04_generated_drafts\\volume_9_python_complement.md",
+      "lang": "python",
+      "status": "ok",
+      "expected": "5 2 5 2 3",
+      "actual": "5 2 5 2 3"
+    },
+    {
+      "index": 186,
+      "title": "V09-CEX03 Python deque BFS",
+      "source": "04_generated_drafts\\volume_9_python_complement.md",
+      "lang": "python",
+      "status": "ok",
+      "expected": "3",
+      "actual": "3"
+    },
+    {
+      "index": 187,
+      "title": "V09-CEX04 itertools 组合枚举",
+      "source": "04_generated_drafts\\volume_9_python_complement.md",
+      "lang": "python",
+      "status": "ok",
+      "expected": "2",
+      "actual": "2"
+    },
+    {
+      "index": 188,
+      "title": "V09-CEX05 Fraction 精确分数",
+      "source": "04_generated_drafts\\volume_9_python_complement.md",
+      "lang": "python",
+      "status": "ok",
+      "expected": "1/2",
+      "actual": "1/2"
+    }
+  ]
+}

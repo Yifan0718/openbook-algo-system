@@ -40,6 +40,7 @@ CHAPTER_PDFS = [
     "09_python.pdf",
     "10_ai.pdf",
     "11_signoff_encyclopedia.pdf",
+    "12_zhongguancun_machine_exam_companion.pdf",
 ]
 
 REVIEW_FILES = [
@@ -132,7 +133,7 @@ def build_release() -> dict:
 - `03_review_reports/`：本次发布的自动审计和 signoff 报告。
 - `LICENSE`：MIT 许可证文本。
 
-优先打印：`00_which_book_index.pdf`、`00_route.pdf`、`01_cpp_stl_io.pdf`、`02_brute_memo.pdf`、`03_dp.pdf`、`04_ds.pdf`、`05_graph_tree.pdf`、`06_math_string.pdf`、`11_signoff_encyclopedia.pdf`。
+优先打印：`00_which_book_index.pdf`、`12_zhongguancun_machine_exam_companion.pdf`、`00_route.pdf`、`01_cpp_stl_io.pdf`、`02_brute_memo.pdf`、`03_dp.pdf`、`04_ds.pdf`、`05_graph_tree.pdf`、`06_math_string.pdf`、`11_signoff_encyclopedia.pdf`。
 """,
     )
     write_text(

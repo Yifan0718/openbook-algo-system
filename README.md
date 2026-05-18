@@ -1,4 +1,4 @@
-# 纸质版算法作战系统 v0.3
+# 纸质版算法作战系统 v0.32
 
 一套面向 3 小时 3 题算法机考的纸质开卷资料包。核心目标不是系统讲算法原理，而是在考场中快速完成：
 
@@ -18,15 +18,16 @@
 
 推荐优先打开：
 
-- `07_release/v0.3/01_print_ready/chapter_pdfs/00_which_book_index.pdf`：一页索引，考试时先看它决定翻哪本。
-- `07_release/v0.3/01_print_ready/chapter_pdfs/11_signoff_encyclopedia.pdf`：签到题百科，覆盖 Markov、常用数学、计算机常识、AI 术语、读程序和生活模拟。
-- `07_release/v0.3/01_print_ready/chapter_pdfs/06_math_string.pdf`：数学与字符串模板，包含方程求解和 `STR-05 Manacher`。
-- `07_release/v0.3/01_print_ready/openbook_printable_full.pdf`：完整自包含总 PDF。
+- `07_release/v0.32/01_print_ready/chapter_pdfs/00_which_book_index.pdf`：一页索引，考试时先看它决定翻哪本。
+- `07_release/v0.32/01_print_ready/chapter_pdfs/12_zhongguancun_machine_exam_companion.pdf`：中关村机试必带，覆盖往年题专项、现场拼装卡片和救分路线。
+- `07_release/v0.32/01_print_ready/chapter_pdfs/11_signoff_encyclopedia.pdf`：签到题百科，覆盖 Markov、常用数学、计算机常识、AI 术语、读程序和生活模拟。
+- `07_release/v0.32/01_print_ready/chapter_pdfs/06_math_string.pdf`：数学与字符串模板，包含方程求解和 `STR-05 Manacher`。
+- `07_release/v0.32/01_print_ready/openbook_printable_full.pdf`：完整自包含总 PDF。
 
 完整发布压缩包：
 
-- `07_release/openbook-v0.3.zip`
-- `07_release/openbook-v0.3.zip.sha256.txt`
+- `07_release/openbook-v0.32.zip`
+- `07_release/openbook-v0.32.zip.sha256.txt`
 
 ## 分卷结构
 
@@ -45,10 +46,25 @@
 | 09 | `09_python.pdf` | Python 互补卷 |
 | 10 | `10_ai.pdf` | AI 专题与特判模型 |
 | 11 | `11_signoff_encyclopedia.pdf` | 签到题百科 |
+| 12 | `12_zhongguancun_machine_exam_companion.pdf` | 中关村机试往年题专项与现场拼装卡片 |
 
-## v0.3 新增重点
+## v0.32 新增重点
 
-- 新增第 11 卷“签到题百科”，当前单卷 58 页。
+- 新增第 12 卷“中关村机试往年题专项与现场拼装卡片”。
+- 覆盖 2025 春/夏/秋与 2026 冬共 12 道已整理往年题。
+- 每题按题目信号、部分分、升级路线、正解推导、模块拼装和易错点组织。
+- 新增 D1-D14 现场卡片：规则、节奏、32 次提交、复杂度、分数规划、套利 log 图、环形线段树、字符单射、混合输入、浮点、溢出、题面矛盾、部分分优先和最终检查。
+
+## v0.31 修复重点
+
+- 修复 v0.3 发布构建顺序问题：恢复 v0.2 中每卷的组合例题训练区。
+- `openbook_full.pdf` / `openbook_printable_full.pdf` 从 v0.3 的 1172 页恢复并扩展到 1376 页。
+- 分卷 00-10 恢复例题页数，同时保留第 11 卷 58 页签到题百科。
+- `build_all_outputs.py` 已把 `integrate_v02_examples.py` 纳入构建链，防止以后全量构建再次覆盖例题区。
+
+## v0.3 新增内容继续保留
+
+- 新增第 11 卷“签到题百科”。
 - 补充 Markov 性质、Markov 链、转移矩阵、平稳分布、HMM/MDP 路由。
 - 补充现代 AI 术语：Token、Embedding、Attention、Transformer、RAG、向量检索。
 - 补充计算机常识：进制、补码、浮点、字节序、内存、Cache、OS/网络/数据库、安全。
@@ -65,25 +81,24 @@
 04_generated_drafts/ 分卷 Markdown 源稿
 05_review/           构建、审计、测试脚本和报告
 06_output/           构建输出 Markdown/PDF
-07_release/          v0.2/v0.3 发布目录和压缩包
+07_release/          v0.2/v0.3/v0.31/v0.32 发布目录和压缩包
 ```
 
 ## 构建与审计
 
 详见 `BUILD.md`。
 
-已记录的 v0.3 校验结果：
+已记录的 v0.32 校验目标：
 
 - 组合例题样例运行：`188/188` 通过。
-- standalone C++ 去重单元：`272`，编译失败：`0`。
-- standalone 运行用例：`123`，运行失败：`0`。
-- 分卷 PDF：`14` 个，其中第 11 卷 `58` 页。
-- Python 代码块语法检查：失败 `0`。
+- standalone C++ 去重单元：编译失败 `0`。
+- 分卷 PDF：加入第 12 卷中关村机试专项。
+- full/printable full PDF：`1376` 页。
 
 ## 发布状态
 
 当前版本：
 
-- 版本：v0.3。
+- 版本：v0.32。
 - 许可证：MIT License。
 - 状态：可公开发布，可直接打印使用。

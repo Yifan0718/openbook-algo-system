@@ -823,7 +823,7 @@ two words
 2. 输入：
 ```text
 1
-  lead and tail  
+  lead and tail..
 ```
 期望输出：
 ```text

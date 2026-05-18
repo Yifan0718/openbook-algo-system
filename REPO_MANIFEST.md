@@ -1,11 +1,11 @@
 # Repository Manifest
 
-- name: `openbook-algo-system-v0.3`
-- version: `0.3`
+- name: `openbook-algo-system-v0.32`
+- version: `0.32`
 - status: `public-release-ready`
 - license: `MIT`
-- file_count: `391`
-- total_bytes: `109530451`
+- file_count: `694`
+- total_bytes: `210840478`
 
 ## Top-Level Counts
 
@@ -17,16 +17,18 @@
 | `01_source_rules` | 1 |
 | `02_blueprint` | 4 |
 | `03_modules` | 164 |
-| `04_generated_drafts` | 20 |
-| `05_review` | 51 |
-| `06_output` | 29 |
-| `07_release` | 106 |
+| `04_generated_drafts` | 21 |
+| `05_review` | 53 |
+| `06_output` | 218 |
+| `07_release` | 215 |
 | `BUILD.md` | 1 |
 | `LICENSE` | 1 |
 | `PUBLICATION_CHECKLIST.md` | 1 |
 | `README.md` | 1 |
 | `RELEASE_NOTES_v0.2.md` | 1 |
 | `RELEASE_NOTES_v0.3.md` | 1 |
+| `RELEASE_NOTES_v0.31.md` | 1 |
+| `RELEASE_NOTES_v0.32.md` | 1 |
 | `REPO_MANIFEST.json` | 1 |
 | `REPO_MANIFEST.md` | 1 |
 | `VERSION` | 1 |
@@ -35,26 +37,27 @@
 
 | Extension | Count |
 |---|---:|
-| `.json` | 16 |
-| `.md` | 283 |
-| `.pdf` | 51 |
-| `.py` | 27 |
-| `.txt` | 4 |
-| `.zip` | 2 |
-| `<none>` | 8 |
+| `.cpp` | 173 |
+| `.json` | 26 |
+| `.md` | 342 |
+| `.pdf` | 87 |
+| `.py` | 42 |
+| `.txt` | 8 |
+| `.zip` | 4 |
+| `<none>` | 12 |
 
 ## Key Artifact SHA256
 
 | File | SHA256 |
 |---|---|
-| `07_release/openbook-v0.3.zip` | `590af7ca974ba11ce224afa3dd8df7854485e1f6112487ce97b950c18dfe2fb5` |
-| `07_release/v0.3/01_print_ready/chapter_pdfs/11_signoff_encyclopedia.pdf` | `2ea4aa9d20e6f4925fc71812b5363088eadafff9cad14a8a47cc9f66efe7e44d` |
-| `07_release/v0.3/01_print_ready/chapter_pdfs/06_math_string.pdf` | `f6cf77d6c1ce713beab49543796dfcac43fa395c3481af7cbc7478015ade758a` |
-| `07_release/v0.3/01_print_ready/openbook_printable_full.pdf` | `fcb4ee216eb47ff9df929f4ba82d3bffee3a5b0689e8981dd6e3d8228abaf1ba` |
+| `07_release/openbook-v0.32.zip` | `77b408a7e05f404235e8e3bcdf279a36a05f3138574c9624cd6ded89b89bb0e4` |
+| `07_release/v0.32/01_print_ready/openbook_printable_full.pdf` | `c226f5df73756aaa7667e0f893b30ee8f61c8c8dedc926a061eb0ed2233cbcc3` |
+| `07_release/v0.32/01_print_ready/chapter_pdfs/12_zhongguancun_machine_exam_companion.pdf` | `4ada69b3cf89ef81227d6b740074e07a359924e11cd134cbea2ccd2e15a6e2e7` |
+| `07_release/v0.32/01_print_ready/chapter_pdfs/00_which_book_index.pdf` | `c2a661d91113fe37453df51f07ad6c3deafe3c38a3f09bf34cab0b4d752cc74a` |
 
 ## Notes
 
 - Public GitHub release uses MIT License.
-- Main branch is intended to contain source Markdown, build scripts, rendered PDFs, and v0.3 release artifacts.
-- Local absolute paths and common secret patterns were scanned before publishing.
-- Build scripts keep the original project directory layout for reproducibility.
+- v0.32 adds Volume 12: Zhongguancun machine-exam past-problem companion and assembly cards.
+- Main branch contains source Markdown, build scripts, rendered PDFs, and v0.32 release artifacts.
+- Build scripts preserve the original project directory layout for reproducibility.

@@ -6471,3 +6471,1214 @@ quad
 1.0000000000
 2.0000000000
 ```
+
+<!-- V02_EXAMPLES_START -->
+
+# v0.2 本卷例题训练区
+
+这一节是 0.2 新增的实战例题。每题都配完整可运行代码和样例；考试时优先看“覆盖模块”和“考场用途”，再复制对应代码骨架。
+
+### V06-EX01 多数 gcd 与有界 lcm
+
+- 归属卷：第 6 卷
+- 覆盖模块：MATH-01 gcd/lcm
+- 考场用途：处理整除、约分和周期同步，顺手练习 lcm 防溢出。
+
+**题目描述：** 给定 `n` 个整数，求它们的最大公约数 `g`。同时求最小公倍数 `l`，若 `l` 超过给定上限 `limit`，输出 `OVER`。
+
+**输入格式：** 第一行两个整数 `n limit`。第二行 `n` 个整数。
+
+**输出格式：** 第一行输出 `g`。第二行若最小公倍数不超过 `limit` 输出 `l`，否则输出 `OVER`。
+
+**样例输入：**
+```text
+4 1000
+6 10 15 30
+```
+
+**样例输出：**
+```text
+1
+30
+```
+
+**完整代码：**
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+using ll = long long;
+
+ll gcd_ll(ll a, ll b) {
+    if (a < 0) a = -a;
+    if (b < 0) b = -b;
+    while (b) {
+        ll t = a % b;
+        a = b;
+        b = t;
+    }
+    return a;
+}
+
+ll lcm_limit(ll a, ll b, ll limit) {
+    if (a == 0 || b == 0) return 0;
+    __int128 aa = a, bb = b;
+    if (aa < 0) aa = -aa;
+    if (bb < 0) bb = -bb;
+    ll g = gcd_ll(a, b);
+    aa /= g;
+    if (aa > (__int128)limit / bb) return limit + 1;
+    __int128 res = aa * bb;
+    return res > limit ? limit + 1 : (ll)res;
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int n;
+    ll limit;
+    cin >> n >> limit;
+    vector<ll> a(n + 1);
+    ll g = 0, l = 1;
+    bool over = false;
+    for (int i = 1; i <= n; i++) {
+        cin >> a[i];
+        g = gcd_ll(g, a[i]);
+        if (!over) {
+            l = lcm_limit(l, a[i], limit);
+            if (l > limit) over = true;
+        }
+    }
+    cout << g << '\n';
+    if (over) cout << "OVER\n";
+    else cout << l << '\n';
+    return 0;
+}
+```
+
+**测试设计：**
+
+1. 输入：
+```text
+3 100
+12 12 12
+```
+期望输出：
+```text
+12
+12
+```
+
+2. 输入：
+```text
+3 100
+20 30 70
+```
+期望输出：
+```text
+10
+OVER
+```
+
+***
+### V06-EX02 快速幂取模
+
+- 归属卷：第 6 卷
+- 覆盖模块：MATH-02 快速幂、取模规范
+- 考场用途：避免 `pow` 浮点误差，处理负底数和 `mod=1`。
+
+**题目描述：** 给定 `q` 次询问，每次给出 `a b mod`，输出 `a^b mod mod`。保证 `b>=0` 且 `mod>0`。
+
+**输入格式：** 第一行一个整数 `q`。接下来 `q` 行，每行三个整数 `a b mod`。
+
+**输出格式：** 每个询问输出一行答案。
+
+**样例输入：**
+```text
+3
+2 10 1000
+-2 3 5
+5 0 7
+```
+
+**样例输出：**
+```text
+24
+2
+1
+```
+
+**完整代码：**
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+using ll = long long;
+
+ll norm(ll x, ll mod) {
+    x %= mod;
+    if (x < 0) x += mod;
+    return x;
+}
+
+ll mul_mod(ll a, ll b, ll mod) {
+    return (ll)((__int128)norm(a, mod) * norm(b, mod) % mod);
+}
+
+ll pow_mod(ll a, ll b, ll mod) {
+    if (mod == 1) return 0;
+    ll res = 1 % mod;
+    a = norm(a, mod);
+    while (b > 0) {
+        if (b & 1) res = mul_mod(res, a, mod);
+        a = mul_mod(a, a, mod);
+        b >>= 1;
+    }
+    return res;
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int q;
+    cin >> q;
+    while (q--) {
+        ll a, b, mod;
+        cin >> a >> b >> mod;
+        cout << pow_mod(a, b, mod) << '\n';
+    }
+    return 0;
+}
+```
+
+**测试设计：**
+
+1. 输入：
+```text
+1
+123 456 1
+```
+期望输出：
+```text
+0
+```
+
+2. 输入：
+```text
+2
+10 2 6
+3 4 100
+```
+期望输出：
+```text
+4
+81
+```
+
+***
+### V06-EX03 组合数多次查询
+
+- 归属卷：第 6 卷
+- 覆盖模块：MATH-03 组合数、逆元
+- 考场用途：质数模数下快速回答 `C(n,k)`。
+
+**题目描述：** 给定质数 `MOD` 和最大值 `N`，回答 `q` 次组合数查询 `C(n,k) mod MOD`。若 `k<0` 或 `k>n`，输出 `0`。
+
+**输入格式：** 第一行 `N MOD q`。接下来 `q` 行，每行 `n k`。
+
+**输出格式：** 每个询问输出一行答案。
+
+**样例输入：**
+```text
+10 1000000007 4
+5 2
+6 0
+6 7
+10 5
+```
+
+**样例输出：**
+```text
+10
+1
+0
+252
+```
+
+**完整代码：**
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+using ll = long long;
+
+ll mod_pow(ll a, ll e, ll mod) {
+    ll r = 1 % mod;
+    a %= mod;
+    if (a < 0) a += mod;
+    while (e > 0) {
+        if (e & 1) r = (ll)((__int128)r * a % mod);
+        a = (ll)((__int128)a * a % mod);
+        e >>= 1;
+    }
+    return r;
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int N, q;
+    ll MOD;
+    cin >> N >> MOD >> q;
+    vector<ll> fac(N + 1), ifac(N + 1);
+    fac[0] = 1;
+    for (int i = 1; i <= N; i++) fac[i] = fac[i - 1] * i % MOD;
+    ifac[N] = mod_pow(fac[N], MOD - 2, MOD);
+    for (int i = N; i >= 1; i--) ifac[i - 1] = ifac[i] * i % MOD;
+
+    while (q--) {
+        int n, k;
+        cin >> n >> k;
+        if (n < 0 || n > N || k < 0 || k > n) {
+            cout << 0 << '\n';
+        } else {
+            cout << fac[n] * ifac[k] % MOD * ifac[n - k] % MOD << '\n';
+        }
+    }
+    return 0;
+}
+```
+
+**测试设计：**
+
+1. 输入：
+```text
+6 7 3
+6 3
+4 2
+5 -1
+```
+期望输出：
+```text
+6
+6
+0
+```
+
+2. 输入：
+```text
+5 1000000007 2
+5 5
+5 1
+```
+期望输出：
+```text
+1
+5
+```
+
+***
+### V06-EX04 素数筛与质数计数
+
+- 归属卷：第 6 卷
+- 覆盖模块：MATH-04 筛法
+- 考场用途：预处理质数表并回答前缀计数。
+
+**题目描述：** 给定 `N` 和 `q` 次询问，每次给出 `x`，输出 `1..x` 中质数个数。
+
+**输入格式：** 第一行 `N q`。接下来 `q` 行，每行一个 `x`。
+
+**输出格式：** 每个询问输出一行答案。
+
+**样例输入：**
+```text
+20 4
+1
+2
+10
+20
+```
+
+**样例输出：**
+```text
+0
+1
+4
+8
+```
+
+**完整代码：**
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int N, q;
+    cin >> N >> q;
+    vector<int> spf(N + 1), primes, pref(N + 1);
+    for (int i = 2; i <= N; i++) {
+        if (spf[i] == 0) {
+            spf[i] = i;
+            primes.push_back(i);
+        }
+        for (int p : primes) {
+            if (p > spf[i] || 1LL * i * p > N) break;
+            spf[i * p] = p;
+        }
+    }
+    for (int i = 1; i <= N; i++) pref[i] = pref[i - 1] + (spf[i] == i);
+
+    while (q--) {
+        int x;
+        cin >> x;
+        x = max(0, min(x, N));
+        cout << pref[x] << '\n';
+    }
+    return 0;
+}
+```
+
+**测试设计：**
+
+1. 输入：
+```text
+30 3
+0
+29
+30
+```
+期望输出：
+```text
+0
+10
+10
+```
+
+2. 输入：
+```text
+5 2
+4
+5
+```
+期望输出：
+```text
+2
+3
+```
+
+***
+### V06-EX05 质因数分解与约数个数
+
+- 归属卷：第 6 卷
+- 覆盖模块：MATH-04 质因数分解
+- 考场用途：从质因子指数计算约数个数。
+
+**题目描述：** 给定 `q` 个正整数 `x`，对每个 `x` 输出质因数分解和约数个数。分解格式为 `p^a`，按质因子升序；若 `x=1`，分解输出 `1`。
+
+**输入格式：** 第一行一个整数 `q`。接下来 `q` 行，每行一个整数 `x`。
+
+**输出格式：** 每个 `x` 输出两行：第一行为分解，第二行为约数个数。
+
+**样例输入：**
+```text
+2
+360
+97
+```
+
+**样例输出：**
+```text
+2^3 3^2 5^1
+24
+97^1
+2
+```
+
+**完整代码：**
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+using ll = long long;
+
+vector<pair<ll, int>> factorize(ll x) {
+    vector<pair<ll, int>> res;
+    for (ll d = 2; d <= x / d; d += (d == 2 ? 1 : 2)) {
+        if (x % d == 0) {
+            int c = 0;
+            while (x % d == 0) {
+                x /= d;
+                c++;
+            }
+            res.push_back({d, c});
+        }
+    }
+    if (x > 1) res.push_back({x, 1});
+    return res;
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int q;
+    cin >> q;
+    while (q--) {
+        ll x;
+        cin >> x;
+        auto f = factorize(x);
+        if (f.empty()) {
+            cout << "1\n1\n";
+            continue;
+        }
+        ll cnt = 1;
+        for (int i = 0; i < (int)f.size(); i++) {
+            if (i) cout << ' ';
+            cout << f[i].first << '^' << f[i].second;
+            cnt *= f[i].second + 1;
+        }
+        cout << '\n' << cnt << '\n';
+    }
+    return 0;
+}
+```
+
+**测试设计：**
+
+1. 输入：
+```text
+3
+1
+12
+100
+```
+期望输出：
+```text
+1
+1
+2^2 3^1
+6
+2^2 5^2
+9
+```
+
+2. 输入：
+```text
+1
+99991
+```
+期望输出：
+```text
+99991^1
+2
+```
+
+***
+### V06-EX06 KMP 多次匹配
+
+- 归属卷：第 6 卷
+- 覆盖模块：STR-02 KMP
+- 考场用途：输出模式串全部出现位置，处理重叠匹配。
+
+**题目描述：** 给定文本串 `text` 和模式串 `pat`，输出 `pat` 在 `text` 中所有出现位置，位置按 1-index 输出。若没有出现，输出 `NONE`。
+
+**输入格式：** 第一行 `text`。第二行 `pat`。
+
+**输出格式：** 一行，所有出现位置从小到大输出；没有出现则输出 `NONE`。
+
+**样例输入：**
+```text
+ababa
+aba
+```
+
+**样例输出：**
+```text
+1 3
+```
+
+**完整代码：**
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+vector<int> prefix_function(const string &s) {
+    int n = (int)s.size();
+    vector<int> pi(n, 0);
+    for (int i = 1; i < n; i++) {
+        int j = pi[i - 1];
+        while (j > 0 && s[i] != s[j]) j = pi[j - 1];
+        if (s[i] == s[j]) j++;
+        pi[i] = j;
+    }
+    return pi;
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    string text, pat;
+    cin >> text >> pat;
+    string s = pat + char(1) + text;
+    vector<int> pi = prefix_function(s);
+    int m = (int)pat.size();
+    vector<int> ans;
+    for (int i = m + 1; i < (int)s.size(); i++) {
+        if (pi[i] == m) ans.push_back(i - 2 * m + 1);
+    }
+    if (ans.empty()) {
+        cout << "NONE\n";
+    } else {
+        for (int i = 0; i < (int)ans.size(); i++) {
+            if (i) cout << ' ';
+            cout << ans[i];
+        }
+        cout << '\n';
+    }
+    return 0;
+}
+```
+
+**测试设计：**
+
+1. 输入：
+```text
+aaaa
+aa
+```
+期望输出：
+```text
+1 2 3
+```
+
+2. 输入：
+```text
+abc
+d
+```
+期望输出：
+```text
+NONE
+```
+
+***
+### V06-EX07 Z 函数求最短循环节
+
+- 归属卷：第 6 卷
+- 覆盖模块：STR-02 Z 函数
+- 考场用途：判断字符串是否由更短模式重复构成。
+
+**题目描述：** 给定字符串 `s`，求最短循环节长度。若不存在更短循环节，则输出 `|s|`。
+
+**输入格式：** 一行字符串 `s`。
+
+**输出格式：** 输出一个整数。
+
+**样例输入：**
+```text
+ababab
+```
+
+**样例输出：**
+```text
+2
+```
+
+**完整代码：**
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+vector<int> z_function(const string &s) {
+    int n = (int)s.size();
+    vector<int> z(n, 0);
+    int l = 0, r = 0;
+    for (int i = 1; i < n; i++) {
+        if (i <= r) z[i] = min(r - i + 1, z[i - l]);
+        while (i + z[i] < n && s[z[i]] == s[i + z[i]]) z[i]++;
+        if (i + z[i] - 1 > r) {
+            l = i;
+            r = i + z[i] - 1;
+        }
+    }
+    return z;
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    string s;
+    cin >> s;
+    int n = (int)s.size();
+    vector<int> z = z_function(s);
+    for (int p = 1; p <= n; p++) {
+        if (n % p == 0 && (p == n || z[p] >= n - p)) {
+            cout << p << '\n';
+            return 0;
+        }
+    }
+    return 0;
+}
+```
+
+**测试设计：**
+
+1. 输入：
+```text
+abac
+```
+期望输出：
+```text
+4
+```
+
+2. 输入：
+```text
+x
+```
+期望输出：
+```text
+1
+```
+
+***
+### V06-EX08 Trie 前缀统计
+
+- 归属卷：第 6 卷
+- 覆盖模块：STR-03 Trie
+- 考场用途：维护词典并回答前缀数量。
+
+**题目描述：** 维护一个小写字母词典，支持 `add word` 插入单词，`ask prefix` 查询有多少已插入单词以 `prefix` 为前缀。
+
+**输入格式：** 第一行一个整数 `q`。接下来 `q` 行，每行为一个操作。
+
+**输出格式：** 对每个 `ask` 操作输出一行答案。
+
+**样例输入：**
+```text
+6
+add apple
+add app
+ask app
+ask apple
+add apply
+ask appl
+```
+
+**样例输出：**
+```text
+2
+1
+2
+```
+
+**完整代码：**
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+struct Trie {
+    struct Node {
+        int nxt[26]{};
+        int pass = 0;
+    };
+    vector<Node> tr;
+
+    Trie() {
+        tr.push_back(Node());
+    }
+
+    void insert(const string &s) {
+        int u = 0;
+        tr[u].pass++;
+        for (char c : s) {
+            int x = c - 'a';
+            if (!tr[u].nxt[x]) {
+                tr[u].nxt[x] = (int)tr.size();
+                tr.push_back(Node());
+            }
+            u = tr[u].nxt[x];
+            tr[u].pass++;
+        }
+    }
+
+    int query(const string &s) const {
+        int u = 0;
+        for (char c : s) {
+            int x = c - 'a';
+            if (x < 0 || x >= 26 || !tr[u].nxt[x]) return 0;
+            u = tr[u].nxt[x];
+        }
+        return tr[u].pass;
+    }
+};
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int q;
+    cin >> q;
+    Trie trie;
+    while (q--) {
+        string op, s;
+        cin >> op >> s;
+        if (op == "add") trie.insert(s);
+        else cout << trie.query(s) << '\n';
+    }
+    return 0;
+}
+```
+
+**测试设计：**
+
+1. 输入：
+```text
+5
+ask a
+add a
+add ab
+ask a
+ask ab
+```
+期望输出：
+```text
+0
+2
+1
+```
+
+2. 输入：
+```text
+4
+add cat
+add car
+ask ca
+ask dog
+```
+期望输出：
+```text
+2
+0
+```
+
+***
+### V06-EX09 Rolling Hash 子串相等
+
+- 归属卷：第 6 卷
+- 覆盖模块：STR-03 Rolling Hash
+- 考场用途：多次判断两个子串是否相等。
+
+**题目描述：** 给定字符串 `s` 和 `q` 次询问，每次给出两个 1-index 闭区间 `[l1,r1]`、`[l2,r2]`，判断两个子串是否相等。
+
+**输入格式：** 第一行字符串 `s`。第二行整数 `q`。接下来 `q` 行，每行 `l1 r1 l2 r2`。
+
+**输出格式：** 相等输出 `YES`，否则输出 `NO`。
+
+**样例输入：**
+```text
+abacaba
+3
+1 3 5 7
+1 2 2 3
+3 3 7 7
+```
+
+**样例输出：**
+```text
+YES
+NO
+YES
+```
+
+**完整代码：**
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+using ull = unsigned long long;
+
+struct RollingHash {
+    static const ull BASE = 1315423911ULL;
+    vector<ull> h, pw;
+
+    void build(const string &s) {
+        int n = (int)s.size();
+        h.assign(n + 1, 0);
+        pw.assign(n + 1, 1);
+        for (int i = 0; i < n; i++) {
+            h[i + 1] = h[i] * BASE + (unsigned char)s[i] + 1;
+            pw[i + 1] = pw[i] * BASE;
+        }
+    }
+
+    ull get(int l, int r) const {
+        return h[r + 1] - h[l] * pw[r - l + 1];
+    }
+};
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    string s;
+    cin >> s;
+    RollingHash rh;
+    rh.build(s);
+    int q;
+    cin >> q;
+    while (q--) {
+        int l1, r1, l2, r2;
+        cin >> l1 >> r1 >> l2 >> r2;
+        --l1; --r1; --l2; --r2;
+        if (r1 - l1 != r2 - l2) cout << "NO\n";
+        else cout << (rh.get(l1, r1) == rh.get(l2, r2) ? "YES\n" : "NO\n");
+    }
+    return 0;
+}
+```
+
+**测试设计：**
+
+1. 输入：
+```text
+aaaa
+2
+1 2 2 3
+1 3 2 4
+```
+期望输出：
+```text
+YES
+YES
+```
+
+2. 输入：
+```text
+abcd
+2
+1 1 4 4
+1 2 3 4
+```
+期望输出：
+```text
+NO
+NO
+```
+
+***
+### V06-EX10 Manacher 回文询问
+
+- 归属卷：第 6 卷
+- 覆盖模块：STR-04 Manacher
+- 考场用途：预处理后快速判断任意区间是否回文。
+
+**题目描述：** 给定字符串 `s`，回答 `q` 次询问。每次给出 1-index 闭区间 `[l,r]`，判断 `s[l..r]` 是否为回文串。
+
+**输入格式：** 第一行字符串 `s`。第二行整数 `q`。接下来 `q` 行，每行 `l r`。
+
+**输出格式：** 回文输出 `YES`，否则输出 `NO`。
+
+**样例输入：**
+```text
+abacaba
+4
+1 7
+1 3
+2 4
+3 5
+```
+
+**样例输出：**
+```text
+YES
+YES
+NO
+YES
+```
+
+**完整代码：**
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+pair<vector<int>, vector<int>> manacher(const string &s) {
+    int n = (int)s.size();
+    vector<int> d1(n), d2(n);
+    for (int i = 0, l = 0, r = -1; i < n; i++) {
+        int k = (i > r) ? 1 : min(d1[l + r - i], r - i + 1);
+        while (i - k >= 0 && i + k < n && s[i - k] == s[i + k]) k++;
+        d1[i] = k;
+        if (i + k - 1 > r) {
+            l = i - k + 1;
+            r = i + k - 1;
+        }
+    }
+    for (int i = 0, l = 0, r = -1; i < n; i++) {
+        int k = (i > r) ? 0 : min(d2[l + r - i + 1], r - i + 1);
+        while (i - k - 1 >= 0 && i + k < n && s[i - k - 1] == s[i + k]) k++;
+        d2[i] = k;
+        if (i + k - 1 > r) {
+            l = i - k;
+            r = i + k - 1;
+        }
+    }
+    return {d1, d2};
+}
+
+bool is_pal(int l, int r, const vector<int> &d1, const vector<int> &d2) {
+    int len = r - l + 1;
+    if (len & 1) {
+        int mid = (l + r) / 2;
+        return d1[mid] >= len / 2 + 1;
+    }
+    int mid = (l + r + 1) / 2;
+    return d2[mid] >= len / 2;
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    string s;
+    cin >> s;
+    auto data = manacher(s);
+    int q;
+    cin >> q;
+    while (q--) {
+        int l, r;
+        cin >> l >> r;
+        --l; --r;
+        cout << (is_pal(l, r, data.first, data.second) ? "YES\n" : "NO\n");
+    }
+    return 0;
+}
+```
+
+**测试设计：**
+
+1. 输入：
+```text
+abba
+3
+1 4
+2 3
+1 3
+```
+期望输出：
+```text
+YES
+YES
+NO
+```
+
+2. 输入：
+```text
+abc
+2
+1 1
+1 2
+```
+期望输出：
+```text
+YES
+NO
+```
+
+***
+### V06-CEX01 组合数查询
+
+- 归属卷：第 6 卷
+- 覆盖模块：快速幂、逆元、组合数
+- 考场用途：模数是质数时的 C(n,k)。
+- 参考题型来源：参考来源：洛谷组合数学题型。
+
+**题目描述：** 预处理阶乘，回答组合数。
+
+**输入格式：** 第一行 n q mod，之后 q 行 a b。
+
+**输出格式：** 输出 C(a,b) mod。
+
+**样例输入：**
+```text
+5 3 1000000007
+5 2
+4 0
+3 5
+```
+
+**样例输出：**
+```text
+10
+1
+0
+```
+
+**完整代码：**
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+
+long long modpow(long long a,long long b,long long mod){long long r=1%mod;for(a%=mod;b;b>>=1,a=a*a%mod)if(b&1)r=r*a%mod;return r;}
+int main(){ios::sync_with_stdio(false);cin.tie(nullptr);int n,q;long long mod;cin>>n>>q>>mod; vector<long long>fac(n+1),inv(n+1);fac[0]=1%mod;for(int i=1;i<=n;i++)fac[i]=fac[i-1]*i%mod;inv[n]=modpow(fac[n],mod-2,mod);for(int i=n;i>=1;i--)inv[i-1]=inv[i]*i%mod;while(q--){int a,b;cin>>a>>b;if(b<0||b>a)cout<<0<<"\n";else cout<<fac[a]*inv[b]%mod*inv[a-b]%mod<<"\n";}return 0;}
+```
+
+**测试设计：** 额外测试：构造最小规模、重复值、边界值各一组，和样例一起运行。
+
+***
+### V06-CEX02 筛法加哥德巴赫拆分
+
+- 归属卷：第 6 卷
+- 覆盖模块：欧拉筛、质数判定
+- 考场用途：筛完再做构造/查询。
+- 参考题型来源：参考来源：洛谷素数筛/数论基础题型。
+
+**题目描述：** 输出不超过 n 的质数个数，并找一组质数和为 n。
+
+**输入格式：** 输入偶数 n。
+
+**输出格式：** 输出质数个数和一组拆分。
+
+**样例输入：**
+```text
+20
+```
+
+**样例输出：**
+```text
+8
+3 17
+```
+
+**完整代码：**
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+
+int main(){ios::sync_with_stdio(false);cin.tie(nullptr);int n;cin>>n; vector<int>is(n+1,1),pr; if(n>=0)is[0]=0;if(n>=1)is[1]=0; for(int i=2;i<=n;i++){if(is[i])pr.push_back(i); for(int p:pr){if(1LL*i*p>n)break;is[i*p]=0;if(i%p==0)break;}} cout<<pr.size()<<"\n"; for(int p:pr) if(n-p>=2&&is[n-p]){cout<<p<<" "<<n-p<<"\n"; return 0;} cout<<"NONE\n";return 0;}
+```
+
+**测试设计：** 额外测试：构造最小规模、重复值、边界值各一组，和样例一起运行。
+
+***
+### V06-CEX03 KMP 统计出现次数
+
+- 归属卷：第 6 卷
+- 覆盖模块：KMP、前缀函数
+- 考场用途：匹配题直接套。
+- 参考题型来源：参考来源：洛谷 KMP 模板题型。
+
+**题目描述：** 统计模式串在文本中出现次数，允许重叠。
+
+**输入格式：** 第一行模式串，第二行文本。
+
+**输出格式：** 输出次数。
+
+**样例输入：**
+```text
+aba
+ababaaba
+```
+
+**样例输出：**
+```text
+3
+```
+
+**完整代码：**
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+
+vector<int> prefix_function(const string&s){int n=s.size();vector<int>pi(n);for(int i=1;i<n;i++){int j=pi[i-1];while(j&&s[i]!=s[j])j=pi[j-1];if(s[i]==s[j])j++;pi[i]=j;}return pi;}
+int main(){ios::sync_with_stdio(false);cin.tie(nullptr);string p,t;cin>>p>>t;string s=p+"#"+t;auto pi=prefix_function(s);int ans=0;for(int x:pi)if(x==(int)p.size())ans++;cout<<ans<<"\n";return 0;}
+```
+
+**测试设计：** 额外测试：构造最小规模、重复值、边界值各一组，和样例一起运行。
+
+***
+### V06-CEX04 Trie 前缀数量查询
+
+- 归属卷：第 6 卷
+- 覆盖模块：Trie、字符串前缀
+- 考场用途：前缀类题目比 map 枚举稳。
+- 参考题型来源：参考来源：洛谷 Trie 模板题型。
+
+**题目描述：** 插入单词，查询每个前缀是多少单词的前缀。
+
+**输入格式：** 第一行 n q，之后 n 个单词和 q 个前缀。
+
+**输出格式：** 输出数量。
+
+**样例输入：**
+```text
+4 3
+apple app apt bat
+ap
+app
+b
+```
+
+**样例输出：**
+```text
+3
+2
+1
+```
+
+**完整代码：**
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+
+struct Node{int nxt[26];int cnt;Node(){memset(nxt,0,sizeof(nxt));cnt=0;}};
+int main(){ios::sync_with_stdio(false);cin.tie(nullptr);int n,q;cin>>n>>q;vector<Node>tr(1); for(int i=1;i<=n;i++){string s;cin>>s;int u=0;for(char c:s){int x=c-'a';if(!tr[u].nxt[x]){tr[u].nxt[x]=tr.size();tr.push_back(Node());}u=tr[u].nxt[x];tr[u].cnt++;}} while(q--){string s;cin>>s;int u=0,ok=1;for(char c:s){int x=c-'a';if(!tr[u].nxt[x]){ok=0;break;}u=tr[u].nxt[x];}cout<<(ok?tr[u].cnt:0)<<"\n";}return 0;}
+```
+
+**测试设计：** 额外测试：构造最小规模、重复值、边界值各一组，和样例一起运行。
+
+***
+### V06-CEX05 Manacher 最长回文子串
+
+- 归属卷：第 6 卷
+- 覆盖模块：Manacher、回文
+- 考场用途：回文长度题的线性模板。
+- 参考题型来源：参考来源：洛谷回文字符串题型。
+
+**题目描述：** 输出字符串最长回文子串长度。
+
+**输入格式：** 输入字符串。
+
+**输出格式：** 输出长度。
+
+**样例输入：**
+```text
+babad
+```
+
+**样例输出：**
+```text
+3
+```
+
+**完整代码：**
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+
+int main(){ios::sync_with_stdio(false);cin.tie(nullptr);string s;cin>>s;string t="@";for(char c:s){t+="#";t+=c;}t+="#$";int n=t.size();vector<int>p(n);int c=0,r=0,ans=0;for(int i=1;i<n-1;i++){int mir=2*c-i;if(i<r)p[i]=min(r-i,p[mir]);while(t[i+1+p[i]]==t[i-1-p[i]])p[i]++;if(i+p[i]>r){c=i;r=i+p[i];}ans=max(ans,p[i]);}cout<<ans<<"\n";return 0;}
+```
+
+**测试设计：** 额外测试：构造最小规模、重复值、边界值各一组，和样例一起运行。
+
+***
+
+<!-- V02_EXAMPLES_END -->

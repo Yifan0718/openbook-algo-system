@@ -20,6 +20,7 @@ ORDER = [
     "volume_9_python_complement.md",
     "volume_10_ai_special_topics.md",
     "volume_11_signoff_encyclopedia.md",
+    "12_zhongguancun_machine_exam_companion.md",
 ]
 
 MODULE_PREFIX_ORDER = [

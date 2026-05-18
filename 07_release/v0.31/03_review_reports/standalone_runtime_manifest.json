@@ -1,0 +1,785 @@
+{
+  "version": 1,
+  "defaults": {
+    "timeout_ms": 2000,
+    "compare": "trim"
+  },
+  "tests": {
+    "01c9e61d0f2870e6": [
+      {
+        "name": "small-subset-max-sum",
+        "stdin": "1\n5\n",
+        "stdout": "5\n"
+      }
+    ],
+    "0f38fdd27313e655": [
+      {
+        "name": "ai-topic-routing-basic",
+        "stdin": "knn\nrobot\nscript\nunknown\n",
+        "stdout": "AI-02\nAI-01 / GRAPH\nSIM-04/05\nROUTE\n"
+      }
+    ],
+    "6b9343b6c810d874": [
+      {
+        "name": "astar-grid-basic",
+        "stdin": "3 4\nS..#\n.#..\n...T\n",
+        "stdout": "5\n"
+      },
+      {
+        "name": "astar-grid-missing-target",
+        "stdin": "2 2\nS.\n..\n",
+        "stdout": "-1\n"
+      }
+    ],
+    "98a2b9c85a0f49c3": [
+      {
+        "name": "knn-classification-basic",
+        "stdin": "4 3 2 3\n0 0 1\n0 1 1\n10 10 2\n10 11 2\n0 0.2\n9 10\n5 5\n",
+        "stdout": "1\n2\n1\n"
+      }
+    ],
+    "c33a1ecce6e36d27": [
+      {
+        "name": "ai-similarity-cosine",
+        "stdin": "cosine\n3\n1 0 1\n1 1 0\n",
+        "stdout": "0.500000\n"
+      },
+      {
+        "name": "ai-similarity-jaccard",
+        "stdin": "jaccard\n4 5\n1 2 2 3\n2 3 4 4 5\n",
+        "stdout": "0.400000\n"
+      },
+      {
+        "name": "ai-confusion-matrix",
+        "stdin": "confusion\n3 5\n1 1\n1 2\n2 2\n3 1\n3 3\n",
+        "stdout": "0.600000\n1 1 0\n0 1 0\n1 0 1\n"
+      }
+    ],
+    "32e5bf60cf97acc2": [
+      {
+        "name": "tfidf-basic-query",
+        "stdin": "2\napple banana\ncat dog\napple\n",
+        "stdout": "1 0.707107\n"
+      }
+    ],
+    "ce6a029d246fb05c": [
+      {
+        "name": "kmeans-two-clusters",
+        "stdin": "4 1 2 2\n0\n1\n10\n11\n",
+        "stdout": "1 1 2 2\n0.500000\n10.500000\n"
+      }
+    ],
+    "599f09a35e616c8b": [
+      {
+        "name": "viterbi-basic-path",
+        "stdin": "2 2 3\n0.5 0.5\n0.9 0.1\n0.2 0.8\n0.8 0.2\n0.1 0.9\n1 2 2\n",
+        "stdout": "0.025920\n1 2 2\n"
+      }
+    ],
+    "055db34c49dc9417": [
+      {
+        "name": "neural-softmax-forward",
+        "stdin": "softmax 2 2\n1 2\n1 0 0\n0 1 0\n",
+        "stdout": "2\n0.268941 0.731059\n"
+      }
+    ],
+    "b1c9b8d6d7daa712": [
+      {
+        "name": "mdp-value-iteration-basic",
+        "stdin": "3 2 3 1.0\n2 0 3 1\n3 5 1 0\n3 0 3 0\n",
+        "stdout": "5.000000 5.000000 0.000000\n"
+      }
+    ],
+    "b8db89ddce36889a": [
+      {
+        "name": "spj-binary-f1",
+        "stdin": "f1 5\n1 1\n1 0\n0 1\n0 0\n1 1\n",
+        "stdout": "0.666667\n"
+      }
+    ],
+    "540c6428ad5db715": [
+      {
+        "name": "linear-svm-one-epoch",
+        "stdin": "2 1 1 1 0\n1 1\n-1 -1\n3\n2\n-2\n0\n",
+        "stdout": "1\n-1\n1\n"
+      }
+    ],
+    "467d068c421f7a6b": [
+      {
+        "name": "dnn-two-layer-softmax",
+        "stdin": "2\n2\n1 2\n2 relu\n1 0 0\n0 1 0\n2 softmax\n1 0 0\n0 1 0\n",
+        "stdout": "2\n0.268941 0.731059\n"
+      }
+    ],
+    "39274914cba6a620": [
+      {
+        "name": "linear-regression-one-step",
+        "stdin": "1 1 1 1\n1 2\n1\n3\n",
+        "stdout": "8.000000\n"
+      }
+    ],
+    "3a8d8143342b8584": [
+      {
+        "name": "backprop-one-sample",
+        "stdin": "1 1 1 1 1\n1 1\n0 0\n0 0\n1\n1\n",
+        "stdout": "0.531209\n"
+      }
+    ],
+    "f927d774ff4a71bd": [
+      {
+        "name": "autodiff-reverse-mode-sin",
+        "stdin": "5\nvar 2\nvar 3\nmul 1 2\nsin 1\nadd 3 4\n",
+        "stdout": "6.909297\n2.583853 2.000000\n"
+      }
+    ],
+    "051ff8480d08eeff": [
+      {
+        "name": "p1874-sample",
+        "stdin": "99999\n45\n",
+        "stdout": "4\n"
+      },
+      {
+        "name": "p1874-leading-zero",
+        "stdin": "303\n6\n",
+        "stdout": "1\n"
+      }
+    ],
+    "cfffd91923e6db43": [
+      {
+        "name": "subset-positive-and-negative",
+        "stdin": "3\n1 -2 4\n",
+        "stdout": "5\n"
+      },
+      {
+        "name": "subset-too-large-fallback",
+        "stdin": "23\n1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1\n",
+        "stdout": "0\n"
+      }
+    ],
+    "07c709f3fcd11b60": [
+      {
+        "name": "stairs-no-same-jump",
+        "stdin": "4\n",
+        "stdout": "1\n"
+      }
+    ],
+    "27a4b9aa46fd891d": [
+      {
+        "name": "grid-bfs-shortest",
+        "stdin": "3 3\nS..\n.#.\n..T\n",
+        "stdout": "4\n"
+      },
+      {
+        "name": "grid-bfs-missing-start",
+        "stdin": "2 2\n..\n.T\n",
+        "stdout": "-1\n"
+      }
+    ],
+    "1ad4d11e62cbbad8": [
+      {
+        "name": "grid-no-two-down",
+        "stdin": "3 2\n1 1\n100 1\n100 1\n",
+        "stdout": "103\n"
+      }
+    ],
+    "1adbd0e5a648ced0": [
+      {
+        "name": "basic-vector-string-set-map",
+        "stdin": "3 abc\n5 6 7\n",
+        "stdout": "a 5 1\n1 3 5\n"
+      }
+    ],
+    "1c101394c2f5ed6a": [
+      {
+        "name": "getline-after-cin",
+        "stdin": "3\nhello world\n\nabc\n",
+        "stdout": "hello world\n\nabc\n",
+        "compare": "exact"
+      }
+    ],
+    "1f822dce878d85c6": [
+      {
+        "name": "encoded-memo-knapsack",
+        "stdin": "3 5\n2 5\n2 6\n3 7\n",
+        "stdout": "12\n"
+      }
+    ],
+    "9a12f6e7ef2a7f86": [
+      {
+        "name": "meet-in-middle-subset-sum",
+        "stdin": "4 10\n2 4 8 9\n",
+        "stdout": "10\n"
+      },
+      {
+        "name": "meet-in-middle-no-positive-fit",
+        "stdin": "1 5\n6\n",
+        "stdout": "0\n"
+      }
+    ],
+    "3cedd7940a545415": [
+      {
+        "name": "vector-memo-knapsack",
+        "stdin": "2 3\n2 5\n3 7\n",
+        "stdout": "7\n"
+      }
+    ],
+    "488b1158614acb00": [
+      {
+        "name": "memoized-search-knapsack",
+        "stdin": "3 5\n3 10\n4 20\n2 8\n",
+        "stdout": "20\n"
+      }
+    ],
+    "51926829dc31cbea": [
+      {
+        "name": "control-flow-basic",
+        "stdin": "5\n-2 0 4 7 -1\n",
+        "stdout": "POSITIVE\n8 2 7 4\n"
+      }
+    ],
+    "592e23f56dc29d30": [
+      {
+        "name": "grid-one-double",
+        "stdin": "2 2\n1 10\n2 3\n",
+        "stdout": "24\n"
+      }
+    ],
+    "5d7eeeef5174b1d8": [
+      {
+        "name": "combination-dfs",
+        "stdin": "4 2\n1 5 3 2\n",
+        "stdout": "8\n"
+      }
+    ],
+    "5e25069cef2c32b1": [
+      {
+        "name": "choose-k-no-adjacent",
+        "stdin": "5 2\n2 7 9 3 1\n",
+        "stdout": "11\n"
+      }
+    ],
+    "5eb82e3322be093a": [
+      {
+        "name": "map-set-count-query",
+        "stdin": "4\n5 a\n2 b\n5 a\n8 c\n4\n",
+        "stdout": "3\n5\n0\n"
+      }
+    ],
+    "bfa75b9e3eb81264": [
+      {
+        "name": "bitset-and-bit-ops",
+        "stdin": "3 5\n2 3 4\n",
+        "stdout": "1\n1\n"
+      },
+      {
+        "name": "negative-odd-count",
+        "stdin": "2 0\n-3 2\n",
+        "stdout": "1\n1\n"
+      }
+    ],
+    "61c5574f2e28713c": [
+      {
+        "name": "preorder-inorder-rebuild",
+        "stdin": "5\n1 2 4 5 3\n4 2 5 1 3\n",
+        "stdout": "4 5 2 3 1\n"
+      }
+    ],
+    "62b379d2374502e7": [
+      {
+        "name": "small-exact-large-special-small",
+        "stdin": "3\n-1 5 2\n",
+        "stdout": "7\n"
+      }
+    ],
+    "642890091a7b1d5b": [
+      {
+        "name": "binary-tree-traversals",
+        "stdin": "5\n2 3\n4 5\n0 0\n0 0\n0 0\n",
+        "stdout": "1 2 4 5 3\n4 2 5 1 3\n4 5 2 3 1\n"
+      }
+    ],
+    "6629aae4070f2a35": [
+      {
+        "name": "merge-sort-inversion",
+        "stdin": "5\n5 4 2 3 1\n",
+        "stdout": "9\n"
+      }
+    ],
+    "6be01ef1d7f4fdc4": [
+      {
+        "name": "bigint-add",
+        "stdin": "add\n999\n1\n",
+        "stdout": "1000\n"
+      },
+      {
+        "name": "bigint-sub-negative",
+        "stdin": "sub\n1\n1000\n",
+        "stdout": "-999\n"
+      },
+      {
+        "name": "bigint-mul-negative",
+        "stdin": "mul\n123\n-45\n",
+        "stdout": "-5535\n"
+      },
+      {
+        "name": "bigint-cmp-leading-zero",
+        "stdin": "cmp\n0010\n9\n",
+        "stdout": "1\n"
+      }
+    ],
+    "dc80eddee79f8385": [
+      {
+        "name": "bigint-class-core-ops",
+        "stdin": "18\n+ 999 1\n- 1 1000\n* -123 45\n/ 1000 7\n% -1000 7\n/ -1000 7\n% 1000 -7\n< -5 3\n> 00010 9\n== -0000 0\n!= 123 0123\ninc -1\ndec 0\nabs -12345\n+ -999 1000\n- -999 -1000\n* 0 123456\n/ 0 99\n",
+        "stdout": "1000\n-999\n-5535\n142\n-6\n-142\n6\n1\n1\n1\n0\n0\n-1\n12345\n1\n1\n0\n0\n"
+      },
+      {
+        "name": "bigint-class-large-ops",
+        "stdin": "8\n+ 123456789123456789 987654321987654321\n- 1000000000000000000000000 1\n* 123456789 987654321\n/ 121932631112635269 123456789\n% 121932631112635269 123456789\n* 999999999999999999 999999999999999999\n/ 1000000000000000000000000000000 10\n% 1000000000000000000000000000000 10\n",
+        "stdout": "1111111111111111110\n999999999999999999999999\n121932631112635269\n987654321\n0\n999999999999999998000000000000000001\n100000000000000000000000000000\n0\n"
+      },
+      {
+        "name": "bigint-class-sign-division",
+        "stdin": "12\n/ -7 3\n% -7 3\n/ 7 -3\n% 7 -3\n/ -7 -3\n% -7 -3\n< -100 -99\n> -100 -99\n== -0000 0000\n+ -000000123 23\n- 23 -000000123\nabs -000001\n",
+        "stdout": "-2\n-1\n-2\n1\n2\n-1\n1\n0\n1\n-100\n146\n1\n"
+      }
+    ],
+    "8c66425763d65262": [
+      {
+        "name": "expression-ast-sample",
+        "stdin": "2\na 10\nb 4\n-(a + 3) * b + 20 / 3\n",
+        "stdout": "-46\n10\n+ * neg + a 3 b / 20 3\na 3 + neg b * 20 3 / +\n"
+      },
+      {
+        "name": "expression-ast-negative-division-mod",
+        "stdin": "3\nx -7\ny 3\nz 10\nx / y + x % y + z * (2 + 3)\n",
+        "stdout": "47\n13\n+ + / x y % x y * z + 2 3\nx y / x y % + z 2 3 + * +\n"
+      },
+      {
+        "name": "expression-ast-unary-number-only",
+        "stdin": "0\n1 + 2 * 3 - -4\n",
+        "stdout": "11\n8\n- + 1 * 2 3 neg 4\n1 2 3 * + 4 neg -\n"
+      }
+    ],
+    "d60255e3054ea5d7": [
+      {
+        "name": "format-parser-json-leaves",
+        "stdin": "json\n{\"b\":[true,null,\"x\"],\"a\":{\"n\":-12,\"s\":\"hi\\n\"}}\n",
+        "stdout": "8 5\n$.b[1]=true\n$.b[2]=null\n$.b[3]=\"x\"\n$.a.n=-12\n$.a.s=\"hi\\n\"\n"
+      },
+      {
+        "name": "format-parser-json-unicode-escape",
+        "stdin": "json\n{\"s\":\"\\u0041\\u4e2d\"}\n",
+        "stdout": "2 1\n$.s=\"A中\"\n"
+      },
+      {
+        "name": "format-parser-csv-quotes",
+        "stdin": "csv\nname,score,note\nAlice,10,\"hello,world\"\nBob,20,\"a \"\"quote\"\"\"\n",
+        "stdout": "3\nrow 1 cols 3\n[1,1]=name\n[1,2]=score\n[1,3]=note\nrow 2 cols 3\n[2,1]=Alice\n[2,2]=10\n[2,3]=hello,world\nrow 3 cols 3\n[3,1]=Bob\n[3,2]=20\n[3,3]=a \"quote\"\n"
+      },
+      {
+        "name": "format-parser-ini-sections",
+        "stdin": "ini\n# comment\nname = root\n[db]\nhost=localhost\nport : 3306\n[feature]\nenabled=true\n",
+        "stdout": "4\nglobal.name=root\ndb.host=localhost\ndb.port=3306\nfeature.enabled=true\n"
+      }
+    ],
+    "299dfbdadb4c257c": [
+      {
+        "name": "mini-interpreter-while-sum",
+        "stdin": "x = 0;\nsum = 0;\nwhile (x < 5) {\n    x = x + 1;\n    sum = sum + x;\n}\nprint sum;\n",
+        "stdout": "15\n"
+      },
+      {
+        "name": "mini-interpreter-if-expression",
+        "stdin": "a = 3;\nb = 4;\nprint -(a + b) * 2;\nif (a * b == 12) {\n    print 1;\n} else {\n    print 0;\n}\nprint a / 2;\n",
+        "stdout": "-14\n1\n1\n"
+      },
+      {
+        "name": "mini-interpreter-unary-loop",
+        "stdin": "i = 3;\nwhile (i != 0) {\n    print i;\n    i = i - 1;\n}\nif (!i) print 99; else print 0;\n",
+        "stdout": "3\n2\n1\n99\n"
+      }
+    ],
+    "5e7daf91f78df095": [
+      {
+        "name": "date-diff-leap-year",
+        "stdin": "diff\n2024 2 28 2024 3 1\n",
+        "stdout": "2\n"
+      },
+      {
+        "name": "date-add-leap-year",
+        "stdin": "add\n2024 2 28 2\n",
+        "stdout": "2024-03-01\n"
+      },
+      {
+        "name": "date-weekday-epoch",
+        "stdin": "weekday\n1970 1 1\n",
+        "stdout": "Thu\n"
+      },
+      {
+        "name": "historical-jdn-before-switch",
+        "stdin": "jdn\nhistorical\n1582 10 4\n",
+        "stdout": "2299160\n"
+      },
+      {
+        "name": "historical-jdn-after-switch",
+        "stdin": "jdn\nhistorical\n1582 10 15\n",
+        "stdout": "2299161\n"
+      },
+      {
+        "name": "timezone-conversion",
+        "stdin": "tz\n2026 5 18 10 0 0 UTC+8 UTC-05:30\n",
+        "stdout": "2026-05-17 20:30:00\n"
+      }
+    ],
+    "6d99ab110fe7247b": [
+      {
+        "name": "overflow-and-int128",
+        "stdin": "1000000000000 1000000000000 1000000000000000000\n",
+        "stdout": "OVER\n1000000000000000000000000\n500000000000000000\n"
+      }
+    ],
+    "6f81cae2cda4a848": [
+      {
+        "name": "coordinate-compression",
+        "stdin": "5\n100 50 100 1000000000 50\n60 1000000000\n",
+        "stdout": "2 1 2 3 1\n2\n"
+      }
+    ],
+    "74e15f1713240e16": [
+      {
+        "name": "backtracking-pruning-knapsack",
+        "stdin": "3 5\n3 10\n4 20\n2 8\n",
+        "stdout": "20\n"
+      }
+    ],
+    "84056bb6acc6aa38": [
+      {
+        "name": "stock-cooldown",
+        "stdin": "5\n1 2 3 0 2\n",
+        "stdout": "3\n"
+      }
+    ],
+    "86b0ca20dfad77a7": [
+      {
+        "name": "cin-cout-sum",
+        "stdin": "3\n10 20 30\n",
+        "stdout": "60\n"
+      }
+    ],
+    "5427ab3d040ece05": [
+      {
+        "name": "read-case-eof-two-cases",
+        "stdin": "3 2\n1 2 3\n1 2\n2 3\n2 0\n4 5\n",
+        "stdout": "6\n9\n"
+      }
+    ],
+    "86fe4694481b95cb": [
+      {
+        "name": "complexity-cheatsheet-safe",
+        "stdin": "1000 1000 1\n",
+        "stdout": "very_safe\n"
+      }
+    ],
+    "87ec31d9b06a1259": [
+      {
+        "name": "sort-and-bounds",
+        "stdin": "3\n90 18\n90 17\n80 20\n85 100\n",
+        "stdout": "2\n2\n"
+      }
+    ],
+    "f56e5cffc4ce51a6": [
+      {
+        "name": "key-grid-bfs-basic",
+        "stdin": "3 4\nSa.A\n.#..\n...T\n",
+        "stdout": "5\n"
+      },
+      {
+        "name": "key-grid-bfs-missing-target",
+        "stdin": "2 2\nSa\n..\n",
+        "stdout": "-1\n"
+      }
+    ],
+    "8b171cea69b64cb6": [
+      {
+        "name": "stl-algorithm-ranges",
+        "stdin": "5 2\n3 1 2 2 5\n2 3\n4 5\n",
+        "stdout": "3\n1\n"
+      }
+    ],
+    "8d2abc021eeff895": [
+      {
+        "name": "submission-route-small",
+        "stdin": "2\n-5 3\n",
+        "stdout": "3\n"
+      }
+    ],
+    "93a9c5b58419d16f": [
+      {
+        "name": "p1874-bottom-up-sample",
+        "stdin": "99999\n45\n",
+        "stdout": "4\n"
+      },
+      {
+        "name": "p1874-bottom-up-leading-zero",
+        "stdin": "303\n6\n",
+        "stdout": "1\n"
+      }
+    ],
+    "9becfcd0c0bcf86b": [
+      {
+        "name": "priority-queue-struct-order",
+        "stdin": "3\n5 2 5\n",
+        "stdout": "2 2\n5 1\n5 3\n"
+      }
+    ],
+    "cecc59722c27aa2f": [
+      {
+        "name": "binary-lifting-jump-small",
+        "stdin": "3 3\n2 3 3\n1 2\n1 3\n2 5\n",
+        "stdout": "3\n3\n3\n"
+      },
+      {
+        "name": "binary-lifting-bit60",
+        "stdin": "1 1\n0\n1 1152921504606846976\n",
+        "stdout": "0\n"
+      }
+    ],
+    "ad1d8c9470ecb672": [
+      {
+        "name": "main-io-sum",
+        "stdin": "3\n10 20 30\n",
+        "stdout": "60\n"
+      }
+    ],
+    "af75600658959899": [
+      {
+        "name": "greedy-routing-non-touching",
+        "stdin": "3\n1 3\n2 5\n6 7\n",
+        "stdout": "2\n2\n"
+      }
+    ],
+    "afbd39e47b424bb0": [
+      {
+        "name": "edit-distance-memo-sample",
+        "stdin": "sfdqxbw\ngfdgw\n",
+        "stdout": "4\n"
+      }
+    ],
+    "b4314b0a81030edc": [
+      {
+        "name": "string-reference-full",
+        "stdin": "",
+        "stdout": "ABRA\n1\none\ntwo\nthree\n124 1234567890123\n"
+      }
+    ],
+    "c1044a5f3d99f0ab": [
+      {
+        "name": "legal-fallback-output",
+        "stdin": "1\n7\n",
+        "stdout": "0\n"
+      }
+    ],
+    "e2dced9066806ba7": [
+      {
+        "name": "fast-read-write-sum",
+        "stdin": "3\n10 20 30\n",
+        "stdout": "60\n"
+      },
+      {
+        "name": "fast-read-write-llong-min",
+        "stdin": "1\n-9223372036854775808\n",
+        "stdout": "-9223372036854775808\n"
+      }
+    ],
+    "c2d71fab2662c8cd": [
+      {
+        "name": "permutation-enumeration",
+        "stdin": "3\n1 2 3\n",
+        "stdout": "14\n"
+      }
+    ],
+    "c365f7527afbba06": [
+      {
+        "name": "edit-distance-bottom-up-sample",
+        "stdin": "sfdqxbw\ngfdgw\n",
+        "stdout": "4\n"
+      }
+    ],
+    "c489a78ea6444778": [
+      {
+        "name": "persistent-segtree-kth",
+        "stdin": "5 3\n5 1 4 2 3\n2 5 3\n1 5 1\n1 5 6\n",
+        "stdout": "3\n1\n-1\n"
+      }
+    ],
+    "e22beec204dd1b2d": [
+      {
+        "name": "queue-stack-heap",
+        "stdin": "5\n3 1 4 1 5\n",
+        "stdout": "5 1\n4\n"
+      }
+    ],
+    "ebde4ba113df005b": [
+      {
+        "name": "common-pitfall-max",
+        "stdin": "1\n3\n10 20 30\n",
+        "stdout": "30\n"
+      }
+    ],
+    "eeb5dca6532a1415": [
+      {
+        "name": "stl-first-data-structures-compile-run",
+        "stdin": "3\n1 2 3\n",
+        "stdout": ""
+      }
+    ],
+    "f280b020bc5c4f0f": [
+      {
+        "name": "map-tuple-memo-knapsack",
+        "stdin": "3 5\n2 5\n2 6\n3 7\n",
+        "stdout": "12\n"
+      }
+    ],
+    "f32e645bb4313fe6": [
+      {
+        "name": "unified-skeleton-empty",
+        "stdin": "",
+        "stdout": ""
+      }
+    ],
+    "f5b807c2b7a148b4": [
+      {
+        "name": "stl-containers-basic",
+        "stdin": "0\n",
+        "stdout": "2 1\nbc\n"
+      }
+    ],
+    "de8812f22a7da1b2": [
+      {
+        "name": "equation-real-gauss-unique",
+        "stdin": "real\n2 2\n2 1 5\n1 -1 1\n",
+        "stdout": "UNIQUE\n2.0000000000 1.0000000000\n"
+      },
+      {
+        "name": "equation-mod-gauss-unique",
+        "stdin": "mod\n2 2 1000000007\n2 1 5\n1 -1 1\n",
+        "stdout": "UNIQUE\n2 1\n"
+      },
+      {
+        "name": "equation-linear-congruence",
+        "stdin": "congruence\n14 30 100\n",
+        "stdout": "45 50\n"
+      },
+      {
+        "name": "equation-poly-eval",
+        "stdin": "eval\n2\n1 -3 2\n3\n",
+        "stdout": "10.0000000000\n"
+      },
+      {
+        "name": "equation-poly-bisect",
+        "stdin": "bisect\n2\n-2 0 1\n0 2\n",
+        "stdout": "1.4142135624 0.0000000000\n"
+      },
+      {
+        "name": "equation-quadratic-formula",
+        "stdin": "quad\n1 -3 2\n",
+        "stdout": "2\n1.0000000000\n2.0000000000\n"
+      }
+    ],
+    "f8f666e9f9d4b8fb": [
+      {
+        "name": "scanf-printf-sum",
+        "stdin": "3\n10 20 30\n",
+        "stdout": "60\n"
+      }
+    ],
+    "9b81af8a5e974820": [
+      {
+        "name": "sign-triangle-heron-345",
+        "stdin": "triangle\n3 4 5\n",
+        "stdout": "6.000000\n"
+      },
+      {
+        "name": "sign-bmp-row-align-24bit",
+        "stdin": "bmp\n3 2 24\n",
+        "stdout": "24\n"
+      },
+      {
+        "name": "sign-date-diff-leap-year",
+        "stdin": "datediff\n2024 2 28 2024 3 1\n",
+        "stdout": "2\n"
+      },
+      {
+        "name": "sign-binary-metrics",
+        "stdin": "metrics\n5\n1 1\n1 0\n0 1\n0 0\n1 1\n",
+        "stdout": "0.600000 0.666667 0.666667 0.666667\n"
+      },
+      {
+        "name": "sign-base-hex-to-decimal",
+        "stdin": "base\nFF 16\n",
+        "stdout": "255\n"
+      },
+      {
+        "name": "sign-bmi-centimeter",
+        "stdin": "bmi\n70 175\n",
+        "stdout": "22.857143\n"
+      },
+      {
+        "name": "sign-excel-col-to-num",
+        "stdin": "excel_to_num\nAA\n",
+        "stdout": "27\n"
+      },
+      {
+        "name": "sign-excel-num-to-col",
+        "stdin": "excel_to_col\n703\n",
+        "stdout": "AAA\n"
+      }
+    ],
+    "77e56bfbb759bd89": [
+      {
+        "name": "markov-step-two-steps",
+        "stdin": "step 2 2\n1 0\n0.5 0.5\n0.2 0.8\n",
+        "stdout": "0.350000 0.650000\n"
+      },
+      {
+        "name": "markov-power-ten-steps",
+        "stdin": "power 2 10\n1 0\n0.5 0.5\n0.2 0.8\n",
+        "stdout": "0.285719 0.714281\n"
+      },
+      {
+        "name": "markov-stationary-iter",
+        "stdin": "stationary 2 100\n0 0\n0.5 0.5\n0.2 0.8\n",
+        "stdout": "0.285714 0.714286\n"
+      }
+    ],
+    "beee3d6beb1041d1": [
+      {
+        "name": "modern-ai-topk-cosine",
+        "stdin": "3 2 2\n1 0\n1 0\n0 1\n1 1\n",
+        "stdout": "1 3\n"
+      }
+    ],
+    "1d8243b826ef0d6a": [
+      {
+        "name": "arch-endian-current-wsl",
+        "stdin": "",
+        "stdout": "78 56 34 12\n"
+      }
+    ],
+    "32441dd9c24c002c": [
+      {
+        "name": "noip-pass-by-value-and-reference",
+        "stdin": "",
+        "stdout": "5\n6\n"
+      }
+    ],
+    "ca43debfb1c08a5e": [
+      {
+        "name": "noip-trace-branch-loop",
+        "stdin": "",
+        "stdout": "41\n"
+      }
+    ]
+  }
+}

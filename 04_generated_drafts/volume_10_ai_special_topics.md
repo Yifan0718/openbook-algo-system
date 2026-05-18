@@ -3081,3 +3081,1279 @@ add 3 4
 6.909297
 2.583853 2.000000
 ```
+
+<!-- V02_EXAMPLES_START -->
+
+# v0.2 本卷例题训练区
+
+这一节是 0.2 新增的实战例题。每题都配完整可运行代码和样例；考试时优先看“覆盖模块”和“考场用途”，再复制对应代码骨架。
+
+### V10-EX01 kNN 分类器
+
+- 归属卷：第 10 卷
+- 覆盖模块：AI-02 kNN
+- 考场用途：把训练集、特征、标签转成距离排序和投票。
+
+**题目描述：** 给定训练样本和查询样本，使用 `k` 近邻分类。距离使用欧氏距离平方，投票数多的标签胜出；票数相同标签小者胜出。
+
+**输入格式：** 第一行 `n q d k`。接下来 `n` 行，每行 `d` 个特征和一个标签。接下来 `q` 行，每行 `d` 个特征。
+
+**输出格式：** 每个查询输出预测标签。
+
+**样例输入：**
+```text
+3 2 2 1
+0 0 1
+10 10 2
+1 0 1
+0 1
+9 9
+```
+
+**样例输出：**
+```text
+1
+2
+```
+
+**完整代码：**
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+struct Sample {
+    vector<double> x;
+    int label;
+};
+
+double dist2(const vector<double> &a, const vector<double> &b, int d) {
+    double s = 0;
+    for (int i = 1; i <= d; i++) {
+        double t = a[i] - b[i];
+        s += t * t;
+    }
+    return s;
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int n, q, d, k;
+    cin >> n >> q >> d >> k;
+    vector<Sample> train(n + 1);
+    for (int i = 1; i <= n; i++) {
+        train[i].x.assign(d + 1, 0);
+        for (int j = 1; j <= d; j++) cin >> train[i].x[j];
+        cin >> train[i].label;
+    }
+    while (q--) {
+        vector<double> x(d + 1);
+        for (int j = 1; j <= d; j++) cin >> x[j];
+        vector<pair<double, int>> near;
+        for (int i = 1; i <= n; i++) near.push_back({dist2(train[i].x, x, d), train[i].label});
+        sort(near.begin(), near.end());
+        map<int, int> vote;
+        for (int i = 0; i < min(k, (int)near.size()); i++) vote[near[i].second]++;
+        int best_label = -1, best_cnt = -1;
+        for (auto [lab, cnt] : vote) {
+            if (cnt > best_cnt || (cnt == best_cnt && lab < best_label)) {
+                best_cnt = cnt;
+                best_label = lab;
+            }
+        }
+        cout << best_label << '\n';
+    }
+    return 0;
+}
+```
+
+**测试设计：**
+
+1. 输入：
+```text
+4 1 1 3
+0 1
+2 2
+4 2
+6 1
+3
+```
+期望输出：
+```text
+2
+```
+
+2. 输入：
+```text
+2 1 1 2
+0 1
+2 2
+1
+```
+期望输出：
+```text
+1
+```
+
+***
+### V10-EX02 TF-IDF 文档检索
+
+- 归属卷：第 10 卷
+- 覆盖模块：AI-05 TF-IDF
+- 考场用途：文本切词、词频、余弦相似度综合模拟。
+
+**题目描述：** 给定 `n` 篇英文文档和一个查询，按小写字母数字连续段切词。使用 `idf(w)=log((n+1)/(df(w)+1))+1`，权重为 `tf*idf`。输出与查询余弦相似度最高的文档编号和分数，平分取编号小。
+
+**输入格式：** 第一行整数 `n`。接下来 `n` 行为文档。最后一行为查询。
+
+**输出格式：** 输出文档编号和相似度，保留 6 位。
+
+**样例输入：**
+```text
+3
+Apple banana apple
+Orange banana
+car bus train
+apple banana
+```
+
+**样例输出：**
+```text
+1 0.959146
+```
+
+**完整代码：**
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+vector<string> tokenize(const string &s) {
+    vector<string> words;
+    string cur;
+    for (unsigned char c : s) {
+        if (isalnum(c)) cur.push_back((char)tolower(c));
+        else if (!cur.empty()) {
+            words.push_back(cur);
+            cur.clear();
+        }
+    }
+    if (!cur.empty()) words.push_back(cur);
+    return words;
+}
+
+map<string, int> count_words(const vector<string> &v) {
+    map<string, int> c;
+    for (auto &w : v) c[w]++;
+    return c;
+}
+
+double cosine(const map<string, int> &a, const map<string, int> &b, const map<string, int> &df, int n) {
+    map<string, double> va, vb;
+    for (auto [w, c] : a) {
+        int dfi = df.count(w) ? df.at(w) : 0;
+        va[w] = c * (log((double)(n + 1) / (dfi + 1)) + 1.0);
+    }
+    for (auto [w, c] : b) {
+        int dfi = df.count(w) ? df.at(w) : 0;
+        vb[w] = c * (log((double)(n + 1) / (dfi + 1)) + 1.0);
+    }
+    double dot = 0, na = 0, nb = 0;
+    for (auto [w, x] : va) {
+        na += x * x;
+        if (vb.count(w)) dot += x * vb[w];
+    }
+    for (auto [w, y] : vb) nb += y * y;
+    if (na == 0 || nb == 0) return 0;
+    return dot / sqrt(na * nb);
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int n;
+    cin >> n;
+    string line;
+    getline(cin, line);
+    vector<map<string, int>> docs(n + 1);
+    map<string, int> df;
+    for (int i = 1; i <= n; i++) {
+        getline(cin, line);
+        docs[i] = count_words(tokenize(line));
+        for (auto [w, c] : docs[i]) df[w]++;
+    }
+    getline(cin, line);
+    auto query = count_words(tokenize(line));
+    int best = 1;
+    double score = -1;
+    for (int i = 1; i <= n; i++) {
+        double cur = cosine(docs[i], query, df, n);
+        if (cur > score + 1e-12) {
+            score = cur;
+            best = i;
+        }
+    }
+    cout << fixed << setprecision(6) << best << ' ' << score << '\n';
+    return 0;
+}
+```
+
+**测试设计：**
+
+1. 输入：
+```text
+2
+hello
+world
+xyz
+```
+期望输出：
+```text
+1 0.000000
+```
+
+2. 输入：
+```text
+2
+cat dog
+cat cat
+cat dog
+```
+期望输出：
+```text
+1 1.000000
+```
+
+***
+### V10-EX03 k-means 一维聚类
+
+- 归属卷：第 10 卷
+- 覆盖模块：AI-06 k-means
+- 考场用途：按题意模拟聚类迭代和空簇处理。
+
+**题目描述：** 给定 `n` 个一维点、簇数 `k` 和迭代次数 `iter`。初始中心为前 `k` 个点。每轮先分配到最近中心，距离相同选编号小；再用簇内均值更新中心，空簇保持原中心。输出最终标签和中心。
+
+**输入格式：** 第一行 `n k iter`。第二行 `n` 个实数点。
+
+**输出格式：** 第一行输出 `n` 个簇编号。第二行输出 `k` 个中心，保留 6 位。
+
+**样例输入：**
+```text
+5 2 2
+0 1 2 10 11
+```
+
+**样例输出：**
+```text
+1 1 1 2 2
+1.000000 10.500000
+```
+
+**完整代码：**
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int n, k, iter;
+    cin >> n >> k >> iter;
+    vector<double> x(n + 1), center(k + 1);
+    for (int i = 1; i <= n; i++) cin >> x[i];
+    for (int i = 1; i <= k; i++) center[i] = x[i];
+    vector<int> label(n + 1, 1);
+    for (int it = 1; it <= iter; it++) {
+        for (int i = 1; i <= n; i++) {
+            int best = 1;
+            double best_dist = fabs(x[i] - center[1]);
+            for (int c = 2; c <= k; c++) {
+                double cur = fabs(x[i] - center[c]);
+                if (cur < best_dist - 1e-12) {
+                    best_dist = cur;
+                    best = c;
+                }
+            }
+            label[i] = best;
+        }
+        vector<double> sum(k + 1, 0);
+        vector<int> cnt(k + 1, 0);
+        for (int i = 1; i <= n; i++) {
+            sum[label[i]] += x[i];
+            cnt[label[i]]++;
+        }
+        for (int c = 1; c <= k; c++) if (cnt[c]) center[c] = sum[c] / cnt[c];
+    }
+    for (int i = 1; i <= n; i++) {
+        if (i > 1) cout << ' ';
+        cout << label[i];
+    }
+    cout << '\n' << fixed << setprecision(6);
+    for (int c = 1; c <= k; c++) {
+        if (c > 1) cout << ' ';
+        cout << center[c];
+    }
+    cout << '\n';
+    return 0;
+}
+```
+
+**测试设计：**
+
+1. 输入：
+```text
+3 2 1
+0 10 20
+```
+期望输出：
+```text
+1 2 2
+0.000000 15.000000
+```
+
+2. 输入：
+```text
+3 2 0
+1 2 3
+```
+期望输出：
+```text
+1 1 1
+1.000000 2.000000
+```
+
+***
+### V10-EX04 线性回归在线训练
+
+- 归属卷：第 10 卷
+- 覆盖模块：AI-13 线性回归梯度下降
+- 考场用途：按题面公式模拟参数更新。
+
+**题目描述：** 一维线性模型 `pred=w*x+b`，初始 `w=b=0`。给定训练集、轮数和学习率，按输入顺序做在线梯度下降：`err=pred-y`，`w-=lr*err*x`，`b-=lr*err`。训练后回答查询预测。
+
+**输入格式：** 第一行 `n epoch lr`。接下来 `n` 行 `x y`。然后一行 `q`。接下来 `q` 行每行一个 `x`。
+
+**输出格式：** 每个查询输出预测值，保留 6 位。
+
+**样例输入：**
+```text
+2 1 0.1
+1 2
+2 4
+2
+1
+3
+```
+
+**样例输出：**
+```text
+1.420000
+3.180000
+```
+
+**完整代码：**
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int n, epoch;
+    double lr;
+    cin >> n >> epoch >> lr;
+    vector<double> x(n + 1), y(n + 1);
+    for (int i = 1; i <= n; i++) cin >> x[i] >> y[i];
+    double w = 0, b = 0;
+    for (int ep = 1; ep <= epoch; ep++) {
+        for (int i = 1; i <= n; i++) {
+            double pred = w * x[i] + b;
+            double err = pred - y[i];
+            w -= lr * err * x[i];
+            b -= lr * err;
+        }
+    }
+    int q;
+    cin >> q;
+    cout << fixed << setprecision(6);
+    while (q--) {
+        double t;
+        cin >> t;
+        cout << w * t + b << '\n';
+    }
+    return 0;
+}
+```
+
+**测试设计：**
+
+1. 输入：
+```text
+1 0 0.1
+5 10
+2
+1
+5
+```
+期望输出：
+```text
+0.000000
+0.000000
+```
+
+2. 输入：
+```text
+1 1 0.5
+2 4
+1
+2
+```
+期望输出：
+```text
+10.000000
+```
+
+***
+### V10-EX05 感知机二分类
+
+- 归属卷：第 10 卷
+- 覆盖模块：AI-02 感知机
+- 考场用途：二分类在线更新，标签为 `-1/+1`。
+
+**题目描述：** 给定二维样本和标签 `-1/+1`，初始 `w1=w2=b=0`。训练 `epoch` 轮。若 `y*(w·x+b)<=0`，执行 `w+=lr*y*x,b+=lr*y`。训练后预测查询点，分数 `>=0` 输出 `1`，否则输出 `-1`。
+
+**输入格式：** 第一行 `n epoch lr`。接下来 `n` 行 `x1 x2 y`。然后一行 `q`。接下来 `q` 行 `x1 x2`。
+
+**输出格式：** 每个查询输出预测标签。
+
+**样例输入：**
+```text
+4 2 1
+1 1 1
+2 1 1
+-1 -1 -1
+-2 -1 -1
+3
+3 2
+-3 -2
+0 0
+```
+
+**样例输出：**
+```text
+1
+-1
+1
+```
+
+**完整代码：**
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int n, epoch;
+    double lr;
+    cin >> n >> epoch >> lr;
+    vector<double> x1(n + 1), x2(n + 1);
+    vector<int> y(n + 1);
+    for (int i = 1; i <= n; i++) cin >> x1[i] >> x2[i] >> y[i];
+    double w1 = 0, w2 = 0, b = 0;
+    for (int ep = 1; ep <= epoch; ep++) {
+        for (int i = 1; i <= n; i++) {
+            double score = w1 * x1[i] + w2 * x2[i] + b;
+            if (y[i] * score <= 0) {
+                w1 += lr * y[i] * x1[i];
+                w2 += lr * y[i] * x2[i];
+                b += lr * y[i];
+            }
+        }
+    }
+    int q;
+    cin >> q;
+    while (q--) {
+        double a, c;
+        cin >> a >> c;
+        double score = w1 * a + w2 * c + b;
+        cout << (score >= 0 ? 1 : -1) << '\n';
+    }
+    return 0;
+}
+```
+
+**测试设计：**
+
+1. 输入：
+```text
+1 1 1
+1 0 1
+2
+-1 0
+0 0
+```
+期望输出：
+```text
+1
+1
+```
+
+2. 输入：
+```text
+1 0 1
+1 1 -1
+1
+5 5
+```
+期望输出：
+```text
+1
+```
+
+***
+### V10-EX06 简化 SVM 更新
+
+- 归属卷：第 10 卷
+- 覆盖模块：AI-11 线性 SVM
+- 考场用途：模拟 hinge loss 下的权重衰减和错边界更新。
+
+**题目描述：** 给定一维样本和标签 `-1/+1`，初始 `w=b=0`。每轮对每个样本计算 `margin=y*(w*x+b)`。先执行 `w-=lr*lambda*w`。若 `margin<1`，再执行 `w+=lr*y*x,b+=lr*y`。训练后输出查询预测。
+
+**输入格式：** 第一行 `n epoch lr lambda`。接下来 `n` 行 `x y`。然后一行 `q`。接下来 `q` 行每行一个 `x`。
+
+**输出格式：** 每个查询输出 `-1` 或 `1`。
+
+**样例输入：**
+```text
+2 1 1 0
+-1 -1
+1 1
+3
+-2
+0
+2
+```
+
+**样例输出：**
+```text
+-1
+1
+1
+```
+
+**完整代码：**
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int n, epoch;
+    double lr, lambda;
+    cin >> n >> epoch >> lr >> lambda;
+    vector<double> x(n + 1);
+    vector<int> y(n + 1);
+    for (int i = 1; i <= n; i++) cin >> x[i] >> y[i];
+    double w = 0, b = 0;
+    for (int ep = 1; ep <= epoch; ep++) {
+        for (int i = 1; i <= n; i++) {
+            double margin = y[i] * (w * x[i] + b);
+            w -= lr * lambda * w;
+            if (margin < 1.0) {
+                w += lr * y[i] * x[i];
+                b += lr * y[i];
+            }
+        }
+    }
+    int q;
+    cin >> q;
+    while (q--) {
+        double t;
+        cin >> t;
+        cout << (w * t + b >= 0 ? 1 : -1) << '\n';
+    }
+    return 0;
+}
+```
+
+**测试设计：**
+
+1. 输入：
+```text
+1 1 0.5 0
+2 1
+2
+2
+-2
+```
+期望输出：
+```text
+1
+-1
+```
+
+2. 输入：
+```text
+1 0 1 0
+5 -1
+1
+0
+```
+期望输出：
+```text
+1
+```
+
+***
+### V10-EX07 DNN 前向传播
+
+- 归属卷：第 10 卷
+- 覆盖模块：AI-12 多层前向传播
+- 考场用途：按层模拟全连接网络、ReLU 和 softmax。
+
+**题目描述：** 给定多层全连接网络，按层计算输出。每层输入格式为 `out_dim activation`，随后 `out_dim` 行，每行当前输入维度个权重和一个 bias。激活支持 `none/relu/softmax`。输出预测类别和最终向量。
+
+**输入格式：** 第一行 `L`。第二行输入维度 `d` 和 `d` 个输入值。随后按层给出参数。
+
+**输出格式：** 第一行输出预测类别，编号从 1 开始，平分选小。第二行输出最终向量，保留 6 位。
+
+**样例输入：**
+```text
+1
+2 1 2
+2 softmax
+1 0 0
+0 1 0
+```
+
+**样例输出：**
+```text
+2
+0.268941 0.731059
+```
+
+**完整代码：**
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+void activate(vector<double> &a, const string &act) {
+    int n = (int)a.size() - 1;
+    if (act == "relu") {
+        for (int i = 1; i <= n; i++) a[i] = max(0.0, a[i]);
+    } else if (act == "softmax") {
+        double mx = a[1];
+        for (int i = 2; i <= n; i++) mx = max(mx, a[i]);
+        double sum = 0;
+        for (int i = 1; i <= n; i++) {
+            a[i] = exp(a[i] - mx);
+            sum += a[i];
+        }
+        for (int i = 1; i <= n; i++) a[i] /= sum;
+    }
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int L, d;
+    cin >> L >> d;
+    vector<double> cur(d + 1);
+    for (int i = 1; i <= d; i++) cin >> cur[i];
+    for (int layer = 1; layer <= L; layer++) {
+        int out;
+        string act;
+        cin >> out >> act;
+        vector<double> nxt(out + 1, 0);
+        for (int i = 1; i <= out; i++) {
+            for (int j = 1; j <= d; j++) {
+                double w;
+                cin >> w;
+                nxt[i] += w * cur[j];
+            }
+            double b;
+            cin >> b;
+            nxt[i] += b;
+        }
+        activate(nxt, act);
+        cur = nxt;
+        d = out;
+    }
+    int pred = 1;
+    for (int i = 2; i <= d; i++) if (cur[i] > cur[pred] + 1e-12) pred = i;
+    cout << pred << '\n' << fixed << setprecision(6);
+    for (int i = 1; i <= d; i++) {
+        if (i > 1) cout << ' ';
+        cout << cur[i];
+    }
+    cout << '\n';
+    return 0;
+}
+```
+
+**测试设计：**
+
+1. 输入：
+```text
+1
+2 1 -2
+2 relu
+1 0 0
+0 1 0
+```
+期望输出：
+```text
+1
+1.000000 0.000000
+```
+
+2. 输入：
+```text
+1
+1 3
+2 none
+1 0
+-1 0
+```
+期望输出：
+```text
+1
+3.000000 -3.000000
+```
+
+***
+### V10-EX08 二层网络反向传播一轮
+
+- 归属卷：第 10 卷
+- 覆盖模块：AI-14 反向传播
+- 考场用途：手算链式法则并验证参数更新方向。
+
+**题目描述：** 二层网络只有一个隐藏神经元：`z1=w1*x+b1,a1=max(0,z1),z2=w2*a1+b2,yhat=z2`。损失为 `0.5*(yhat-y)^2`。给定一个样本和学习率，执行一轮梯度下降，输出更新后的四个参数。
+
+**输入格式：** 一行 `x y w1 b1 w2 b2 lr`。
+
+**输出格式：** 输出更新后的 `w1 b1 w2 b2`，保留 6 位。
+
+**样例输入：**
+```text
+2 5 1 0 1 0 0.1
+```
+
+**样例输出：**
+```text
+1.600000 0.300000 1.600000 0.300000
+```
+
+**完整代码：**
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    double x, y, w1, b1, w2, b2, lr;
+    cin >> x >> y >> w1 >> b1 >> w2 >> b2 >> lr;
+    double z1 = w1 * x + b1;
+    double a1 = max(0.0, z1);
+    double yhat = w2 * a1 + b2;
+    double dz2 = yhat - y;
+    double dw2 = dz2 * a1;
+    double db2 = dz2;
+    double da1 = dz2 * w2;
+    double dz1 = z1 > 0 ? da1 : 0.0;
+    double dw1 = dz1 * x;
+    double db1 = dz1;
+    w1 -= lr * dw1;
+    b1 -= lr * db1;
+    w2 -= lr * dw2;
+    b2 -= lr * db2;
+    cout << fixed << setprecision(6) << w1 << ' ' << b1 << ' ' << w2 << ' ' << b2 << '\n';
+    return 0;
+}
+```
+
+**测试设计：**
+
+1. 输入：
+```text
+1 1 1 0 1 0 0.1
+```
+期望输出：
+```text
+1.000000 0.000000 1.000000 0.000000
+```
+
+2. 输入：
+```text
+1 2 -1 0 1 0 0.1
+```
+期望输出：
+```text
+-1.000000 0.000000 1.000000 0.200000
+```
+
+***
+### V10-EX09 反向模式自动求导
+
+- 归属卷：第 10 卷
+- 覆盖模块：AI-15 自动求导
+- 考场用途：计算图按拓扑序前向、逆序累加梯度。
+
+**题目描述：** 给定拓扑序计算图，节点支持 `var value`、`const value`、`add a b`、`mul a b`、`sin a`。输出最后一个节点的值，以及所有变量节点按出现顺序的梯度。
+
+**输入格式：** 第一行整数 `n`。接下来 `n` 行描述节点。
+
+**输出格式：** 第一行输出节点 `n` 的值。第二行输出变量梯度，保留 6 位。
+
+**样例输入：**
+```text
+5
+var 2
+var 3
+mul 1 2
+sin 1
+add 3 4
+```
+
+**样例输出：**
+```text
+6.909297
+2.583853 2.000000
+```
+
+**完整代码：**
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+struct Node {
+    string op;
+    int l = 0, r = 0;
+    double val = 0, grad = 0;
+};
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int n;
+    cin >> n;
+    vector<Node> a(n + 1);
+    vector<int> vars;
+    for (int i = 1; i <= n; i++) {
+        cin >> a[i].op;
+        if (a[i].op == "var" || a[i].op == "const") {
+            cin >> a[i].val;
+            if (a[i].op == "var") vars.push_back(i);
+        } else if (a[i].op == "add" || a[i].op == "mul") {
+            cin >> a[i].l >> a[i].r;
+            if (a[i].op == "add") a[i].val = a[a[i].l].val + a[a[i].r].val;
+            else a[i].val = a[a[i].l].val * a[a[i].r].val;
+        } else if (a[i].op == "sin") {
+            cin >> a[i].l;
+            a[i].val = sin(a[a[i].l].val);
+        }
+    }
+    a[n].grad = 1;
+    for (int i = n; i >= 1; i--) {
+        double g = a[i].grad;
+        if (a[i].op == "add") {
+            a[a[i].l].grad += g;
+            a[a[i].r].grad += g;
+        } else if (a[i].op == "mul") {
+            int l = a[i].l, r = a[i].r;
+            a[l].grad += g * a[r].val;
+            a[r].grad += g * a[l].val;
+        } else if (a[i].op == "sin") {
+            int l = a[i].l;
+            a[l].grad += g * cos(a[l].val);
+        }
+    }
+    cout << fixed << setprecision(6) << a[n].val << '\n';
+    for (int i = 0; i < (int)vars.size(); i++) {
+        if (i) cout << ' ';
+        cout << a[vars[i]].grad;
+    }
+    cout << '\n';
+    return 0;
+}
+```
+
+**测试设计：**
+
+1. 输入：
+```text
+3
+var 2
+var 3
+mul 1 2
+```
+期望输出：
+```text
+6.000000
+3.000000 2.000000
+```
+
+2. 输入：
+```text
+2
+var 0
+sin 1
+```
+期望输出：
+```text
+0.000000
+1.000000
+```
+
+***
+### V10-EX10 Viterbi 与 accuracy 评分
+
+- 归属卷：第 10 卷
+- 覆盖模块：AI-07 Viterbi、AI-10 SPJ 评分
+- 考场用途：用 log 概率做 HMM 最优路径，并计算预测准确率。
+
+**题目描述：** 给定一个 HMM，输出观测序列的最可能隐藏状态路径。随后给出真实隐藏状态路径，输出路径预测准确率。概率为 0 时认为该路径不可走。
+
+**输入格式：** 第一行 `n m T`。第二行 `n` 个初始概率。接下来 `n` 行转移矩阵。接下来 `n` 行发射矩阵。一行 `T` 个观测编号。一行 `T` 个真实状态编号。
+
+**输出格式：** 第一行输出预测路径。第二行输出准确率，保留 6 位。
+
+**样例输入：**
+```text
+2 2 3
+0.6 0.4
+0.7 0.3
+0.4 0.6
+0.5 0.5
+0.1 0.9
+1 2 2
+1 2 2
+```
+
+**样例输出：**
+```text
+1 2 2
+1.000000
+```
+
+**完整代码：**
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const double NEG = -1e100;
+
+double safe_log(double x) {
+    return x <= 0 ? NEG : log(x);
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int n, m, T;
+    cin >> n >> m >> T;
+    vector<double> pi(n + 1);
+    for (int i = 1; i <= n; i++) cin >> pi[i];
+    vector<vector<double>> trans(n + 1, vector<double>(n + 1));
+    for (int i = 1; i <= n; i++) for (int j = 1; j <= n; j++) cin >> trans[i][j];
+    vector<vector<double>> emit(n + 1, vector<double>(m + 1));
+    for (int i = 1; i <= n; i++) for (int j = 1; j <= m; j++) cin >> emit[i][j];
+    vector<int> obs(T + 1), real(T + 1);
+    for (int t = 1; t <= T; t++) cin >> obs[t];
+    for (int t = 1; t <= T; t++) cin >> real[t];
+
+    vector<vector<double>> dp(T + 1, vector<double>(n + 1, NEG));
+    vector<vector<int>> pre(T + 1, vector<int>(n + 1, 1));
+    for (int s = 1; s <= n; s++) dp[1][s] = safe_log(pi[s]) + safe_log(emit[s][obs[1]]);
+    for (int t = 2; t <= T; t++) {
+        for (int s = 1; s <= n; s++) {
+            for (int p = 1; p <= n; p++) {
+                double cur = dp[t - 1][p] + safe_log(trans[p][s]) + safe_log(emit[s][obs[t]]);
+                if (cur > dp[t][s]) {
+                    dp[t][s] = cur;
+                    pre[t][s] = p;
+                }
+            }
+        }
+    }
+    int last = 1;
+    for (int s = 2; s <= n; s++) if (dp[T][s] > dp[T][last]) last = s;
+    vector<int> path(T + 1);
+    path[T] = last;
+    for (int t = T; t >= 2; t--) path[t - 1] = pre[t][path[t]];
+
+    int correct = 0;
+    for (int t = 1; t <= T; t++) {
+        if (t > 1) cout << ' ';
+        cout << path[t];
+        if (path[t] == real[t]) correct++;
+    }
+    cout << '\n' << fixed << setprecision(6) << (double)correct / T << '\n';
+    return 0;
+}
+```
+
+**测试设计：**
+
+1. 输入：
+```text
+1 1 2
+1
+1
+1
+1 1
+1 1
+```
+期望输出：
+```text
+1 1
+1.000000
+```
+
+2. 输入：
+```text
+2 1 1
+0.9 0.1
+1 0
+0 1
+1
+1
+2
+```
+期望输出：
+```text
+1
+0.000000
+```
+### V10-CEX01 余弦相似度
+
+- 归属卷：第 10 卷
+- 覆盖模块：向量、相似度
+- 考场用途：文本/推荐题常见基础组件。
+- 参考题型来源：参考来源：TF-IDF/向量检索基础。
+
+**题目描述：** 给两个向量，输出余弦相似度。
+
+**输入格式：** 第一行 n，之后 n 行 xi yi。
+
+**输出格式：** 输出 6 位小数。
+
+**样例输入：**
+```text
+3
+1 1
+2 0
+0 2
+```
+
+**样例输出：**
+```text
+0.200000
+```
+
+**完整代码：**
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+
+int main(){ios::sync_with_stdio(false);cin.tie(nullptr);int n;cin>>n; vector<double>x(n+1),y(n+1); for(int i=1;i<=n;i++)cin>>x[i]>>y[i]; double dot=0,nx=0,ny=0; for(int i=1;i<=n;i++){dot+=x[i]*y[i];nx+=x[i]*x[i];ny+=y[i]*y[i];} cout<<fixed<<setprecision(6)<<dot/(sqrt(nx)*sqrt(ny))<<"\n";return 0;}
+```
+
+**测试设计：** 额外测试：构造最小规模、重复值、边界值各一组，和样例一起运行。
+
+***
+### V10-CEX02 最近邻分类
+
+- 归属卷：第 10 卷
+- 覆盖模块：KNN、欧氏距离
+- 考场用途：AI 题里最容易模拟的分类器。
+- 参考题型来源：参考来源：监督学习 KNN 基础。
+
+**题目描述：** 给训练样本和查询点，输出最近样本标签。
+
+**输入格式：** 第一行 n m，之后特征和标签，最后查询点。
+
+**输出格式：** 输出标签。
+
+**样例输入：**
+```text
+3 2
+0 0 1
+5 5 2
+1 0 1
+0 1
+```
+
+**样例输出：**
+```text
+1
+```
+
+**完整代码：**
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int n, m;
+    cin >> n >> m;
+    vector<vector<double>> x(n + 1, vector<double>(m + 1));
+    vector<int> y(n + 1);
+
+    for (int i = 1; i <= n; i++) {
+        for (int j = 1; j <= m; j++) cin >> x[i][j];
+        cin >> y[i];
+    }
+
+    vector<double> q(m + 1);
+    for (int j = 1; j <= m; j++) cin >> q[j];
+
+    int ans_label = -1;
+    double best_dist = 1e100;
+    for (int i = 1; i <= n; i++) {
+        double d = 0;
+        for (int j = 1; j <= m; j++) {
+            d += (x[i][j] - q[j]) * (x[i][j] - q[j]);
+        }
+        if (d < best_dist) {
+            best_dist = d;
+            ans_label = y[i];
+        }
+    }
+
+    cout << ans_label << '\n';
+    return 0;
+}
+```
+
+**测试设计：** 额外测试：构造最小规模、重复值、边界值各一组，和样例一起运行。
+
+***
+### V10-CEX03 逻辑回归一轮 SGD
+
+- 归属卷：第 10 卷
+- 覆盖模块：监督学习、梯度下降
+- 考场用途：模拟训练规则，不追求真实模型效果。
+- 参考题型来源：参考来源：机器学习 logistic regression 基础。
+
+**题目描述：** 用每个样本做一次 SGD 更新。
+
+**输入格式：** 第一行 n lr，之后 x y。
+
+**输出格式：** 输出 w b。
+
+**样例输入：**
+```text
+2 1
+0 0
+1 1
+```
+
+**样例输出：**
+```text
+0.622459 0.122459
+```
+
+**完整代码：**
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+
+double sigmoid(double z){return 1.0/(1.0+exp(-z));}
+int main(){ios::sync_with_stdio(false);cin.tie(nullptr);int n;double lr;cin>>n>>lr;double w=0,b=0; for(int i=1;i<=n;i++){double x,y;cin>>x>>y;double p=sigmoid(w*x+b);double e=p-y;w-=lr*e*x;b-=lr*e;}cout<<fixed<<setprecision(6)<<w<<" "<<b<<"\n";return 0;}
+```
+
+**测试设计：** 额外测试：构造最小规模、重复值、边界值各一组，和样例一起运行。
+
+***
+### V10-CEX04 单神经元反向传播
+
+- 归属卷：第 10 卷
+- 覆盖模块：反向传播、梯度
+- 考场用途：把链式法则落实成代码。
+- 参考题型来源：参考来源：反向传播基础。
+
+**题目描述：** 单神经元 y=wx+b，平方损失，做一次梯度下降。
+
+**输入格式：** 输入 x w b target lr。
+
+**输出格式：** 输出 loss 新w 新b。
+
+**样例输入：**
+```text
+2 1 0 3 0.1
+```
+
+**样例输出：**
+```text
+1.0000 1.4000 0.2000
+```
+
+**完整代码：**
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+
+int main(){ios::sync_with_stdio(false);cin.tie(nullptr);double x,w,b,target,lr;cin>>x>>w>>b>>target>>lr;double y=w*x+b;double loss=(y-target)*(y-target);double gw=2*(y-target)*x;double gb=2*(y-target);w-=lr*gw;b-=lr*gb;cout<<fixed<<setprecision(4)<<loss<<" "<<w<<" "<<b<<"\n";return 0;}
+```
+
+**测试设计：** 额外测试：构造最小规模、重复值、边界值各一组，和样例一起运行。
+
+***
+### V10-CEX05 手算反向模式自动求导
+
+- 归属卷：第 10 卷
+- 覆盖模块：自动求导、计算图
+- 考场用途：AI 模拟题可能要求按规则反传。
+- 参考题型来源：参考来源：自动微分/反向模式基础。
+
+**题目描述：** 计算 `e=(x*y+x)^2` 及对 x,y 的梯度。
+
+**输入格式：** 输入 x y。
+
+**输出格式：** 输出 e dx dy。
+
+**样例输入：**
+```text
+2 3
+```
+
+**样例输出：**
+```text
+64.0000 64.0000 32.0000
+```
+
+**完整代码：**
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+
+struct Var{double val,grad;};
+int main(){ios::sync_with_stdio(false);cin.tie(nullptr);double x,y;cin>>x>>y;Var a{x,0},b{y,0};double c=a.val*b.val;double d=c+a.val;double e=d*d;double ge=1;double gd=ge*2*d;double gc=gd; a.grad+=gd; a.grad+=gc*b.val; b.grad+=gc*a.val;cout<<fixed<<setprecision(4)<<e<<" "<<a.grad<<" "<<b.grad<<"\n";return 0;}
+```
+
+**测试设计：** 额外测试：构造最小规模、重复值、边界值各一组，和样例一起运行。
+
+***
+
+<!-- V02_EXAMPLES_END -->
