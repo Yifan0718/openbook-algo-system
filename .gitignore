@@ -1,0 +1,40 @@
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Temporary build folders
+tmp/
+05_review/tmp*/
+05_review/v02_examples/
+06_output/v02_preview/
+
+# Generated compiler/test intermediates
+*.exe
+*.out
+*.o
+*.obj
+*.ilk
+*.pdb
+*.in
+
+# LaTeX intermediates
+*.aux
+*.log
+*.out.ps
+*.toc
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+
+# OS/editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# Keep release PDFs and zip files tracked intentionally.
+!07_release/**/*.pdf
+!07_release/**/*.zip
+!06_output/**/*.pdf
+

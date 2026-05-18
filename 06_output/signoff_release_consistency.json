@@ -1,0 +1,28 @@
+{
+  "errors": [],
+  "release_files": 49,
+  "sha_entries": 48,
+  "zip_entries": 49,
+  "zip_sha256": "6fd597b46ba09e0716f213505837cd598ad0764b527c4c2c06cb2140c04da4b7",
+  "main_pdf_pages": {
+    "01_print_ready/openbook_core.pdf": 109,
+    "01_print_ready/openbook_full.pdf": 1244,
+    "01_print_ready/openbook_printable_full.pdf": 1244
+  },
+  "chapter_pdf_pages": {
+    "01_print_ready/chapter_pdfs/00_route.pdf": 44,
+    "01_print_ready/chapter_pdfs/00_which_book_index.pdf": 1,
+    "01_print_ready/chapter_pdfs/01_cpp_stl_io.pdf": 70,
+    "01_print_ready/chapter_pdfs/02_brute_memo.pdf": 58,
+    "01_print_ready/chapter_pdfs/03_dp.pdf": 138,
+    "01_print_ready/chapter_pdfs/03A_greedy_dp.pdf": 28,
+    "01_print_ready/chapter_pdfs/04_ds.pdf": 48,
+    "01_print_ready/chapter_pdfs/05_graph_tree.pdf": 83,
+    "01_print_ready/chapter_pdfs/06_math_string.pdf": 94,
+    "01_print_ready/chapter_pdfs/06A_math_ref.pdf": 48,
+    "01_print_ready/chapter_pdfs/07_debug.pdf": 25,
+    "01_print_ready/chapter_pdfs/08_luogu_index.pdf": 14,
+    "01_print_ready/chapter_pdfs/09_python.pdf": 37,
+    "01_print_ready/chapter_pdfs/10_ai.pdf": 61
+  }
+}
