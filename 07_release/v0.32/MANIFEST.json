@@ -20,12 +20,12 @@
     {
       "path": "01_print_ready/openbook_full.pdf",
       "role": "full pdf",
-      "pages": 1426
+      "pages": 1492
     },
     {
       "path": "01_print_ready/openbook_printable_full.pdf",
       "role": "self-contained printable pdf",
-      "pages": 1426
+      "pages": 1492
     },
     {
       "path": "01_print_ready/chapter_pdfs",

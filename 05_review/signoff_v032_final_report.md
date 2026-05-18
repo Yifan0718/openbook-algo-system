@@ -24,8 +24,11 @@ v0.32 is a focused update on top of v0.31. The release adds Volume 12:
 - Markdown parse check: `pandoc -t native` succeeds.
 - Code check: all 30 complete C++17 programs compile with WSL `g++ -std=c++17 -O2 -pipe -Wall -Wextra`.
 - Runtime check: all 30 programs pass selected small or boundary sample tests.
+- Beginner-friendly structure check: all 12 past-problem cards include `题目信号`, `第一反应`, `现场迭代路线`, `模块路由`, `部分分`, `正解推导`, `关键状态/数据结构`, `易错点`, `组合拼装方案`, and `考场写法建议`.
+- Full standalone code regression: 302 standalone C++ units compile, and all 123 registered runtime cases pass; no compile failures and no runtime failures.
 - PDF build check: `12_zhongguancun_machine_exam_companion.pdf` rebuilt successfully as 51 pages.
 - PDF visual spot check: title/TOC page, code pages, and final code-index pages render with readable Chinese text and non-clipped code.
+- Full PDF font check: rebuilt the combined PDFs with the same `Consolas` monospaced font used by chapter PDFs to avoid missing-symbol risk in code/math snippets.
 - Release check: v0.32 manifest and zip were regenerated after the final Volume 12 source update.
 
 ## Focused Review Notes

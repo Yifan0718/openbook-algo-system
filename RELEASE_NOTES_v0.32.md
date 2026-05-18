@@ -15,6 +15,7 @@ v0.32 is a focused release on top of v0.31. It adds a new exam-specific companio
 - Each past problem now also embeds complete runnable C++17 code cards inside the problem explanation, covering partial-score versions and main/answer versions.
 - Adds explicit `现场迭代路线` sections so the paper version explains why to write the first version, when to submit it, and how to upgrade under exam pressure.
 - Adds focused cards for fractional programming, arbitrage log graphs, circular segment trees, character injection mapping, mixed input parsing, floating-point comparison, overflow, and statement contradictions.
+- Final signoff rechecked beginner-friendly routing fields for all 12 past-problem cards and reran the standalone C++ regression suite with zero compile/runtime failures.
 - Updates the chapter index and release package to include Volume 12 as a must-bring Zhongguancun machine-exam companion.
 
 ## Release Intent
