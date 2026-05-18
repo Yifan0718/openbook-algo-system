@@ -1,0 +1,119 @@
+{
+  "name": "zhongguancun-algo-openbook-system",
+  "version": "0.3",
+  "license": "MIT",
+  "release_date": "2026-05-18",
+  "purpose": "C++17 paper open-book algorithm contest combat system with complete tested examples.",
+  "example_summary": {
+    "total_examples": 188,
+    "structure_audit_issues": 0,
+    "sample_runtime_tests": 188,
+    "sample_runtime_passed": 188,
+    "sample_runtime_failed": 0
+  },
+  "outputs": [
+    {
+      "path": "01_print_ready/openbook_core.pdf",
+      "role": "core printable pdf",
+      "pages": 114
+    },
+    {
+      "path": "01_print_ready/openbook_full.pdf",
+      "role": "full pdf",
+      "pages": 1172
+    },
+    {
+      "path": "01_print_ready/openbook_printable_full.pdf",
+      "role": "self-contained printable pdf",
+      "pages": 1172
+    },
+    {
+      "path": "01_print_ready/chapter_pdfs",
+      "role": "one PDF per volume for separate printing",
+      "files": 14
+    }
+  ],
+  "chapter_pdfs": [
+    {
+      "path": "01_print_ready/chapter_pdfs/00_route.pdf",
+      "pages": 26
+    },
+    {
+      "path": "01_print_ready/chapter_pdfs/00_which_book_index.pdf",
+      "pages": 1
+    },
+    {
+      "path": "01_print_ready/chapter_pdfs/01_cpp_stl_io.pdf",
+      "pages": 54
+    },
+    {
+      "path": "01_print_ready/chapter_pdfs/02_brute_memo.pdf",
+      "pages": 41
+    },
+    {
+      "path": "01_print_ready/chapter_pdfs/03_dp.pdf",
+      "pages": 116
+    },
+    {
+      "path": "01_print_ready/chapter_pdfs/03A_greedy_dp.pdf",
+      "pages": 13
+    },
+    {
+      "path": "01_print_ready/chapter_pdfs/04_ds.pdf",
+      "pages": 29
+    },
+    {
+      "path": "01_print_ready/chapter_pdfs/05_graph_tree.pdf",
+      "pages": 62
+    },
+    {
+      "path": "01_print_ready/chapter_pdfs/06_math_string.pdf",
+      "pages": 94
+    },
+    {
+      "path": "01_print_ready/chapter_pdfs/07_debug.pdf",
+      "pages": 10
+    },
+    {
+      "path": "01_print_ready/chapter_pdfs/08_math_ref.pdf",
+      "pages": 33
+    },
+    {
+      "path": "01_print_ready/chapter_pdfs/09_python.pdf",
+      "pages": 24
+    },
+    {
+      "path": "01_print_ready/chapter_pdfs/10_ai.pdf",
+      "pages": 43
+    },
+    {
+      "path": "01_print_ready/chapter_pdfs/11_signoff_encyclopedia.pdf",
+      "pages": 58
+    }
+  ],
+  "included_review_reports": [
+    "03_review_reports/README.md",
+    "03_review_reports/core_pack_selection_notes.md",
+    "03_review_reports/cpp_block_inventory.md",
+    "03_review_reports/cpp_compile_report.md",
+    "03_review_reports/cpp_pseudocode_report.md",
+    "03_review_reports/cpp_wsl_audit_report.md",
+    "03_review_reports/forbidden_patterns_report.md",
+    "03_review_reports/index_policy_report.md",
+    "03_review_reports/module_fields_report.md",
+    "03_review_reports/python_syntax_report.md",
+    "03_review_reports/second_round_module_matrix.md",
+    "03_review_reports/second_round_standalone_compile_all.md",
+    "03_review_reports/standalone_runtime_manifest.json",
+    "03_review_reports/standalone_runtime_test_report.md",
+    "03_review_reports/template_consistency_report.md",
+    "03_review_reports/signoff_v02_final_report.md",
+    "03_review_reports/signoff_v03_final_report.md",
+    "03_review_reports/v02_example_integration_report.md",
+    "03_review_reports/v02_example_structure_audit.json",
+    "03_review_reports/v02_example_structure_audit.md",
+    "03_review_reports/v02_example_test_report.json",
+    "03_review_reports/v02_example_test_report.md"
+  ],
+  "license_file": "LICENSE"
+}

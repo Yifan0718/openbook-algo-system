@@ -9,9 +9,9 @@
 
 ## 文件确认
 
-- [x] `07_release/v0.2/01_print_ready/` 中总 PDF 可打开。
-- [x] `07_release/v0.2/01_print_ready/chapter_pdfs/` 中分卷 PDF 可打开。
-- [x] `07_release/openbook-v0.2.zip` SHA256 与 `openbook-v0.2.zip.sha256.txt` 一致。
+- [x] `07_release/v0.3/01_print_ready/` 中总 PDF 可打开。
+- [x] `07_release/v0.3/01_print_ready/chapter_pdfs/` 中分卷 PDF 可打开。
+- [x] `07_release/openbook-v0.3.zip` SHA256 与 `openbook-v0.3.zip.sha256.txt` 一致。
 - [x] 不包含临时目录 `tmp/`、`__pycache__/`、编译产物 `.exe/.out`。
 - [x] 已执行本地路径与常见密钥模式扫描。
 
@@ -21,7 +21,7 @@
 git init -b main
 git status
 git add .
-git commit -m "Release v0.2 openbook algorithm system"
+git commit -m "Release v0.3 openbook algorithm system"
 ```
 
 发布到 GitHub 前再设置 remote：
@@ -31,4 +31,4 @@ git remote add origin <repo-url>
 git push -u origin main
 ```
 
-本清单随 v0.2 public release 保留，用于记录发布前检查项。
+本清单随 v0.3 public release 保留，用于记录发布前检查项。

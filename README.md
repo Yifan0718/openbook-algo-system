@@ -1,4 +1,4 @@
-# 纸质版算法作战系统 v0.2
+# 纸质版算法作战系统 v0.3
 
 一套面向 3 小时 3 题算法机考的纸质开卷资料包。核心目标不是系统讲算法原理，而是在考场中快速完成：
 
@@ -18,14 +18,15 @@
 
 推荐优先打开：
 
-- `07_release/v0.2/01_print_ready/chapter_pdfs/00_which_book_index.pdf`：一页索引，考试时先看它决定翻哪本。
-- `07_release/v0.2/01_print_ready/chapter_pdfs/06_math_string.pdf`：数学与字符串模板，已包含独立 `STR-05 Manacher`。
-- `07_release/v0.2/01_print_ready/openbook_printable_full.pdf`：完整自包含总 PDF。
+- `07_release/v0.3/01_print_ready/chapter_pdfs/00_which_book_index.pdf`：一页索引，考试时先看它决定翻哪本。
+- `07_release/v0.3/01_print_ready/chapter_pdfs/11_signoff_encyclopedia.pdf`：签到题百科，覆盖 Markov、常用数学、计算机常识、AI 术语、读程序和生活模拟。
+- `07_release/v0.3/01_print_ready/chapter_pdfs/06_math_string.pdf`：数学与字符串模板，包含方程求解和 `STR-05 Manacher`。
+- `07_release/v0.3/01_print_ready/openbook_printable_full.pdf`：完整自包含总 PDF。
 
 完整发布压缩包：
 
-- `07_release/openbook-v0.2.zip`
-- `07_release/openbook-v0.2.zip.sha256.txt`
+- `07_release/openbook-v0.3.zip`
+- `07_release/openbook-v0.3.zip.sha256.txt`
 
 ## 分卷结构
 
@@ -43,6 +44,16 @@
 | 08 | `08_math_ref.pdf` | 竞赛数学参考 |
 | 09 | `09_python.pdf` | Python 互补卷 |
 | 10 | `10_ai.pdf` | AI 专题与特判模型 |
+| 11 | `11_signoff_encyclopedia.pdf` | 签到题百科 |
+
+## v0.3 新增重点
+
+- 新增第 11 卷“签到题百科”，当前单卷 58 页。
+- 补充 Markov 性质、Markov 链、转移矩阵、平稳分布、HMM/MDP 路由。
+- 补充现代 AI 术语：Token、Embedding、Attention、Transformer、RAG、向量检索。
+- 补充计算机常识：进制、补码、浮点、字节序、内存、Cache、OS/网络/数据库、安全。
+- 补充 NOIP/CSP 初赛式读程序、流程图、伪代码、递归栈和运算符优先级。
+- 补充 SIM 方程求解：高斯消元、二分求根、牛顿法等。
 
 ## 仓库目录
 
@@ -54,24 +65,25 @@
 04_generated_drafts/ 分卷 Markdown 源稿
 05_review/           构建、审计、测试脚本和报告
 06_output/           构建输出 Markdown/PDF
-07_release/          v0.2 发布目录和压缩包
+07_release/          v0.2/v0.3 发布目录和压缩包
 ```
 
 ## 构建与审计
 
 详见 `BUILD.md`。
 
-已记录的 v0.2 校验结果：
+已记录的 v0.3 校验结果：
 
-- v0.2 例题样例运行：`188/188` 通过。
-- standalone C++ 编译：`265` 个去重单元，失败 `0`。
-- standalone 运行用例：`102` 个，编译失败 `0`，运行失败 `0`。
+- 组合例题样例运行：`188/188` 通过。
+- standalone C++ 去重单元：`272`，编译失败：`0`。
+- standalone 运行用例：`123`，运行失败：`0`。
+- 分卷 PDF：`14` 个，其中第 11 卷 `58` 页。
 - Python 代码块语法检查：失败 `0`。
 
 ## 发布状态
 
 当前版本：
 
-- 版本：v0.2。
+- 版本：v0.3。
 - 许可证：MIT License。
 - 状态：可公开发布，可直接打印使用。

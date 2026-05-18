@@ -384,7 +384,7 @@ def main() -> None:
         "version": RELEASE_VERSION.removeprefix("v"),
         "kind": "chapter_pdfs",
         "count": len(records),
-        "output_dir": str(OUT),
+        "output_dir": str(OUT.relative_to(ROOT)).replace("\\", "/"),
         "chapters": [
             {
                 "no": ch.no,

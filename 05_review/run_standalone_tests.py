@@ -242,7 +242,7 @@ def main() -> int:
         lines += [
             "## 未登记运行用例（覆盖提示，不代表失败）",
             "",
-            "这些 standalone 程序已经由编译审计覆盖；v0.2 例题另由 `v02_example_test_report.md` 做样例运行测试。",
+            "这些 standalone 程序已经由编译审计覆盖；组合例题另由 `v02_example_test_report.md` 做样例运行测试。",
             "",
         ]
         for digest in missing:

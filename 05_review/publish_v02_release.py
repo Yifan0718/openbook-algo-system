@@ -4,6 +4,7 @@ from datetime import date
 from pathlib import Path
 import hashlib
 import json
+import os
 import shutil
 import zipfile
 
@@ -14,7 +15,7 @@ ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "06_output"
 REVIEW = ROOT / "05_review"
 REL_ROOT = ROOT / "07_release"
-VERSION = "0.2"
+VERSION = os.environ.get("OPENBOOK_RELEASE_VERSION", "0.2").removeprefix("v")
 REL = REL_ROOT / f"v{VERSION}"
 
 
@@ -58,6 +59,7 @@ REVIEW_FILES = [
     REVIEW / "standalone_runtime_test_report.md",
     REVIEW / "template_consistency_report.md",
     REVIEW / "signoff_v02_final_report.md",
+    REVIEW / f"signoff_v{VERSION.replace('.', '')}_final_report.md",
     OUT / "v02_example_integration_report.md",
     OUT / "v02_example_structure_audit.json",
     OUT / "v02_example_structure_audit.md",
@@ -100,6 +102,13 @@ def clean_release_dir() -> None:
     REL.mkdir(parents=True, exist_ok=True)
 
 
+def copy_optional_file(src: Path, dst: Path) -> bool:
+    if not src.exists():
+        return False
+    copy_file(src, dst)
+    return True
+
+
 def build_release() -> dict:
     clean_release_dir()
 
@@ -134,7 +143,7 @@ def build_release() -> dict:
 1. 先打印 `01_print_ready/chapter_pdfs/00_which_book_index.pdf`，考试时用它决定翻哪本。
 2. 分卷打印优先于总 PDF：每章一本，更容易现场查。
 3. `openbook_core.pdf` 是较薄核心版；`openbook_printable_full.pdf` 是完整自包含版。
-4. 每卷末尾包含 v0.2 例题训练区，例题代码已通过样例级运行测试。
+4. 每卷末尾包含实战例题训练区，例题代码已通过样例级运行测试。
 5. 主力语言仍建议 C++17；Python 卷只在明显省事时作为互补。
 """,
     )
@@ -152,12 +161,13 @@ def build_release() -> dict:
         copy_file(chapter_dir / name, rel_chapter / name)
 
     copy_file(ROOT / "LICENSE", REL / "LICENSE")
+    copy_optional_file(ROOT / f"RELEASE_NOTES_v{VERSION}.md", REL / f"RELEASE_NOTES_v{VERSION}.md")
 
     copied_reports: list[str] = []
     for src in REVIEW_FILES:
         dst = REL / "03_review_reports" / src.name
-        copy_file(src, dst)
-        copied_reports.append(str(dst.relative_to(REL)).replace("\\", "/"))
+        if copy_optional_file(src, dst):
+            copied_reports.append(str(dst.relative_to(REL)).replace("\\", "/"))
 
     outputs = []
     for name in PRINT_PDFS:
