@@ -38,6 +38,7 @@ CHAPTER_PDFS = [
     "08_math_ref.pdf",
     "09_python.pdf",
     "10_ai.pdf",
+    "11_signoff_encyclopedia.pdf",
 ]
 
 REVIEW_FILES = [
@@ -112,14 +113,17 @@ def build_release() -> dict:
 
 主力语言：C++17。资料目标是考场快速路由、模块化拼接、先拿部分分再升级。
 
+许可证：MIT License。详见 `LICENSE`。
+
 ## 目录
 
 - `01_print_ready/`：可直接打印的 PDF。
 - `01_print_ready/chapter_pdfs/`：每卷单独 PDF，适合一本一本打印。
 - `02_markdown_source/`：本次发布对应的 Markdown 源稿。
 - `03_review_reports/`：本次发布的自动审计和 signoff 报告。
+- `LICENSE`：MIT 许可证文本。
 
-优先打印：`00_which_book_index.pdf`、`00_route.pdf`、`01_cpp_stl_io.pdf`、`02_brute_memo.pdf`、`03_dp.pdf`、`04_ds.pdf`、`05_graph_tree.pdf`、`06_math_string.pdf`。
+优先打印：`00_which_book_index.pdf`、`00_route.pdf`、`01_cpp_stl_io.pdf`、`02_brute_memo.pdf`、`03_dp.pdf`、`04_ds.pdf`、`05_graph_tree.pdf`、`06_math_string.pdf`、`11_signoff_encyclopedia.pdf`。
 """,
     )
     write_text(
@@ -146,6 +150,8 @@ def build_release() -> dict:
         copy_file(chapter_dir / name, rel_chapter / name)
     for name in ["00_which_book_index.md", "chapter_pdf_manifest.json", "chapter_pdf_manifest.md"]:
         copy_file(chapter_dir / name, rel_chapter / name)
+
+    copy_file(ROOT / "LICENSE", REL / "LICENSE")
 
     copied_reports: list[str] = []
     for src in REVIEW_FILES:
@@ -183,6 +189,7 @@ def build_release() -> dict:
     manifest = {
         "name": "zhongguancun-algo-openbook-system",
         "version": VERSION,
+        "license": "MIT",
         "release_date": str(date.today()),
         "purpose": "C++17 paper open-book algorithm contest combat system with complete tested examples.",
         "example_summary": {
@@ -195,6 +202,7 @@ def build_release() -> dict:
         "outputs": outputs,
         "chapter_pdfs": chapter_entries,
         "included_review_reports": copied_reports,
+        "license_file": "LICENSE",
     }
     write_text(REL / "MANIFEST.json", json.dumps(manifest, ensure_ascii=False, indent=2))
 

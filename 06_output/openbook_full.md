@@ -927,6 +927,7 @@ l=r
 | SVM、DNN、反向传播、自动求导 | AI 公式模拟 | 计算图 / 矩阵向量 | AI-11..15 | SIM-03 | 数据大时先 baseline |
 | JSON/CSV/INI、表达式、脚本规则 | 解析模拟 | Token / AST | SIM-03/04/05 | string / map | 不要临场乱写半解析 |
 | 日期、时区、经过天数、历法 | 日期模拟 | Date / day number | SIM-06 | 数学取模 | 夏令时规则不明时按题面 |
+| BMP、单位换算、三角形面积、F1、Markov、补码浮点、流程图、AI术语、bit/byte、Excel列号 | 签到题百科 | Formula / Rule | SIGN-00..SIM | C++ 小函数 | 复杂算法题不要停留在常识页 |
 | 区间合并、区间删除、括号匹配 | 区间 DP | Array | IntervalDP | PrefixSum | `n` 很大 |
 | `n <= 20` 且访问集合 | 状压 | State mask | BitmaskDP / DFS | Floyd/Dijkstra | `n > 22` 基本爆 |
 | 1..N、数位限制、上界很大 | 数位 DP | digits + state | DP-17 | DFS memo | 小范围普通枚举 |
@@ -1781,1286 +1782,6 @@ cout << l << "\n";
 升级版本：二分答案，复杂度 `O(check * logV)`。
 
 最小验错：边界是否包含答案；`mid` 是否溢出；check 单调方向；输出 `l` 还是 `r`。
-
-<!-- V02_EXAMPLES_START -->
-
-# v0.2 本卷例题训练区
-
-这一节是 0.2 新增的实战例题。每题都配完整可运行代码和样例；考试时优先看“覆盖模块”和“考场用途”，再复制对应代码骨架。
-
-### V00-EX01 静态区间和路由
-
-- 归属卷：第 0 卷
-- 覆盖模块：ROUTE-00、DS-01、OPS-00
-- 考场用途：训练看到“数组不修改，多次问区间和”时立即路由到前缀和。
-
-**题目描述：** 给定长度为 `n` 的整数数组，回答 `q` 次闭区间 `[l,r]` 的元素和。数组不会修改。
-
-**输入格式：** 第一行两个整数 `n q`。第二行 `n` 个整数。接下来 `q` 行，每行两个整数 `l r`。
-
-**输出格式：** 每次询问输出一行区间和。
-
-**样例输入：**
-```text
-5 3
-1 -2 3 4 5
-1 3
-2 5
-4 4
-```
-
-**样例输出：**
-```text
-2
-10
-4
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-using ll = long long;
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n, q;
-    cin >> n >> q;
-    vector<ll> prefix(n + 1, 0);
-    for (int i = 1; i <= n; i++) {
-        ll x;
-        cin >> x;
-        prefix[i] = prefix[i - 1] + x;
-    }
-    while (q--) {
-        int l, r;
-        cin >> l >> r;
-        cout << prefix[r] - prefix[l - 1] << '\n';
-    }
-    return 0;
-}
-```
-
-**测试设计：**
-
-- 测试 1 输入：
-```text
-1 2
-7
-1 1
-1 1
-```
-期望输出：
-```text
-7
-7
-```
-- 测试 2 输入：
-```text
-3 1
--5 -6 -7
-1 3
-```
-期望输出：
-```text
--18
-```
-### V00-EX02 离线区间加最终数组
-
-- 归属卷：第 0 卷
-- 覆盖模块：ROUTE-00、DS-01、OPS-00
-- 考场用途：训练“区间加但只在最后输出”路由到差分数组。
-
-**题目描述：** 给定数组，执行 `q` 次操作：把闭区间 `[l,r]` 内所有数加上 `x`。所有操作结束后输出最终数组。
-
-**输入格式：** 第一行两个整数 `n q`。第二行 `n` 个整数。接下来 `q` 行，每行 `l r x`。
-
-**输出格式：** 输出一行 `n` 个整数，表示最终数组。
-
-**样例输入：**
-```text
-5 3
-1 2 3 4 5
-1 3 2
-2 5 -1
-5 5 10
-```
-
-**样例输出：**
-```text
-3 3 4 3 14
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-using ll = long long;
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n, q;
-    cin >> n >> q;
-    vector<ll> a(n + 1), diff(n + 2, 0);
-    for (int i = 1; i <= n; i++) cin >> a[i];
-    while (q--) {
-        int l, r;
-        ll x;
-        cin >> l >> r >> x;
-        diff[l] += x;
-        diff[r + 1] -= x;
-    }
-    ll add = 0;
-    for (int i = 1; i <= n; i++) {
-        add += diff[i];
-        if (i > 1) cout << ' ';
-        cout << a[i] + add;
-    }
-    cout << '\n';
-    return 0;
-}
-```
-
-**测试设计：**
-
-- 测试 1 输入：
-```text
-4 1
-0 0 0 0
-1 4 5
-```
-期望输出：
-```text
-5 5 5 5
-```
-- 测试 2 输入：
-```text
-3 2
-1 1 1
-1 2 -3
-2 3 4
-```
-期望输出：
-```text
--2 2 5
-```
-### V00-EX03 单点赋值与区间和
-
-- 归属卷：第 0 卷
-- 覆盖模块：ROUTE-00、DS-02、OPS-00
-- 考场用途：训练“单点赋值加区间和”路由到 树状数组，并把赋值转换成差量。
-
-**题目描述：** 维护一个数组，支持两种操作：`S p x` 表示把 `a[p]` 赋值为 `x`；`Q l r` 表示查询 `[l,r]` 的和。
-
-**输入格式：** 第一行两个整数 `n q`。第二行 `n` 个整数。接下来 `q` 行，每行一个操作。
-
-**输出格式：** 每个 `Q` 操作输出一行答案。
-
-**样例输入：**
-```text
-5 5
-1 2 3 4 5
-Q 1 5
-S 3 10
-Q 2 4
-S 1 -1
-Q 1 3
-```
-
-**样例输出：**
-```text
-15
-16
-11
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-using ll = long long;
-
-struct BIT {
-    int n;
-    vector<ll> bit;
-
-    void init(int n_) {
-        n = n_;
-        bit.assign(n + 1, 0);
-    }
-
-    void add(int pos, ll delta) {
-        for (int i = pos; i <= n; i += i & -i) bit[i] += delta;
-    }
-
-    ll prefix(int pos) const {
-        ll res = 0;
-        for (int i = pos; i > 0; i -= i & -i) res += bit[i];
-        return res;
-    }
-
-    ll query(int l, int r) const {
-        return prefix(r) - prefix(l - 1);
-    }
-};
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n, q;
-    cin >> n >> q;
-    vector<ll> a(n + 1);
-    BIT fw;
-    fw.init(n);
-    for (int i = 1; i <= n; i++) {
-        cin >> a[i];
-        fw.add(i, a[i]);
-    }
-    while (q--) {
-        char op;
-        cin >> op;
-        if (op == 'S') {
-            int p;
-            ll x;
-            cin >> p >> x;
-            fw.add(p, x - a[p]);
-            a[p] = x;
-        } else {
-            int l, r;
-            cin >> l >> r;
-            cout << fw.query(l, r) << '\n';
-        }
-    }
-    return 0;
-}
-```
-
-**测试设计：**
-
-- 测试 1 输入：
-```text
-1 4
-5
-Q 1 1
-S 1 7
-S 1 -2
-Q 1 1
-```
-期望输出：
-```text
-5
--2
-```
-- 测试 2 输入：
-```text
-3 2
-1 2 3
-Q 1 1
-Q 3 3
-```
-期望输出：
-```text
-1
-3
-```
-### V00-EX04 大坐标频次统计
-
-- 归属卷：第 0 卷
-- 覆盖模块：ROUTE-00、CPP-007、DS-02
-- 考场用途：训练“值域巨大但出现值有限”路由到离散化加 树状数组。
-
-**题目描述：** 依次处理 `q` 个操作：`A x` 表示加入一个值为 `x` 的数，可重复加入；`C l r` 表示询问当前数中有多少个值落在 `[l,r]`。
-
-**输入格式：** 第一行一个整数 `q`。接下来 `q` 行，每行一个操作。
-
-**输出格式：** 每个 `C` 操作输出一行答案。
-
-**样例输入：**
-```text
-6
-A 1000000000
-A -5
-C -10 100
-A 7
-C 7 1000000000
-C 8 9
-```
-
-**样例输出：**
-```text
-1
-2
-0
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-using ll = long long;
-
-struct BIT {
-    int n;
-    vector<int> bit;
-
-    void init(int n_) {
-        n = n_;
-        bit.assign(n + 1, 0);
-    }
-
-    void add(int pos, int delta) {
-        for (int i = pos; i <= n; i += i & -i) bit[i] += delta;
-    }
-
-    int prefix(int pos) const {
-        int res = 0;
-        for (int i = pos; i > 0; i -= i & -i) res += bit[i];
-        return res;
-    }
-};
-
-struct Operation {
-    char type;
-    ll x;
-    ll y;
-};
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int q;
-    cin >> q;
-    vector<Operation> ops(q + 1);
-    vector<ll> coords;
-    for (int i = 1; i <= q; i++) {
-        cin >> ops[i].type >> ops[i].x;
-        if (ops[i].type == 'A') {
-            ops[i].y = 0;
-            coords.push_back(ops[i].x);
-        } else {
-            cin >> ops[i].y;
-        }
-    }
-    sort(coords.begin(), coords.end());
-    coords.erase(unique(coords.begin(), coords.end()), coords.end());
-
-    BIT fw;
-    fw.init((int)coords.size());
-    for (int i = 1; i <= q; i++) {
-        if (ops[i].type == 'A') {
-            int id = int(lower_bound(coords.begin(), coords.end(), ops[i].x) - coords.begin()) + 1;
-            fw.add(id, 1);
-        } else {
-            int right = int(upper_bound(coords.begin(), coords.end(), ops[i].y) - coords.begin());
-            int left = int(lower_bound(coords.begin(), coords.end(), ops[i].x) - coords.begin());
-            cout << fw.prefix(right) - fw.prefix(left) << '\n';
-        }
-    }
-    return 0;
-}
-```
-
-**测试设计：**
-
-- 测试 1 输入：
-```text
-4
-A 5
-A 5
-C 5 5
-C 6 7
-```
-期望输出：
-```text
-2
-0
-```
-- 测试 2 输入：
-```text
-3
-A -100
-A 0
-C -200 -1
-```
-期望输出：
-```text
-1
-```
-### V00-EX05 网格最少步数
-
-- 归属卷：第 0 卷
-- 覆盖模块：ROUTE-00、GRAPH-02、OPS-00
-- 考场用途：训练“无权最少步数”路由到 BFS，而不是 DFS。
-
-**题目描述：** 给定 `n` 行 `m` 列网格，`.` 可走，`#` 不可走，`S` 是起点，`T` 是终点。每步可向上下左右走一格，求最少步数。不可达输出 `-1`。
-
-**输入格式：** 第一行两个整数 `n m`。接下来 `n` 行，每行一个长度为 `m` 的字符串。
-
-**输出格式：** 输出最少步数。
-
-**样例输入：**
-```text
-3 4
-S..#
-.#..
-..T.
-```
-
-**样例输出：**
-```text
-4
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n, m;
-    cin >> n >> m;
-    vector<string> grid(n + 1);
-    pair<int, int> start = {-1, -1};
-    pair<int, int> target = {-1, -1};
-    for (int i = 1; i <= n; i++) {
-        string row;
-        cin >> row;
-        grid[i] = " " + row;
-        for (int j = 1; j <= m; j++) {
-            if (grid[i][j] == 'S') start = {i, j};
-            if (grid[i][j] == 'T') target = {i, j};
-        }
-    }
-
-    vector<vector<int>> dist(n + 1, vector<int>(m + 1, -1));
-    queue<pair<int, int>> q;
-    dist[start.first][start.second] = 0;
-    q.push(start);
-    int dx[4] = {1, -1, 0, 0};
-    int dy[4] = {0, 0, 1, -1};
-    while (!q.empty()) {
-        auto [x, y] = q.front();
-        q.pop();
-        for (int d = 0; d < 4; d++) {
-            int nx = x + dx[d];
-            int ny = y + dy[d];
-            if (nx < 1 || nx > n || ny < 1 || ny > m) continue;
-            if (grid[nx][ny] == '#') continue;
-            if (dist[nx][ny] != -1) continue;
-            dist[nx][ny] = dist[x][y] + 1;
-            q.push({nx, ny});
-        }
-    }
-    cout << dist[target.first][target.second] << '\n';
-    return 0;
-}
-```
-
-**测试设计：**
-
-- 测试 1 输入：
-```text
-1 2
-ST
-```
-期望输出：
-```text
-1
-```
-- 测试 2 输入：
-```text
-1 3
-S#T
-```
-期望输出：
-```text
--1
-```
-### V00-EX06 非负权道路最短路
-
-- 归属卷：第 0 卷
-- 覆盖模块：ROUTE-00、GRAPH-03、CPP-004
-- 考场用途：训练“非负边权最短路”路由到 Dijkstra 和小根堆。
-
-**题目描述：** 给定无向非负权图和起点 `s`，回答若干目标点的最短距离。不可达输出 `-1`。
-
-**输入格式：** 第一行三个整数 `n m s`。接下来 `m` 行为 `u v w`。然后一行整数 `q`。接下来 `q` 行每行一个目标点。
-
-**输出格式：** 每个目标点输出一行距离。
-
-**样例输入：**
-```text
-4 5 1
-1 2 5
-1 3 2
-3 2 1
-2 4 2
-3 4 10
-3
-2
-4
-1
-```
-
-**样例输出：**
-```text
-3
-5
-0
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-using ll = long long;
-const ll INF = 4'000'000'000'000'000'000LL;
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n, m, s;
-    cin >> n >> m >> s;
-    vector<vector<pair<int, ll>>> graph(n + 1);
-    for (int i = 1; i <= m; i++) {
-        int u, v;
-        ll w;
-        cin >> u >> v >> w;
-        graph[u].push_back({v, w});
-        graph[v].push_back({u, w});
-    }
-
-    vector<ll> dist(n + 1, INF);
-    priority_queue<pair<ll, int>, vector<pair<ll, int>>, greater<pair<ll, int>>> pq;
-    dist[s] = 0;
-    pq.push({0, s});
-    while (!pq.empty()) {
-        auto [du, u] = pq.top();
-        pq.pop();
-        if (du != dist[u]) continue;
-        for (auto [v, w] : graph[u]) {
-            if (dist[v] > du + w) {
-                dist[v] = du + w;
-                pq.push({dist[v], v});
-            }
-        }
-    }
-
-    int q;
-    cin >> q;
-    while (q--) {
-        int t;
-        cin >> t;
-        cout << (dist[t] == INF ? -1 : dist[t]) << '\n';
-    }
-    return 0;
-}
-```
-
-**测试设计：**
-
-- 测试 1 输入：
-```text
-3 1 1
-1 2 5
-1
-3
-```
-期望输出：
-```text
--1
-```
-- 测试 2 输入：
-```text
-2 2 1
-1 2 10
-1 2 3
-1
-2
-```
-期望输出：
-```text
-3
-```
-### V00-EX07 依赖任务排序
-
-- 归属卷：第 0 卷
-- 覆盖模块：ROUTE-00、GRAPH-05、OPS-00
-- 考场用途：训练“先后依赖”路由到拓扑排序，并检查有环。
-
-**题目描述：** 有 `n` 个任务和 `m` 条依赖关系 `u v`，表示任务 `u` 必须在任务 `v` 前完成。输出字典序尽量小的合法顺序；如果不存在，输出 `CYCLE`。
-
-**输入格式：** 第一行两个整数 `n m`。接下来 `m` 行，每行两个整数 `u v`。
-
-**输出格式：** 合法时输出一行任务顺序；否则输出 `CYCLE`。
-
-**样例输入：**
-```text
-4 3
-1 3
-2 3
-3 4
-```
-
-**样例输出：**
-```text
-1 2 3 4
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n, m;
-    cin >> n >> m;
-    vector<vector<int>> graph(n + 1);
-    vector<int> indeg(n + 1, 0);
-    for (int i = 1; i <= m; i++) {
-        int u, v;
-        cin >> u >> v;
-        graph[u].push_back(v);
-        indeg[v]++;
-    }
-
-    priority_queue<int, vector<int>, greater<int>> pq;
-    for (int i = 1; i <= n; i++) {
-        if (indeg[i] == 0) pq.push(i);
-    }
-
-    vector<int> order;
-    while (!pq.empty()) {
-        int u = pq.top();
-        pq.pop();
-        order.push_back(u);
-        for (int v : graph[u]) {
-            indeg[v]--;
-            if (indeg[v] == 0) pq.push(v);
-        }
-    }
-
-    if ((int)order.size() != n) {
-        cout << "CYCLE\n";
-    } else {
-        for (int i = 0; i < n; i++) {
-            if (i) cout << ' ';
-            cout << order[i];
-        }
-        cout << '\n';
-    }
-    return 0;
-}
-```
-
-**测试设计：**
-
-- 测试 1 输入：
-```text
-3 3
-1 2
-2 3
-3 1
-```
-期望输出：
-```text
-CYCLE
-```
-- 测试 2 输入：
-```text
-3 1
-2 3
-```
-期望输出：
-```text
-1 2 3
-```
-### V00-EX08 容量选择路线
-
-- 归属卷：第 0 卷
-- 覆盖模块：ROUTE-00、DP-06、OPS-00
-- 考场用途：训练“每个物品最多选一次”路由到 0/1 背包，容量循环倒序。
-
-**题目描述：** 有 `n` 个物品，每个物品有重量 `w` 和价值 `v`，每个物品最多选一次。背包容量为 `W`，求最大总价值。
-
-**输入格式：** 第一行两个整数 `n W`。接下来 `n` 行，每行两个整数 `w v`。
-
-**输出格式：** 输出最大价值。
-
-**样例输入：**
-```text
-4 7
-3 4
-4 5
-2 3
-3 7
-```
-
-**样例输出：**
-```text
-12
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-using ll = long long;
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n, W;
-    cin >> n >> W;
-    vector<ll> dp(W + 1, 0);
-    for (int i = 1; i <= n; i++) {
-        int w;
-        ll v;
-        cin >> w >> v;
-        for (int cap = W; cap >= w; cap--) {
-            dp[cap] = max(dp[cap], dp[cap - w] + v);
-        }
-    }
-    cout << dp[W] << '\n';
-    return 0;
-}
-```
-
-**测试设计：**
-
-- 测试 1 输入：
-```text
-1 2
-1 1
-```
-期望输出：
-```text
-1
-```
-- 测试 2 输入：
-```text
-2 3
-4 10
-5 20
-```
-期望输出：
-```text
-0
-```
-### V00-EX09 模式串出现次数
-
-- 归属卷：第 0 卷
-- 覆盖模块：ROUTE-00、STR-02、CPP-011
-- 考场用途：训练“长文本查模式串”路由到 KMP，并处理重叠出现。
-
-**题目描述：** 给定文本串 `s` 和模式串 `p`，统计 `p` 在 `s` 中出现了多少次，允许重叠。
-
-**输入格式：** 第一行一个字符串 `s`。第二行一个字符串 `p`。
-
-**输出格式：** 输出出现次数。
-
-**样例输入：**
-```text
-aaaaa
-aa
-```
-
-**样例输出：**
-```text
-4
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    string s_raw, p_raw;
-    cin >> s_raw >> p_raw;
-    string s = " " + s_raw;
-    string p = " " + p_raw;
-    int n = (int)s_raw.size();
-    int m = (int)p_raw.size();
-    vector<int> pi(m + 1, 0);
-    for (int i = 2; i <= m; i++) {
-        int j = pi[i - 1];
-        while (j > 0 && p[i] != p[j + 1]) j = pi[j];
-        if (p[i] == p[j + 1]) j++;
-        pi[i] = j;
-    }
-
-    int ans = 0;
-    int j = 0;
-    for (int i = 1; i <= n; i++) {
-        while (j > 0 && s[i] != p[j + 1]) j = pi[j];
-        if (s[i] == p[j + 1]) j++;
-        if (j == m) {
-            ans++;
-            j = pi[j];
-        }
-    }
-    cout << ans << '\n';
-    return 0;
-}
-```
-
-**测试设计：**
-
-- 测试 1 输入：
-```text
-abc
-d
-```
-期望输出：
-```text
-0
-```
-- 测试 2 输入：
-```text
-abababa
-aba
-```
-期望输出：
-```text
-3
-```
-### V00-EX10 提交版本选择器
-
-- 归属卷：第 0 卷
-- 覆盖模块：OPS-01、ROUTE-01、TRAIN-00
-- 考场用途：训练“先保分，再修正解”的提交路线选择。
-
-**题目描述：** 你有 `k` 个候选提交版本。每个版本有预计得分 `score`、风险值 `risk` 和剩余调试时间 `time`。只考虑 `risk <= R` 且 `time <= M` 的版本。在可选版本中，优先选得分最高；得分相同选风险更低；仍相同选用时更短；仍相同选编号更小。若没有可选版本，输出 `HOLD`。
-
-**输入格式：** 第一行三个整数 `k R M`。接下来 `k` 行，每行三个整数 `score risk time`。
-
-**输出格式：** 可选时输出版本编号和预计得分；不可选时输出 `HOLD`。
-
-**样例输入：**
-```text
-4 30 20
-60 10 8
-80 40 12
-80 25 25
-70 20 18
-```
-
-**样例输出：**
-```text
-4 70
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-struct Version {
-    int id;
-    int score;
-    int risk;
-    int time_need;
-};
-
-bool better(const Version &a, const Version &b) {
-    if (a.score != b.score) return a.score > b.score;
-    if (a.risk != b.risk) return a.risk < b.risk;
-    if (a.time_need != b.time_need) return a.time_need < b.time_need;
-    return a.id < b.id;
-}
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int k, R, M;
-    cin >> k >> R >> M;
-    bool has = false;
-    Version best{0, 0, 0, 0};
-    for (int i = 1; i <= k; i++) {
-        Version cur;
-        cur.id = i;
-        cin >> cur.score >> cur.risk >> cur.time_need;
-        if (cur.risk > R || cur.time_need > M) continue;
-        if (!has || better(cur, best)) {
-            best = cur;
-            has = true;
-        }
-    }
-
-    if (!has) {
-        cout << "HOLD\n";
-    } else {
-        cout << best.id << ' ' << best.score << '\n';
-    }
-    return 0;
-}
-```
-
-**测试设计：**
-
-- 测试 1 输入：
-```text
-2 10 5
-100 20 1
-80 5 6
-```
-期望输出：
-```text
-HOLD
-```
-- 测试 2 输入：
-```text
-2 50 50
-90 30 10
-90 20 20
-```
-期望输出：
-```text
-2 90
-```
-
-## 第 7 卷：调试、反例与对拍训练
-### V00-CEX01 数据范围路由卡
-
-- 归属卷：第 0 卷
-- 覆盖模块：ROUTE-00、复杂度表、题型信号
-- 考场用途：把题面关键词和数据范围直接映射到第一本该翻的书。
-- 参考题型来源：参考来源：洛谷官方题单的基础/进阶分类、OI Wiki 算法分类。
-
-**题目描述：** 给出若干组 `n m feature`，输出建议优先翻的模块。
-
-**输入格式：** 多行，每行 `n m feature`，读到 EOF。
-
-**输出格式：** 每行输出一个模块建议。
-
-**样例输入：**
-```text
-5 4 unweighted_graph
-200000 300000 weighted_nonnegative
-18 0 subset
-100 1000 capacity
-```
-
-**样例输出：**
-```text
-GRAPH-02 BFS
-GRAPH-03 Dijkstra
-BRUTE-02 Bitmask
-DP-06 Knapsack
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-    long long n, m;
-    string feature;
-    while (cin >> n >> m >> feature) {
-        if (feature == "unweighted_graph") cout << "GRAPH-02 BFS\n";
-        else if (feature == "weighted_nonnegative") cout << "GRAPH-03 Dijkstra\n";
-        else if (feature == "range_sum_static") cout << "DS-01 PrefixSum\n";
-        else if (feature == "range_update") cout << "DS-01 Difference\n";
-        else if (n <= 20 && feature == "subset") cout << "BRUTE-02 Bitmask\n";
-        else if (feature == "capacity") cout << "DP-06 Knapsack\n";
-        else cout << "ROUTE-00 Read constraints again\n";
-    }
-    return 0;
-}
-```
-
-**测试设计：** 额外测试：构造最小规模、重复值、边界值各一组，和样例一起运行。
-
-***
-### V00-CEX02 先交差分部分分
-
-- 归属卷：第 0 卷
-- 覆盖模块：DS-01 差分、提交策略
-- 考场用途：看到大量区间加，先写差分拿稳分。
-- 参考题型来源：参考来源：洛谷入门数组/前缀差分题型。
-
-**题目描述：** 长度为 `n` 的数组初始全 0，执行区间加，输出最终最大值第一次出现的位置和值。
-
-**输入格式：** 第一行 `n q`，之后 `q` 行 `l r v`。
-
-**输出格式：** 输出 `pos maxValue`。
-
-**样例输入：**
-```text
-5 3
-1 3 2
-2 5 1
-4 4 10
-```
-
-**样例输出：**
-```text
-4 11
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-    int n, q;
-    cin >> n >> q;
-    vector<long long> diff(n + 3, 0);
-    for (int i = 1; i <= q; i++) {
-        int l, r;
-        long long v;
-        cin >> l >> r >> v;
-        diff[l] += v;
-        diff[r + 1] -= v;
-    }
-    long long cur = 0, mx = LLONG_MIN;
-    int pos = 1;
-    for (int i = 1; i <= n; i++) {
-        cur += diff[i];
-        if (cur > mx) {
-            mx = cur;
-            pos = i;
-        }
-    }
-    cout << pos << ' ' << mx << '\n';
-    return 0;
-}
-```
-
-**测试设计：** 额外测试：构造最小规模、重复值、边界值各一组，和样例一起运行。
-
-***
-### V00-CEX03 BFS 与 Dijkstra 路由合并
-
-- 归属卷：第 0 卷
-- 覆盖模块：GRAPH-02 BFS、GRAPH-03 Dijkstra
-- 考场用途：同一份题面先判断边权是否全 1，再决定翻哪本图论页。
-- 参考题型来源：参考来源：洛谷图论题单最短路分类、OI Wiki 最短路。
-
-**题目描述：** 给无向图，如果所有边权都是 1 用 BFS，否则用 Dijkstra，求 `s` 到 `t` 最短距离。
-
-**输入格式：** 第一行 `n m s t`，之后 `m` 行 `u v w`。
-
-**输出格式：** 输出最短距离，不可达输出 `-1`。
-
-**样例输入：**
-```text
-4 4 1 4
-1 2 1
-2 4 1
-1 3 5
-3 4 1
-```
-
-**样例输出：**
-```text
-2
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-    int n, m, s, t;
-    cin >> n >> m >> s >> t;
-    vector<vector<pair<int,int>>> g(n + 1);
-    bool all_one = true;
-    for (int i = 1; i <= m; i++) {
-        int u, v, w;
-        cin >> u >> v >> w;
-        g[u].push_back({v, w});
-        g[v].push_back({u, w});
-        if (w != 1) all_one = false;
-    }
-    const long long INF = (long long)4e18;
-    vector<long long> dist(n + 1, INF);
-    if (all_one) {
-        queue<int> q;
-        dist[s] = 0;
-        q.push(s);
-        while (!q.empty()) {
-            int u = q.front(); q.pop();
-            for (auto [v, w] : g[u]) {
-                if (dist[v] == INF) {
-                    dist[v] = dist[u] + 1;
-                    q.push(v);
-                }
-            }
-        }
-    } else {
-        priority_queue<pair<long long,int>, vector<pair<long long,int>>, greater<pair<long long,int>>> pq;
-        dist[s] = 0;
-        pq.push({0, s});
-        while (!pq.empty()) {
-            auto [d, u] = pq.top(); pq.pop();
-            if (d != dist[u]) continue;
-            for (auto [v, w] : g[u]) {
-                if (dist[v] > d + w) {
-                    dist[v] = d + w;
-                    pq.push({dist[v], v});
-                }
-            }
-        }
-    }
-    cout << (dist[t] == INF ? -1 : dist[t]) << '\n';
-    return 0;
-}
-```
-
-**测试设计：** 额外测试：构造最小规模、重复值、边界值各一组，和样例一起运行。
-
-***
-### V00-CEX04 小数据暴力与大数据特判
-
-- 归属卷：第 0 卷
-- 覆盖模块：BRUTE 子集、哈希表、部分分策略
-- 考场用途：同一题先写小数据精确，再给大数据特殊版。
-- 参考题型来源：参考来源：洛谷搜索/哈希题型、部分分赛制策略。
-
-**题目描述：** 若 `n<=25`，统计子集和等于目标的方案数；否则只统计两数和等于目标的对数，模拟部分分兜底。
-
-**输入格式：** 第一行 `n target`，第二行 `n` 个整数。
-
-**输出格式：** 输出统计结果。
-
-**样例输入：**
-```text
-4 5
-1 2 3 4
-```
-
-**样例输出：**
-```text
-2
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-    int n;
-    long long target;
-    cin >> n >> target;
-    vector<long long> a(n + 1);
-    for (int i = 1; i <= n; i++) cin >> a[i];
-    long long ans = 0;
-    if (n <= 25) {
-        for (int mask = 0; mask < (1 << n); mask++) {
-            long long sum = 0;
-            for (int i = 1; i <= n; i++) if (mask & (1 << (i - 1))) sum += a[i];
-            if (sum == target) ans++;
-        }
-    } else {
-        unordered_map<long long, long long> cnt;
-        cnt.reserve(n * 2 + 10);
-        for (int i = 1; i <= n; i++) {
-            ans += cnt[target - a[i]];
-            cnt[a[i]]++;
-        }
-    }
-    cout << ans << '\n';
-    return 0;
-}
-```
-
-**测试设计：** 额外测试：构造最小规模、重复值、边界值各一组，和样例一起运行。
-
-***
-### V00-CEX05 最高分提交统计
-
-- 归属卷：第 0 卷
-- 覆盖模块：考试策略、最高分提交规则、数组
-- 考场用途：把每题多次提交取最高的规则变成程序，强化先交部分分。
-- 参考题型来源：参考来源：本次机考规则。
-
-**题目描述：** 有 `p` 道题、`s` 次提交记录，每条记录是题号和得分，输出最终总分。
-
-**输入格式：** 第一行 `p s`，之后 `s` 行 `id score`。
-
-**输出格式：** 输出最终总分。
-
-**样例输入：**
-```text
-3 6
-1 20
-2 30
-1 50
-3 10
-2 25
-3 80
-```
-
-**样例输出：**
-```text
-160
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-    int p, s;
-    cin >> p >> s;
-    vector<int> best(p + 1, -1);
-    for (int i = 1; i <= s; i++) {
-        int id, score;
-        cin >> id >> score;
-        best[id] = max(best[id], score);
-    }
-    int total = 0;
-    for (int i = 1; i <= p; i++) total += max(0, best[i]);
-    cout << total << '\n';
-    return 0;
-}
-```
-
-**测试设计：** 额外测试：构造最小规模、重复值、边界值各一组，和样例一起运行。
-
-***
-
-<!-- V02_EXAMPLES_END -->
 
 
 
@@ -6901,1167 +5622,6 @@ dist.assign(n + 1, -1);
 30
 ```
 
-<!-- V02_EXAMPLES_START -->
-
-# v0.2 本卷例题训练区
-
-这一节是 0.2 新增的实战例题。每题都配完整可运行代码和样例；考试时优先看“覆盖模块”和“考场用途”，再复制对应代码骨架。
-
-### V01-EX01 班级成绩汇总
-
-- 归属卷：第 1 卷
-- 覆盖模块：CPP-001 主骨架与输入输出、CPP-002 vector、CPP-10 格式化输出
-- 考场用途：练习 `cin/cout` 快速骨架、1-index `vector` 存数、`fixed << setprecision` 输出平均值。
-
-**题目描述：** 给定一个班级 `n` 名同学的整数成绩，输出总分、平均分和最高分。
-
-**输入格式：** 第一行一个整数 `n`。第二行 `n` 个整数，表示每名同学的成绩。
-
-**输出格式：** 输出三行，分别为 `sum=总分`、`average=平均分`、`max=最高分`。平均分保留两位小数。
-
-**样例输入：**
-```text
-5
-80 90 75 100 95
-```
-
-**样例输出：**
-```text
-sum=440
-average=88.00
-max=100
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n;
-    cin >> n;
-    vector<int> score(n + 1);
-    long long sum = 0;
-    int best = 0;
-    for (int i = 1; i <= n; i++) {
-        cin >> score[i];
-        sum += score[i];
-        best = max(best, score[i]);
-    }
-
-    double avg = 1.0 * sum / n;
-    cout << "sum=" << sum << '\n';
-    cout << fixed << setprecision(2) << "average=" << avg << '\n';
-    cout << "max=" << best << '\n';
-    return 0;
-}
-```
-
-**测试设计：**
-
-1. 输入：
-```text
-3
-1 2 3
-```
-期望输出：
-```text
-sum=6
-average=2.00
-max=3
-```
-
-2. 输入：
-```text
-1
-99
-```
-期望输出：
-```text
-sum=99
-average=99.00
-max=99
-```
-### V01-EX02 商品小票打印
-
-- 归属卷：第 1 卷
-- 覆盖模块：CPP-10 scanf/printf、格式化输出、补零、小数位
-- 考场用途：练习只使用 `scanf/printf` 的传统 IO，避免关闭同步后混用 C 和 C++ 输入输出。
-
-**题目描述：** 给定 `n` 件商品的编号、单价和数量，输出每件商品的小计和总价。商品编号按 4 位补零输出，小计和总价保留两位小数。
-
-**输入格式：** 第一行一个整数 `n`。接下来 `n` 行，每行包含整数 `id`、实数 `price`、整数 `count`。
-
-**输出格式：** 前 `n` 行输出 `编号 小计`，最后一行输出 `TOTAL 总价`。
-
-**样例输入：**
-```text
-3
-7 12.5 2
-42 3.2 5
-105 100 1
-```
-
-**样例输出：**
-```text
-0007 25.00
-0042 16.00
-0105 100.00
-TOTAL 141.00
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-struct Item {
-    int id;
-    double price;
-    int count;
-};
-
-int main() {
-    int n;
-    if (scanf("%d", &n) != 1) return 0;
-
-    vector<Item> item(n + 1);
-    double total = 0.0;
-    for (int i = 1; i <= n; i++) {
-        if (scanf("%d%lf%d", &item[i].id, &item[i].price, &item[i].count) != 3) return 0;
-    }
-
-    for (int i = 1; i <= n; i++) {
-        double subtotal = item[i].price * item[i].count;
-        total += subtotal;
-        printf("%04d %.2f\n", item[i].id, subtotal);
-    }
-    printf("TOTAL %.2f\n", total);
-    return 0;
-}
-```
-
-**测试设计：**
-
-1. 输入：
-```text
-2
-1 1.5 3
-23 10 2
-```
-期望输出：
-```text
-0001 4.50
-0023 20.00
-TOTAL 24.50
-```
-
-2. 输入：
-```text
-1
-9999 0.99 10
-```
-期望输出：
-```text
-9999 9.90
-TOTAL 9.90
-```
-### V01-EX03 EOF 单词频率表
-
-- 归属卷：第 1 卷
-- 覆盖模块：CPP-001 EOF、CPP-10 getline、CPP-011 string、CPP-005 map
-- 考场用途：练习 `getline` 读到 EOF、`stringstream` 拆词、`map` 自动按字典序输出。
-
-**题目描述：** 输入若干行文本，统计每个单词出现次数。单词只按空白分隔，大小写视为不同单词。
-
-**输入格式：** 若干行文本，直到文件结束。
-
-**输出格式：** 按单词字典序输出，每行一个单词和出现次数。
-
-**样例输入：**
-```text
-apple banana apple
-pear banana
-```
-
-**样例输出：**
-```text
-apple 2
-banana 2
-pear 1
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    map<string, int> cnt;
-    string line;
-    while (getline(cin, line)) {
-        stringstream ss(line);
-        string word;
-        while (ss >> word) {
-            cnt[word]++;
-        }
-    }
-
-    for (const auto &kv : cnt) {
-        cout << kv.first << ' ' << kv.second << '\n';
-    }
-    return 0;
-}
-```
-
-**测试设计：**
-
-1. 输入：
-```text
-one
-one two
-```
-期望输出：
-```text
-one 2
-two 1
-```
-
-2. 输入：
-```text
-z y x
-```
-期望输出：
-```text
-x 1
-y 1
-z 1
-```
-### V01-EX04 通讯录号码查询
-
-- 归属卷：第 1 卷
-- 覆盖模块：CPP-005 unordered_map、CPP-011 string、CPP-001 cin/cout
-- 考场用途：练习用 `unordered_map` 做姓名到号码的快速查询，并在大量插入前预留空间。
-
-**题目描述：** 给定通讯录中若干人的姓名和号码，再回答若干次查询。若姓名存在，输出号码；否则输出 `NOT FOUND`。
-
-**输入格式：** 第一行一个整数 `n`。接下来 `n` 行，每行一个姓名和号码。再输入整数 `q`，接下来 `q` 行每行一个待查询姓名。
-
-**输出格式：** 对每次查询输出一行结果。
-
-**样例输入：**
-```text
-3
-Alice 10086
-Bob 10010
-Cindy 95588
-4
-Bob
-David
-Alice
-Cindy
-```
-
-**样例输出：**
-```text
-10010
-NOT FOUND
-10086
-95588
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n;
-    cin >> n;
-    unordered_map<string, string> phone;
-    phone.reserve(n * 2 + 10);
-    phone.max_load_factor(0.7);
-
-    for (int i = 1; i <= n; i++) {
-        string name, number;
-        cin >> name >> number;
-        phone[name] = number;
-    }
-
-    int q;
-    cin >> q;
-    for (int i = 1; i <= q; i++) {
-        string name;
-        cin >> name;
-        auto it = phone.find(name);
-        if (it == phone.end()) {
-            cout << "NOT FOUND\n";
-        } else {
-            cout << it->second << '\n';
-        }
-    }
-    return 0;
-}
-```
-
-**测试设计：**
-
-1. 输入：
-```text
-1
-Tom 123
-3
-Tom
-Jerry
-Tom
-```
-期望输出：
-```text
-123
-NOT FOUND
-123
-```
-
-2. 输入：
-```text
-2
-A 1
-B 2
-2
-B
-A
-```
-期望输出：
-```text
-2
-1
-```
-### V01-EX05 任务优先级调度
-
-- 归属卷：第 1 卷
-- 覆盖模块：CPP-004 priority_queue、CPP-002 vector/string、结构体比较
-- 考场用途：练习 `priority_queue` 默认最大堆思想：优先级越大越先处理，优先级相同则耗时短者先处理，再按输入顺序稳定打破平局。
-
-**题目描述：** 给定 `n` 个任务，每个任务有名称、优先级和耗时。按规则输出处理顺序：优先级高的先处理；优先级相同，耗时短的先处理；仍相同，先输入的先处理。
-
-**输入格式：** 第一行一个整数 `n`。接下来 `n` 行，每行包含任务名 `name`、整数优先级 `priority`、整数耗时 `time`。
-
-**输出格式：** 输出 `n` 行，每行一个任务的名称、优先级和耗时。
-
-**样例输入：**
-```text
-5
-write 2 30
-fix 5 10
-test 5 5
-read 1 1
-pack 2 20
-```
-
-**样例输出：**
-```text
-test 5 5
-fix 5 10
-pack 2 20
-write 2 30
-read 1 1
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-struct Task {
-    string name;
-    int priority;
-    int time;
-    int id;
-
-    bool operator<(const Task &other) const {
-        if (priority != other.priority) return priority < other.priority;
-        if (time != other.time) return time > other.time;
-        return id > other.id;
-    }
-};
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n;
-    cin >> n;
-    priority_queue<Task> pq;
-    for (int i = 1; i <= n; i++) {
-        Task t;
-        cin >> t.name >> t.priority >> t.time;
-        t.id = i;
-        pq.push(t);
-    }
-
-    while (!pq.empty()) {
-        Task t = pq.top();
-        pq.pop();
-        cout << t.name << ' ' << t.priority << ' ' << t.time << '\n';
-    }
-    return 0;
-}
-```
-
-**测试设计：**
-
-1. 输入：
-```text
-3
-a 1 10
-b 3 20
-c 2 5
-```
-期望输出：
-```text
-b 3 20
-c 2 5
-a 1 10
-```
-
-2. 输入：
-```text
-3
-first 2 8
-second 2 8
-third 2 3
-```
-期望输出：
-```text
-third 2 3
-first 2 8
-second 2 8
-```
-### V01-EX06 整数去重排序
-
-- 归属卷：第 1 卷
-- 覆盖模块：CPP-005 set、CPP-001 cin/cout
-- 考场用途：练习 `set` 自动去重和升序输出，适合数据量中等、需要有序唯一集合的题。
-
-**题目描述：** 给定 `n` 个整数，输出不同整数的个数，并按升序输出所有不同整数。
-
-**输入格式：** 第一行一个整数 `n`。第二行 `n` 个整数。
-
-**输出格式：** 第一行输出 `count=不同整数个数`。第二行按升序输出不同整数，用一个空格分隔。
-
-**样例输入：**
-```text
-8
-5 3 5 2 3 9 2 1
-```
-
-**样例输出：**
-```text
-count=5
-1 2 3 5 9
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n;
-    cin >> n;
-    set<int> values;
-    for (int i = 1; i <= n; i++) {
-        int x;
-        cin >> x;
-        values.insert(x);
-    }
-
-    cout << "count=" << values.size() << '\n';
-    bool first = true;
-    for (int x : values) {
-        if (!first) cout << ' ';
-        first = false;
-        cout << x;
-    }
-    cout << '\n';
-    return 0;
-}
-```
-
-**测试设计：**
-
-1. 输入：
-```text
-5
-4 4 4 4 4
-```
-期望输出：
-```text
-count=1
-4
-```
-
-2. 输入：
-```text
-6
--1 3 -1 0 3 2
-```
-期望输出：
-```text
-count=4
--1 0 2 3
-```
-### V01-EX07 排序后找第一个不小于目标的位置
-
-- 归属卷：第 1 卷
-- 覆盖模块：CPP-003 sort/lower_bound、CPP-012 STL 算法、CPP-002 vector
-- 考场用途：练习半开区间二分，输出排序后 1-index 位置，避免把迭代器差值当成原数组下标。
-
-**题目描述：** 给定 `n` 个整数和 `q` 次查询。先将数组升序排序。每次查询给定 `x`，找到排序后第一个大于等于 `x` 的数，输出它的位置和值；若不存在，输出 `-1`。
-
-**输入格式：** 第一行一个整数 `n`。第二行 `n` 个整数。第三行一个整数 `q`。接下来 `q` 行每行一个整数 `x`。
-
-**输出格式：** 每次查询输出一行。若找到，输出 `位置 值`；否则输出 `-1`。
-
-**样例输入：**
-```text
-6
-8 1 5 3 5 10
-4
-0
-5
-6
-11
-```
-
-**样例输出：**
-```text
-1 1
-3 5
-5 8
--1
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n;
-    cin >> n;
-    vector<int> a(n + 1);
-    for (int i = 1; i <= n; i++) cin >> a[i];
-
-    sort(a.begin() + 1, a.end());
-
-    int q;
-    cin >> q;
-    for (int i = 1; i <= q; i++) {
-        int x;
-        cin >> x;
-        auto it = lower_bound(a.begin() + 1, a.end(), x);
-        if (it == a.end()) {
-            cout << -1 << '\n';
-        } else {
-            int pos = (int)(it - a.begin());
-            cout << pos << ' ' << *it << '\n';
-        }
-    }
-    return 0;
-}
-```
-
-**测试设计：**
-
-1. 输入：
-```text
-4
-4 2 8 6
-3
-1
-6
-9
-```
-期望输出：
-```text
-1 2
-3 6
--1
-```
-
-2. 输入：
-```text
-5
-5 5 5 5 5
-2
-5
-6
-```
-期望输出：
-```text
-1 5
--1
-```
-### V01-EX08 学生成绩排行
-
-- 归属卷：第 1 卷
-- 覆盖模块：CPP-002 vector/string、CPP-003 sort 与 lambda、CPP-012 自定义比较
-- 考场用途：练习结构体数组的 1-index 存储和多关键字排序：分数降序，姓名升序。
-
-**题目描述：** 给定 `n` 名学生的姓名和成绩，按成绩从高到低排序；成绩相同按姓名字典序升序排序。输出排名、姓名和成绩。
-
-**输入格式：** 第一行一个整数 `n`。接下来 `n` 行，每行一个姓名和一个整数成绩。
-
-**输出格式：** 输出 `n` 行，每行 `排名 姓名 成绩`。
-
-**样例输入：**
-```text
-5
-Tom 90
-Amy 95
-Bob 90
-Cindy 100
-Dave 95
-```
-
-**样例输出：**
-```text
-1 Cindy 100
-2 Amy 95
-3 Dave 95
-4 Bob 90
-5 Tom 90
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-struct Student {
-    string name;
-    int score;
-};
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n;
-    cin >> n;
-    vector<Student> a(n + 1);
-    for (int i = 1; i <= n; i++) {
-        cin >> a[i].name >> a[i].score;
-    }
-
-    sort(a.begin() + 1, a.end(), [](const Student &lhs, const Student &rhs) {
-        if (lhs.score != rhs.score) return lhs.score > rhs.score;
-        return lhs.name < rhs.name;
-    });
-
-    for (int i = 1; i <= n; i++) {
-        cout << i << ' ' << a[i].name << ' ' << a[i].score << '\n';
-    }
-    return 0;
-}
-```
-
-**测试设计：**
-
-1. 输入：
-```text
-3
-B 80
-A 80
-C 90
-```
-期望输出：
-```text
-1 C 90
-2 A 80
-3 B 80
-```
-
-2. 输入：
-```text
-2
-Li 100
-Wang 99
-```
-期望输出：
-```text
-1 Li 100
-2 Wang 99
-```
-### V01-EX09 整行记录统计
-
-- 归属卷：第 1 卷
-- 覆盖模块：CPP-10 getline、CPP-011 string、CPP-001 token 输入后处理换行
-- 考场用途：练习 `cin >> n` 后立刻 `getline` 前必须清掉行尾换行，适合题目含空格字符串的场景。
-
-**题目描述：** 给定 `n` 行记录。对每一行，输出行号、字符长度和单词数量。单词按空白分隔。
-
-**输入格式：** 第一行一个整数 `n`。接下来 `n` 行，每行是一条记录，可能包含空格。
-
-**输出格式：** 输出 `n` 行，每行 `行号 长度 单词数量`。
-
-**样例输入：**
-```text
-3
-Hello World
-abc 123
-A B C
-```
-
-**样例输出：**
-```text
-1 11 2
-2 7 2
-3 5 3
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n;
-    cin >> n;
-    cin.ignore(numeric_limits<streamsize>::max(), '\n');
-
-    vector<string> line(n + 1);
-    for (int i = 1; i <= n; i++) {
-        getline(cin, line[i]);
-    }
-
-    for (int i = 1; i <= n; i++) {
-        stringstream ss(line[i]);
-        string word;
-        int words = 0;
-        while (ss >> word) words++;
-        cout << i << ' ' << line[i].size() << ' ' << words << '\n';
-    }
-    return 0;
-}
-```
-
-**测试设计：**
-
-1. 输入：
-```text
-2
-single
-two words
-```
-期望输出：
-```text
-1 6 1
-2 9 2
-```
-
-2. 输入：
-```text
-1
-  lead and tail  
-```
-期望输出：
-```text
-1 17 3
-```
-### V01-EX10 闭区间计数查询
-
-- 归属卷：第 1 卷
-- 覆盖模块：CPP-003 lower_bound/upper_bound、CPP-012 sort 与二分、CPP-002 vector
-- 考场用途：练习在有序数组上统计 `[L, R]` 中元素个数，避免手写二分边界出错。
-
-**题目描述：** 给定 `n` 个整数和 `q` 个查询。每次查询给出 `L R`，输出数组中落在闭区间 `[L, R]` 内的元素个数。
-
-**输入格式：** 第一行一个整数 `n`。第二行 `n` 个整数。第三行一个整数 `q`。接下来 `q` 行每行两个整数 `L R`。
-
-**输出格式：** 对每个查询输出一行答案。
-
-**样例输入：**
-```text
-7
-1 5 2 2 8 10 5
-3
-1 2
-3 7
-6 10
-```
-
-**样例输出：**
-```text
-3
-2
-2
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n;
-    cin >> n;
-    vector<int> a(n + 1);
-    for (int i = 1; i <= n; i++) cin >> a[i];
-
-    sort(a.begin() + 1, a.end());
-
-    int q;
-    cin >> q;
-    for (int i = 1; i <= q; i++) {
-        int l, r;
-        cin >> l >> r;
-        auto left_it = lower_bound(a.begin() + 1, a.end(), l);
-        auto right_it = upper_bound(a.begin() + 1, a.end(), r);
-        cout << (right_it - left_it) << '\n';
-    }
-    return 0;
-}
-```
-
-**测试设计：**
-
-1. 输入：
-```text
-5
-1 2 3 4 5
-2
-2 4
-6 9
-```
-期望输出：
-```text
-3
-0
-```
-
-2. 输入：
-```text
-4
-7 7 7 7
-2
-7 7
-1 6
-```
-期望输出：
-```text
-4
-0
-```
-
-***
-
-## 第 9 卷：Python 互补卷例题
-### V01-CEX01 多行键值记录合并
-
-- 归属卷：第 1 卷
-- 覆盖模块：getline、stringstream、map
-- 考场用途：处理含空格记录并按字典序输出。
-- 参考题型来源：参考来源：洛谷入门字符串/模拟题型。
-
-**题目描述：** 每行由若干 `名字 数值` 对组成，合并所有名字的数值。
-
-**输入格式：** 第一行 `n`，接下来 `n` 行记录。
-
-**输出格式：** 按名字字典序输出合计。
-
-**样例输入：**
-```text
-3
-alice 3 bob 2
-alice 4
-carl 5 bob 1
-```
-
-**样例输出：**
-```text
-alice 7
-bob 3
-carl 5
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-    int n;
-    cin >> n;
-    cin.ignore(numeric_limits<streamsize>::max(), '\n');
-    map<string, long long> sum;
-    for (int i = 1; i <= n; i++) {
-        string line;
-        getline(cin, line);
-        stringstream ss(line);
-        string key;
-        long long value;
-        while (ss >> key >> value) sum[key] += value;
-    }
-    for (auto [k, v] : sum) cout << k << ' ' << v << '\n';
-    return 0;
-}
-```
-
-**测试设计：** 额外测试：构造最小规模、重复值、边界值各一组，和样例一起运行。
-
-***
-### V01-CEX02 固定宽度成绩表
-
-- 归属卷：第 1 卷
-- 覆盖模块：iomanip、fixed、setprecision、setw
-- 考场用途：复杂格式输出时直接套。
-- 参考题型来源：参考来源：洛谷入门格式化输出题型。
-
-**题目描述：** 输入若干学生两项成绩，左对齐姓名、右对齐总分并保留两位小数。
-
-**输入格式：** 第一行 `n`，之后 `name a b`。
-
-**输出格式：** 每行输出宽度固定的姓名和总分。
-
-**样例输入：**
-```text
-2
-Li 90 5.5
-Wang 80.25 10
-```
-
-**样例输出：**
-```text
-Li           95.50
-Wang         90.25
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-    int n;
-    cin >> n;
-    cout << fixed << setprecision(2);
-    for (int i = 1; i <= n; i++) {
-        string name;
-        double a, b;
-        cin >> name >> a >> b;
-        cout << setw(10) << left << name << right << setw(8) << a + b << '\n';
-    }
-    return 0;
-}
-```
-
-**测试设计：** 额外测试：构造最小规模、重复值、边界值各一组，和样例一起运行。
-
-***
-### V01-CEX03 哈希表加堆 TopK
-
-- 归属卷：第 1 卷
-- 覆盖模块：unordered_map、priority_queue
-- 考场用途：词频统计后取最高频。
-- 参考题型来源：参考来源：洛谷/ICPC 常见词频 TopK 模拟。
-
-**题目描述：** 统计字符串出现次数，输出出现次数最高的前 `k` 个；次数相同按字典序大的先出。
-
-**输入格式：** 第一行 `n k`，之后 `n` 个字符串。
-
-**输出格式：** 输出前 `k` 项。
-
-**样例输入：**
-```text
-7 2
-a b a c b a c
-```
-
-**样例输出：**
-```text
-a 3
-c 2
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-    int n, k;
-    cin >> n >> k;
-    unordered_map<string, int> cnt;
-    cnt.reserve(n * 2 + 10);
-    for (int i = 1; i <= n; i++) {
-        string s;
-        cin >> s;
-        cnt[s]++;
-    }
-    priority_queue<pair<int,string>> pq;
-    for (auto [s, c] : cnt) pq.push({c, s});
-    for (int i = 1; i <= k && !pq.empty(); i++) {
-        auto [c, s] = pq.top(); pq.pop();
-        cout << s << ' ' << c << '\n';
-    }
-    return 0;
-}
-```
-
-**测试设计：** 额外测试：构造最小规模、重复值、边界值各一组，和样例一起运行。
-
-***
-### V01-CEX04 pair 排序合并区间
-
-- 归属卷：第 1 卷
-- 覆盖模块：vector<pair>、sort
-- 考场用途：用 STL 排序把模拟题变成标准区间合并。
-- 参考题型来源：参考来源：洛谷区间合并/模拟题型。
-
-**题目描述：** 给出若干闭区间，合并相交区间并输出。
-
-**输入格式：** 第一行 `n`，之后 `n` 行 `l r`。
-
-**输出格式：** 输出合并后区间个数和区间。
-
-**样例输入：**
-```text
-4
-1 3
-2 5
-8 9
-5 7
-```
-
-**样例输出：**
-```text
-2
-1 7
-8 9
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-    int n;
-    cin >> n;
-    vector<pair<int,int>> seg(n + 1);
-    for (int i = 1; i <= n; i++) cin >> seg[i].first >> seg[i].second;
-    sort(seg.begin() + 1, seg.end());
-    vector<pair<int,int>> ans;
-    for (int i = 1; i <= n; i++) {
-        if (ans.empty() || seg[i].first > ans.back().second) ans.push_back(seg[i]);
-        else ans.back().second = max(ans.back().second, seg[i].second);
-    }
-    cout << ans.size() << '\n';
-    for (auto [l, r] : ans) cout << l << ' ' << r << '\n';
-    return 0;
-}
-```
-
-**测试设计：** 额外测试：构造最小规模、重复值、边界值各一组，和样例一起运行。
-
-***
-### V01-CEX05 排序后二分答询问
-
-- 归属卷：第 1 卷
-- 覆盖模块：sort、lower_bound、vector 1-index
-- 考场用途：二分函数的标准调用。
-- 参考题型来源：参考来源：洛谷二分查找题型。
-
-**题目描述：** 每次询问输出数组中第一个不小于 `x` 的数。
-
-**输入格式：** 第一行 `n q`，第二行数组，之后 `q` 行询问。
-
-**输出格式：** 每行输出答案，不存在输出 `NONE`。
-
-**样例输入：**
-```text
-5 4
-7 1 5 3 9
-4
-9
-10
-1
-```
-
-**样例输出：**
-```text
-5
-9
-NONE
-1
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-    int n, q;
-    cin >> n >> q;
-    vector<int> a(n + 1);
-    for (int i = 1; i <= n; i++) cin >> a[i];
-    sort(a.begin() + 1, a.end());
-    while (q--) {
-        int x;
-        cin >> x;
-        auto it = lower_bound(a.begin() + 1, a.end(), x);
-        if (it == a.end()) cout << "NONE\n";
-        else cout << *it << '\n';
-    }
-    return 0;
-}
-```
-
-**测试设计：** 额外测试：构造最小规模、重复值、边界值各一组，和样例一起运行。
-
-***
-
-<!-- V02_EXAMPLES_END -->
-
 
 
 ---
@@ -11094,1216 +8654,6 @@ if (dfs(next_state)) return memo[state] = true;
 5. 答案为负数
 6. 有重复状态的小例子
 ```
-
-<!-- V02_EXAMPLES_START -->
-
-# v0.2 本卷例题训练区
-
-这一节是 0.2 新增的实战例题。每题都配完整可运行代码和样例；考试时优先看“覆盖模块”和“考场用途”，再复制对应代码骨架。
-
-### V02-EX01 全排列最短访问序列
-
-- 归属卷：第 2 卷
-- 覆盖模块：全排列、`next_permutation`、小数据精确解
-- 考场用途：`n <= 9` 且顺序可任意排列时，先用全排列写出正确答案。
-
-**题目描述：** 有 `n` 个点，访问顺序可以任意决定。已知从点 `i` 到点 `j` 的代价 `w[i][j]`，要求访问每个点恰好一次，使相邻两点之间总代价最小。若有多种最优顺序，输出字典序最小的顺序。
-
-**输入格式：** 第一行一个整数 `n`。接下来 `n` 行，每行 `n` 个整数，表示代价矩阵。
-
-**输出格式：** 第一行输出最小总代价。第二行输出最优访问顺序。
-
-**样例输入：**
-```text
-3
-0 5 1
-5 0 2
-1 2 0
-```
-
-**样例输出：**
-```text
-3
-1 3 2
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n;
-    cin >> n;
-    vector<vector<long long>> w(n + 1, vector<long long>(n + 1));
-    for (int i = 1; i <= n; i++) {
-        for (int j = 1; j <= n; j++) {
-            cin >> w[i][j];
-        }
-    }
-
-    vector<int> p(n + 1);
-    for (int i = 1; i <= n; i++) p[i] = i;
-
-    long long best = (1LL << 62);
-    vector<int> bestPath;
-    do {
-        long long cost = 0;
-        for (int i = 1; i < n; i++) {
-            cost += w[p[i]][p[i + 1]];
-        }
-        vector<int> cur(p.begin() + 1, p.end());
-        if (cost < best || (cost == best && cur < bestPath)) {
-            best = cost;
-            bestPath = cur;
-        }
-    } while (next_permutation(p.begin() + 1, p.end()));
-
-    cout << best << '\n';
-    for (int i = 0; i < n; i++) {
-        if (i) cout << ' ';
-        cout << bestPath[i];
-    }
-    cout << '\n';
-    return 0;
-}
-```
-
-**测试设计：**
-
-测试 1 输入：
-```text
-3
-0 5 1
-5 0 2
-1 2 0
-```
-期望输出：
-```text
-3
-1 3 2
-```
-
-测试 2 输入：
-```text
-4
-0 1 10 10
-1 0 1 10
-10 1 0 1
-10 10 1 0
-```
-期望输出：
-```text
-3
-1 2 3 4
-```
-### V02-EX02 子集目标和计数
-
-- 归属卷：第 2 卷
-- 覆盖模块：子集枚举、位运算、`2^n` 暴力
-- 考场用途：`n <= 20` 时直接枚举所有选或不选，给目标和类问题拿稳小数据分。
-
-**题目描述：** 给定 `n` 个正整数和目标值 `S`，统计有多少个子集的元素和恰好等于 `S`。
-
-**输入格式：** 第一行两个整数 `n S`。第二行 `n` 个整数。
-
-**输出格式：** 输出一个整数，表示满足条件的子集数量。
-
-**样例输入：**
-```text
-4 5
-1 2 3 4
-```
-
-**样例输出：**
-```text
-2
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n;
-    long long target;
-    cin >> n >> target;
-    vector<long long> a(n + 1);
-    for (int i = 1; i <= n; i++) cin >> a[i];
-
-    long long ans = 0;
-    int totalMask = 1 << n;
-    for (int mask = 0; mask < totalMask; mask++) {
-        long long sum = 0;
-        for (int i = 1; i <= n; i++) {
-            if (mask & (1 << (i - 1))) {
-                sum += a[i];
-            }
-        }
-        if (sum == target) ans++;
-    }
-
-    cout << ans << '\n';
-    return 0;
-}
-```
-
-**测试设计：**
-
-测试 1 输入：
-```text
-4 5
-1 2 3 4
-```
-期望输出：
-```text
-2
-```
-
-测试 2 输入：
-```text
-3 3
-1 1 2
-```
-期望输出：
-```text
-2
-```
-### V02-EX03 组合 DFS 选 k 个数
-
-- 归属卷：第 2 卷
-- 覆盖模块：组合 DFS、递归枚举、剩余数量剪枝
-- 考场用途：题目要求“从 n 个里面选 k 个”时，用 DFS 避免枚举所有排列。
-
-**题目描述：** 给定 `n` 个整数，从中选出恰好 `k` 个数，使它们的和等于 `S`。统计方案数。不同下标视为不同元素。
-
-**输入格式：** 第一行三个整数 `n k S`。第二行 `n` 个整数。
-
-**输出格式：** 输出方案数。
-
-**样例输入：**
-```text
-5 2 5
-1 2 3 4 5
-```
-
-**样例输出：**
-```text
-2
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int n, k;
-long long target;
-vector<long long> a;
-long long ans = 0;
-
-void dfs(int start, int chosen, long long sum) {
-    if (chosen == k) {
-        if (sum == target) ans++;
-        return;
-    }
-    if (start > n) return;
-    int need = k - chosen;
-    if (n - start + 1 < need) return;
-
-    for (int i = start; i <= n; i++) {
-        dfs(i + 1, chosen + 1, sum + a[i]);
-    }
-}
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    cin >> n >> k >> target;
-    a.assign(n + 1, 0);
-    for (int i = 1; i <= n; i++) cin >> a[i];
-
-    dfs(1, 0, 0);
-    cout << ans << '\n';
-    return 0;
-}
-```
-
-**测试设计：**
-
-测试 1 输入：
-```text
-5 2 5
-1 2 3 4 5
-```
-期望输出：
-```text
-2
-```
-
-测试 2 输入：
-```text
-6 3 10
-1 2 3 4 5 6
-```
-期望输出：
-```text
-3
-```
-### V02-EX04 N 皇后方案数
-
-- 归属卷：第 2 卷
-- 覆盖模块：回溯、冲突检查、搜索树剪枝
-- 考场用途：棋盘摆放、每行每列限制、不能互相攻击类问题的经典回溯模板。
-
-**题目描述：** 在 `n * n` 棋盘上放置 `n` 个皇后，要求任意两个皇后不在同一行、同一列或同一条对角线上。输出方案数。
-
-**输入格式：** 一个整数 `n`。
-
-**输出格式：** 输出方案数。
-
-**样例输入：**
-```text
-4
-```
-
-**样例输出：**
-```text
-2
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int n;
-long long ans = 0;
-vector<int> colUsed, diag1Used, diag2Used;
-
-void dfs(int row) {
-    if (row == n + 1) {
-        ans++;
-        return;
-    }
-    for (int col = 1; col <= n; col++) {
-        int d1 = row + col;
-        int d2 = row - col + n;
-        if (colUsed[col] || diag1Used[d1] || diag2Used[d2]) continue;
-        colUsed[col] = diag1Used[d1] = diag2Used[d2] = 1;
-        dfs(row + 1);
-        colUsed[col] = diag1Used[d1] = diag2Used[d2] = 0;
-    }
-}
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    cin >> n;
-    colUsed.assign(n + 1, 0);
-    diag1Used.assign(2 * n + 2, 0);
-    diag2Used.assign(2 * n + 2, 0);
-
-    dfs(1);
-    cout << ans << '\n';
-    return 0;
-}
-```
-
-**测试设计：**
-
-测试 1 输入：
-```text
-4
-```
-期望输出：
-```text
-2
-```
-
-测试 2 输入：
-```text
-5
-```
-期望输出：
-```text
-10
-```
-### V02-EX05 三位密码锁 BFS 状态搜索
-
-- 归属卷：第 2 卷
-- 覆盖模块：BFS 状态、最短步数、访问判重
-- 考场用途：状态数量有限、每步代价相同、问最少操作次数时，直接建图 BFS。
-
-**题目描述：** 一个三位密码锁初始为 `000`。每次可以选择一位数字加一或减一，数字在 `0` 到 `9` 间循环。给定目标状态和若干禁用状态，求从 `000` 到目标状态的最少步数；若无法到达，输出 `-1`。
-
-**输入格式：** 第一行一个三位字符串 `target`。第二行一个整数 `m`。接下来 `m` 行，每行一个禁用状态。
-
-**输出格式：** 输出最少步数，无法到达输出 `-1`。
-
-**样例输入：**
-```text
-002
-0
-```
-
-**样例输出：**
-```text
-2
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int parseState(const string &s) {
-    return (s[0] - '0') * 100 + (s[1] - '0') * 10 + (s[2] - '0');
-}
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    string targetStr;
-    int m;
-    cin >> targetStr >> m;
-
-    vector<int> forbidden(1000, 0);
-    for (int i = 1; i <= m; i++) {
-        string s;
-        cin >> s;
-        forbidden[parseState(s)] = 1;
-    }
-
-    int start = 0;
-    int target = parseState(targetStr);
-    if (forbidden[start] || forbidden[target]) {
-        cout << -1 << '\n';
-        return 0;
-    }
-
-    vector<int> dist(1000, -1);
-    queue<int> q;
-    dist[start] = 0;
-    q.push(start);
-
-    int base[3] = {100, 10, 1};
-    while (!q.empty()) {
-        int cur = q.front();
-        q.pop();
-        if (cur == target) break;
-
-        for (int pos = 0; pos < 3; pos++) {
-            int digit = (cur / base[pos]) % 10;
-            for (int delta : {-1, 1}) {
-                int nd = (digit + delta + 10) % 10;
-                int nxt = cur + (nd - digit) * base[pos];
-                if (!forbidden[nxt] && dist[nxt] == -1) {
-                    dist[nxt] = dist[cur] + 1;
-                    q.push(nxt);
-                }
-            }
-        }
-    }
-
-    cout << dist[target] << '\n';
-    return 0;
-}
-```
-
-**测试设计：**
-
-测试 1 输入：
-```text
-002
-0
-```
-期望输出：
-```text
-2
-```
-
-测试 2 输入：
-```text
-010
-1
-010
-```
-期望输出：
-```text
--1
-```
-### V02-EX06 装载问题的 DFS 剪枝
-
-- 归属卷：第 2 卷
-- 覆盖模块：DFS、上界剪枝、排序剪枝
-- 考场用途：背包容量较小或物品数不大时，先用搜索；加上剩余和剪枝后能多拿一档数据。
-
-**题目描述：** 有 `n` 个物品，第 `i` 个重量为 `w[i]`。选择若干物品放入容量为 `C` 的箱子，使总重量不超过 `C` 且尽量大。输出最大可装重量。
-
-**输入格式：** 第一行两个整数 `n C`。第二行 `n` 个整数表示重量。
-
-**输出格式：** 输出最大可装重量。
-
-**样例输入：**
-```text
-5 10
-2 3 4 5 9
-```
-
-**样例输出：**
-```text
-10
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int n;
-long long C;
-vector<long long> w, suffixSum;
-long long best = 0;
-
-void dfs(int idx, long long cur) {
-    if (cur > C) return;
-    if (idx == n + 1) {
-        best = max(best, cur);
-        return;
-    }
-    if (cur + suffixSum[idx] <= best) return;
-
-    dfs(idx + 1, cur + w[idx]);
-    dfs(idx + 1, cur);
-}
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    cin >> n >> C;
-    w.assign(n + 1, 0);
-    for (int i = 1; i <= n; i++) cin >> w[i];
-    sort(w.begin() + 1, w.end(), greater<long long>());
-
-    suffixSum.assign(n + 2, 0);
-    for (int i = n; i >= 1; i--) {
-        suffixSum[i] = suffixSum[i + 1] + w[i];
-    }
-
-    dfs(1, 0);
-    cout << best << '\n';
-    return 0;
-}
-```
-
-**测试设计：**
-
-测试 1 输入：
-```text
-5 10
-2 3 4 5 9
-```
-期望输出：
-```text
-10
-```
-
-测试 2 输入：
-```text
-6 15
-6 7 8 2 3 4
-```
-期望输出：
-```text
-15
-```
-### V02-EX07 数字串加号的记忆化搜索
-
-- 归属卷：第 2 卷
-- 覆盖模块：暴力切分、记忆化搜索、状态压缩
-- 考场用途：先写从左到右切字符串的 DFS，再把 `(位置, 当前和)` 存起来，避免重复搜索。
-
-**题目描述：** 给定只含数字的字符串 `s` 和目标值 `T`。可以在相邻数字之间插入若干个加号，把字符串切成若干非负整数，要求这些整数之和等于 `T`。求最少需要插入多少个加号；若无法做到，输出 `-1`。
-
-**输入格式：** 第一行字符串 `s`。第二行整数 `T`。
-
-**输出格式：** 输出最少加号数，无法做到输出 `-1`。
-
-**样例输入：**
-```text
-99999
-45
-```
-
-**样例输出：**
-```text
-4
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-const int INF = 1000000000;
-
-string s;
-long long target;
-int n;
-vector<unordered_map<long long, int>> memo;
-
-int dfs(int pos, long long sum) {
-    if (sum > target) return INF;
-    if (pos == n) {
-        return sum == target ? 0 : INF;
-    }
-    if (memo[pos].count(sum)) return memo[pos][sum];
-
-    long long val = 0;
-    int best = INF;
-    for (int nxt = pos; nxt < n; nxt++) {
-        val = val * 10 + (s[nxt] - '0');
-        if (sum + val > target) break;
-        int add = (pos == 0 ? 0 : 1);
-        best = min(best, add + dfs(nxt + 1, sum + val));
-    }
-    memo[pos][sum] = best;
-    return best;
-}
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    cin >> s >> target;
-    n = (int)s.size();
-    memo.assign(n + 1, unordered_map<long long, int>());
-
-    int ans = dfs(0, 0);
-    cout << (ans >= INF ? -1 : ans) << '\n';
-    return 0;
-}
-```
-
-**测试设计：**
-
-测试 1 输入：
-```text
-99999
-45
-```
-期望输出：
-```text
-4
-```
-
-测试 2 输入：
-```text
-1234
-10
-```
-期望输出：
-```text
-3
-```
-### V02-EX08 网格最大礼物的记忆化搜索
-
-- 归属卷：第 2 卷
-- 覆盖模块：记忆化 DFS、二维状态、不可达状态
-- 考场用途：能自然写出“从当前位置走到终点”的递归时，先用 memo 快速变成 DP。
-
-**题目描述：** 给定 `n * m` 网格，每个格子有一个整数价值，`-1` 表示障碍。你从 `(1,1)` 出发，只能向下或向右走到 `(n,m)`。求路径价值和最大值；若无法到达，输出 `-1`。
-
-**输入格式：** 第一行两个整数 `n m`。接下来 `n` 行，每行 `m` 个整数。
-
-**输出格式：** 输出最大路径和，无法到达输出 `-1`。
-
-**样例输入：**
-```text
-3 3
-1 2 3
-4 -1 5
-1 2 10
-```
-
-**样例输出：**
-```text
-21
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-const long long NEG = -(1LL << 60);
-
-int n, m;
-vector<vector<long long>> grid, memo;
-vector<vector<int>> vis;
-
-long long dfs(int i, int j) {
-    if (i > n || j > m) return NEG;
-    if (grid[i][j] == -1) return NEG;
-    if (i == n && j == m) return grid[i][j];
-    if (vis[i][j]) return memo[i][j];
-    vis[i][j] = 1;
-
-    long long bestNext = max(dfs(i + 1, j), dfs(i, j + 1));
-    if (bestNext == NEG) memo[i][j] = NEG;
-    else memo[i][j] = grid[i][j] + bestNext;
-    return memo[i][j];
-}
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    cin >> n >> m;
-    grid.assign(n + 1, vector<long long>(m + 1, 0));
-    memo.assign(n + 1, vector<long long>(m + 1, NEG));
-    vis.assign(n + 1, vector<int>(m + 1, 0));
-
-    for (int i = 1; i <= n; i++) {
-        for (int j = 1; j <= m; j++) {
-            cin >> grid[i][j];
-        }
-    }
-
-    long long ans = dfs(1, 1);
-    cout << (ans == NEG ? -1 : ans) << '\n';
-    return 0;
-}
-```
-
-**测试设计：**
-
-测试 1 输入：
-```text
-3 3
-1 2 3
-4 -1 5
-1 2 10
-```
-期望输出：
-```text
-21
-```
-
-测试 2 输入：
-```text
-2 2
-1 -1
--1 2
-```
-期望输出：
-```text
--1
-```
-### V02-EX09 折半枚举不超过容量的最大和
-
-- 归属卷：第 2 卷
-- 覆盖模块：折半枚举、二分、`n <= 40`
-- 考场用途：`2^40` 直接枚举爆炸时，把集合拆成两半，各枚举 `2^20` 后合并。
-
-**题目描述：** 给定 `n` 个正整数和容量 `C`，选择若干数使总和不超过 `C` 且尽量大。输出最大总和。
-
-**输入格式：** 第一行两个整数 `n C`。第二行 `n` 个正整数。
-
-**输出格式：** 输出不超过 `C` 的最大子集和。
-
-**样例输入：**
-```text
-6 20
-7 8 9 10 11 12
-```
-
-**样例输出：**
-```text
-20
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-void genSums(const vector<long long> &a, int l, int r, long long C, vector<long long> &sums) {
-    int len = r - l + 1;
-    int totalMask = 1 << len;
-    for (int mask = 0; mask < totalMask; mask++) {
-        long long sum = 0;
-        for (int i = 0; i < len; i++) {
-            if (mask & (1 << i)) {
-                sum += a[l + i];
-            }
-        }
-        if (sum <= C) sums.push_back(sum);
-    }
-}
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n;
-    long long C;
-    cin >> n >> C;
-    vector<long long> a(n + 1);
-    for (int i = 1; i <= n; i++) cin >> a[i];
-
-    int mid = n / 2;
-    vector<long long> leftSums, rightSums;
-    genSums(a, 1, mid, C, leftSums);
-    genSums(a, mid + 1, n, C, rightSums);
-
-    sort(rightSums.begin(), rightSums.end());
-    long long ans = 0;
-    for (long long x : leftSums) {
-        long long remain = C - x;
-        auto it = upper_bound(rightSums.begin(), rightSums.end(), remain);
-        if (it == rightSums.begin()) {
-            ans = max(ans, x);
-        } else {
-            --it;
-            ans = max(ans, x + *it);
-        }
-    }
-
-    cout << ans << '\n';
-    return 0;
-}
-```
-
-**测试设计：**
-
-测试 1 输入：
-```text
-6 20
-7 8 9 10 11 12
-```
-期望输出：
-```text
-20
-```
-
-测试 2 输入：
-```text
-4 10
-1 3 4 8
-```
-期望输出：
-```text
-9
-```
-### V02-EX10 部分分兜底提交策略模拟
-
-- 归属卷：第 2 卷
-- 覆盖模块：部分分兜底、小数据精确解、大数据合法输出
-- 考场用途：正解来不及写时，保留一个能过小数据、且大数据也不会 RE/格式错的版本。
-
-**题目描述：** 给定 `n` 个物品重量和容量 `C`。本例模拟部分分提交策略：当 `n <= 20` 时输出不超过 `C` 的最大子集和；当 `n > 20` 时输出按输入顺序能放就放得到的合法子集和。这个程序不是满分背包正解，而是“先活下来”的兜底版本。
-
-**输入格式：** 第一行两个整数 `n C`。第二行 `n` 个正整数。
-
-**输出格式：** 输出本策略得到的子集和。
-
-**样例输入：**
-```text
-5 10
-2 7 4 6 3
-```
-
-**样例输出：**
-```text
-10
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-long long exactSmall(const vector<long long> &a, int n, long long C) {
-    long long best = 0;
-    int totalMask = 1 << n;
-    for (int mask = 0; mask < totalMask; mask++) {
-        long long sum = 0;
-        for (int i = 1; i <= n; i++) {
-            if (mask & (1 << (i - 1))) {
-                sum += a[i];
-            }
-        }
-        if (sum <= C) best = max(best, sum);
-    }
-    return best;
-}
-
-long long fallbackLarge(const vector<long long> &a, int n, long long C) {
-    long long sum = 0;
-    for (int i = 1; i <= n; i++) {
-        if (sum + a[i] <= C) {
-            sum += a[i];
-        }
-    }
-    return sum;
-}
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n;
-    long long C;
-    cin >> n >> C;
-    vector<long long> a(n + 1);
-    for (int i = 1; i <= n; i++) cin >> a[i];
-
-    if (n <= 20) {
-        cout << exactSmall(a, n, C) << '\n';
-    } else {
-        cout << fallbackLarge(a, n, C) << '\n';
-    }
-    return 0;
-}
-```
-
-**测试设计：**
-
-测试 1 输入：
-```text
-5 10
-2 7 4 6 3
-```
-期望输出：
-```text
-10
-```
-
-测试 2 输入：
-```text
-21 10
-6 6 6 6 6 6 6 6 6 6 6 6 6 6 6 6 6 6 6 6 6
-```
-期望输出：
-```text
-6
-```
-
-## 第 3A 卷例题
-### V02-CEX01 全排列最小相邻差
-
-- 归属卷：第 2 卷
-- 覆盖模块：next_permutation、暴力
-- 考场用途：n 小时直接枚举顺序拿满小数据。
-- 参考题型来源：参考来源：洛谷搜索/排列枚举题型。
-
-**题目描述：** 重排数组，使相邻差绝对值之和最小。
-
-**输入格式：** 第一行 `n`，第二行 `n` 个数，保证 `n<=8`。
-
-**输出格式：** 输出最小代价。
-
-**样例输入：**
-```text
-4
-10 1 4 7
-```
-
-**样例输出：**
-```text
-9
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-
-int n;
-vector<int> a;
-long long best = (long long)4e18;
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-    cin >> n;
-    a.assign(n + 1, 0);
-    for (int i = 1; i <= n; i++) cin >> a[i];
-    vector<int> p(n);
-    iota(p.begin(), p.end(), 1);
-    do {
-        long long cost = 0;
-        for (int i = 1; i < n; i++) cost += abs(a[p[i]] - a[p[i - 1]]);
-        best = min(best, cost);
-    } while (next_permutation(p.begin(), p.end()));
-    cout << best << '\n';
-    return 0;
-}
-```
-
-**测试设计：** 额外测试：构造最小规模、重复值、边界值各一组，和样例一起运行。
-
-***
-### V02-CEX02 子集覆盖最小选择
-
-- 归属卷：第 2 卷
-- 覆盖模块：子集枚举、位运算
-- 考场用途：把小集合覆盖问题压成 bitmask。
-- 参考题型来源：参考来源：洛谷状态压缩/集合覆盖题型。
-
-**题目描述：** 有 `n` 个工具，每个工具覆盖若干能力位；给出 `m` 个需求掩码，求最少选几个工具满足所有需求。
-
-**输入格式：** 第一行 `n m`，第二行 `m` 个需求掩码，第三行 `n` 个工具掩码。
-
-**输出格式：** 输出最少工具数。
-
-**样例输入：**
-```text
-4 2
-3 12
-1 2 4 8
-```
-
-**样例输出：**
-```text
-4
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-    int n, m;
-    cin >> n >> m;
-    vector<int> need(m + 1), cover(n + 1);
-    for (int i = 1; i <= m; i++) cin >> need[i];
-    for (int i = 1; i <= n; i++) cin >> cover[i];
-    int ans = n + 1;
-    for (int mask = 0; mask < (1 << n); mask++) {
-        int have = 0, cnt = 0;
-        for (int i = 1; i <= n; i++) if (mask & (1 << (i - 1))) {
-            have |= cover[i];
-            cnt++;
-        }
-        bool ok = true;
-        for (int i = 1; i <= m; i++) if ((have & need[i]) != need[i]) ok = false;
-        if (ok) ans = min(ans, cnt);
-    }
-    cout << (ans == n + 1 ? -1 : ans) << '\n';
-    return 0;
-}
-```
-
-**测试设计：** 额外测试：构造最小规模、重复值、边界值各一组，和样例一起运行。
-
-***
-### V02-CEX03 加减号记忆化搜索
-
-- 归属卷：第 2 卷
-- 覆盖模块：DFS、记忆化、map 状态
-- 考场用途：暴力每个数加/减，直接加 memo 升级。
-- 参考题型来源：参考来源：经典 Target Sum 搜索题型。
-
-**题目描述：** 给每个数前放 `+` 或 `-`，统计表达式值等于目标的方案数。
-
-**输入格式：** 第一行 `n target`，第二行数组。
-
-**输出格式：** 输出方案数。
-
-**样例输入：**
-```text
-5 3
-1 1 1 1 1
-```
-
-**样例输出：**
-```text
-5
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-
-int n, target;
-vector<int> a;
-map<pair<int,int>, long long> memo;
-long long dfs(int i, int sum) {
-    if (i == n + 1) return sum == target;
-    auto key = make_pair(i, sum);
-    if (memo.count(key)) return memo[key];
-    long long ans = dfs(i + 1, sum + a[i]) + dfs(i + 1, sum - a[i]);
-    return memo[key] = ans;
-}
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-    cin >> n >> target;
-    a.assign(n + 1, 0);
-    for (int i = 1; i <= n; i++) cin >> a[i];
-    cout << dfs(1, 0) << '\n';
-    return 0;
-}
-```
-
-**测试设计：** 额外测试：构造最小规模、重复值、边界值各一组，和样例一起运行。
-
-***
-### V02-CEX04 网格破墙一次 BFS
-
-- 归属卷：第 2 卷
-- 覆盖模块：BFS 状态搜索、状态升维
-- 考场用途：把“是否用过一次破墙”作为状态。
-- 参考题型来源：参考来源：洛谷/ICPC 网格 BFS 变体。
-
-**题目描述：** 从左上走到右下，可经过至多一个障碍，求最少步数。
-
-**输入格式：** 第一行 `n m`，之后网格，`.` 可走，`#` 障碍。
-
-**输出格式：** 输出最少步数，不可达输出 `-1`。
-
-**样例输入：**
-```text
-3 3
-.#.
-##.
-...
-```
-
-**样例输出：**
-```text
-4
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-
-struct State { int x, y, k; };
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-    int n, m;
-    cin >> n >> m;
-    vector<string> g(n + 1);
-    for (int i = 1; i <= n; i++) { cin >> g[i]; g[i] = " " + g[i]; }
-    vector<vector<array<int,2>>> dist(n + 1, vector<array<int,2>>(m + 1, { -1, -1 }));
-    queue<State> q;
-    dist[1][1][0] = 0;
-    q.push({1, 1, 0});
-    int dx[4] = {1, -1, 0, 0};
-    int dy[4] = {0, 0, 1, -1};
-    while (!q.empty()) {
-        auto cur = q.front(); q.pop();
-        for (int d = 0; d < 4; d++) {
-            int nx = cur.x + dx[d], ny = cur.y + dy[d];
-            if (nx < 1 || nx > n || ny < 1 || ny > m) continue;
-            int nk = cur.k;
-            if (g[nx][ny] == '#') {
-                if (nk) continue;
-                nk = 1;
-            }
-            if (dist[nx][ny][nk] == -1) {
-                dist[nx][ny][nk] = dist[cur.x][cur.y][cur.k] + 1;
-                q.push({nx, ny, nk});
-            }
-        }
-    }
-    int a = dist[n][m][0], b = dist[n][m][1];
-    if (a == -1) cout << b << '\n';
-    else if (b == -1) cout << a << '\n';
-    else cout << min(a, b) << '\n';
-    return 0;
-}
-```
-
-**测试设计：** 额外测试：构造最小规模、重复值、边界值各一组，和样例一起运行。
-
-***
-### V02-CEX05 折半统计子集和不超过 S
-
-- 归属卷：第 2 卷
-- 覆盖模块：meet-in-the-middle、二分
-- 考场用途：n 约 40 时替代 2^n 暴力。
-- 参考题型来源：参考来源：洛谷折半搜索题型。
-
-**题目描述：** 统计子集和不超过 `S` 的方案数。
-
-**输入格式：** 第一行 `n S`，第二行数组，`n<=40`。
-
-**输出格式：** 输出方案数。
-
-**样例输入：**
-```text
-4 5
-1 2 3 4
-```
-
-**样例输出：**
-```text
-9
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-    int n;
-    long long S;
-    cin >> n >> S;
-    int n1 = n / 2, n2 = n - n1;
-    vector<long long> a(n + 1), left, right;
-    for (int i = 1; i <= n; i++) cin >> a[i];
-    for (int mask = 0; mask < (1 << n1); mask++) {
-        long long s = 0;
-        for (int i = 0; i < n1; i++) if (mask & (1 << i)) s += a[i + 1];
-        left.push_back(s);
-    }
-    for (int mask = 0; mask < (1 << n2); mask++) {
-        long long s = 0;
-        for (int i = 0; i < n2; i++) if (mask & (1 << i)) s += a[n1 + i + 1];
-        right.push_back(s);
-    }
-    sort(right.begin(), right.end());
-    long long ans = 0;
-    for (long long x : left) ans += upper_bound(right.begin(), right.end(), S - x) - right.begin();
-    cout << ans << '\n';
-    return 0;
-}
-```
-
-**测试设计：** 额外测试：构造最小规模、重复值、边界值各一组，和样例一起运行。
-
-***
-
-<!-- V02_EXAMPLES_END -->
 
 
 
@@ -21167,1618 +17517,6 @@ f[0]=1 f[1]=2 f[2]=4 f[3]=8
 sub_sum[3]=1+2+4+8=15
 ```
 
-<!-- V02_EXAMPLES_START -->
-
-# v0.2 本卷例题训练区
-
-这一节是 0.2 新增的实战例题。每题都配完整可运行代码和样例；考试时优先看“覆盖模块”和“考场用途”，再复制对应代码骨架。
-
-### V03-EX01 最小体力跳石子
-
-- 归属卷：第 3 卷
-- 覆盖模块：DP-03 从暴力到记忆化，DP-25 DFS 记忆化案例
-- 考场用途：先写暴力递归，再把重复子问题缓存成记忆化 DFS
-
-**题目描述：** 有 `n` 块石子排成一行，编号 `1..n`，踩到第 `i` 块石子需要消耗 `cost[i]`。你从编号 `0` 的起点出发，每次可以跳到后面第 `1` 块或第 `2` 块石子，必须最后落到第 `n` 块石子。求最小总消耗。
-
-**输入格式：** 第一行一个整数 `n`。第二行 `n` 个整数，表示 `cost[1..n]`。
-
-**输出格式：** 输出一个整数，表示最小总消耗。
-
-**样例输入：**
-```text
-6
-10 15 20 1 5 1
-```
-
-**样例输出：**
-```text
-17
-```
-
-**Motivation：** 状态定义为 `dfs(i)`：从起点跳到第 `i` 块石子的最小消耗。这样定义是因为到达第 `i` 块以后，前面具体怎么跳不再影响答案，只需要知道当前位置。最后一步只能从 `i-1` 或 `i-2` 跳来，所以 `dfs(i)=cost[i]+min(dfs(i-1),dfs(i-2))`。朴素递归会重复计算同一个 `i`，加 `memo[i]` 后每个状态只算一次。复杂度 `O(n)`，空间 `O(n)`。
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-const long long INF = 4'000'000'000'000'000'000LL;
-int n;
-vector<long long> cost_value;
-vector<long long> memo;
-
-long long dfs(int i) {
-    if (i == 0) return 0;
-    if (i < 0) return INF;
-    if (memo[i] != -1) return memo[i];
-    long long best = min(dfs(i - 1), dfs(i - 2));
-    memo[i] = best + cost_value[i];
-    return memo[i];
-}
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    cin >> n;
-    cost_value.assign(n + 1, 0);
-    memo.assign(n + 1, -1);
-    for (int i = 1; i <= n; i++) {
-        cin >> cost_value[i];
-    }
-    cout << dfs(n) << '\n';
-    return 0;
-}
-```
-
-**测试设计：**
-
-测试 1 输入：
-```text
-1
-7
-```
-期望输出：
-```text
-7
-```
-
-测试 2 输入：
-```text
-5
-5 100 5 100 5
-```
-期望输出：
-```text
-15
-```
-### V03-EX02 快速求和最少加号
-
-- 归属卷：第 3 卷
-- 覆盖模块：DP-21 P1874 快速求和建模例题，DP-20 计数与可行性 DP
-- 考场用途：字符串切分题从指数枚举升级为位置加累计和 DP
-
-**题目描述：** 给定一个只包含数字的字符串 `s` 和目标值 `target`。你可以在相邻数字之间插入若干个加号，把字符串切成若干段。每段按十进制整数解释，前导零允许。求表达式和等于 `target` 时最少需要插入多少个加号；如果无法做到，输出 `-1`。
-
-**输入格式：** 第一行一个数字字符串 `s`。第二行一个整数 `target`。
-
-**输出格式：** 输出最少加号数；无解输出 `-1`。
-
-**样例输入：**
-```text
-99999
-45
-```
-
-**样例输出：**
-```text
-4
-```
-
-**Motivation：** 状态定义为 `dp[i][sum]`：使用前 `i` 个字符，已经切出的段和为 `sum` 时，最少切出多少段。这样定义是因为后续只关心已经处理到的位置和当前累计和，不关心前面每段具体怎么切。最后一步是选择最后一段 `s[i+1..j]`，把 `dp[i][sum]` 转移到 `dp[j][sum+value]`。答案是段数减一，即加号数。复杂度约为 `O(n^2 * target)`，空间 `O(n * target)`。
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    string s;
-    int target;
-    cin >> s >> target;
-    int n = (int)s.size();
-    const int INF = 1'000'000'000;
-    vector<vector<int>> dp(n + 1, vector<int>(target + 1, INF));
-    dp[0][0] = 0;
-
-    for (int i = 0; i < n; i++) {
-        for (int sum = 0; sum <= target; sum++) {
-            if (dp[i][sum] == INF) continue;
-            long long value = 0;
-            for (int j = i + 1; j <= n; j++) {
-                value = value * 10 + (s[j - 1] - '0');
-                if (value > target) break;
-                if (sum + value <= target) {
-                    dp[j][sum + (int)value] = min(dp[j][sum + (int)value], dp[i][sum] + 1);
-                }
-            }
-        }
-    }
-
-    if (dp[n][target] == INF) {
-        cout << -1 << '\n';
-    } else {
-        cout << dp[n][target] - 1 << '\n';
-    }
-    return 0;
-}
-```
-
-**测试设计：**
-
-测试 1 输入：
-```text
-1234
-10
-```
-期望输出：
-```text
-3
-```
-
-测试 2 输入：
-```text
-105
-6
-```
-期望输出：
-```text
-1
-```
-### V03-EX03 编辑距离
-
-- 归属卷：第 3 卷
-- 覆盖模块：DP-10 编辑距离，DP-22 编辑距离建模例题
-- 考场用途：两个字符串最少增删改操作的标准二维 DP
-
-**题目描述：** 给定两个字符串 `a` 和 `b`。一次操作可以插入一个字符、删除一个字符或替换一个字符。求把 `a` 变成 `b` 的最少操作次数。
-
-**输入格式：** 第一行字符串 `a`。第二行字符串 `b`。
-
-**输出格式：** 输出一个整数，表示最少操作次数。
-
-**样例输入：**
-```text
-kitten
-sitting
-```
-
-**样例输出：**
-```text
-3
-```
-
-**Motivation：** 状态定义为 `dp[i][j]`：把 `a` 的前 `i` 个字符变成 `b` 的前 `j` 个字符的最少操作数。这样定义是因为任意最优方案最后只会落在两个前缀之间。最后一步有四类：字符相等时不操作，从 `dp[i-1][j-1]` 来；否则可以替换、删除或插入。复杂度 `O(nm)`，空间 `O(nm)`。
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    string a, b;
-    cin >> a >> b;
-    int n = (int)a.size();
-    int m = (int)b.size();
-    a = " " + a;
-    b = " " + b;
-
-    vector<vector<int>> dp(n + 1, vector<int>(m + 1, 0));
-    for (int i = 1; i <= n; i++) dp[i][0] = i;
-    for (int j = 1; j <= m; j++) dp[0][j] = j;
-
-    for (int i = 1; i <= n; i++) {
-        for (int j = 1; j <= m; j++) {
-            if (a[i] == b[j]) {
-                dp[i][j] = dp[i - 1][j - 1];
-            } else {
-                int replace_cost = dp[i - 1][j - 1] + 1;
-                int delete_cost = dp[i - 1][j] + 1;
-                int insert_cost = dp[i][j - 1] + 1;
-                dp[i][j] = min(replace_cost, min(delete_cost, insert_cost));
-            }
-        }
-    }
-
-    cout << dp[n][m] << '\n';
-    return 0;
-}
-```
-
-**测试设计：**
-
-测试 1 输入：
-```text
-abc
-abc
-```
-期望输出：
-```text
-0
-```
-
-测试 2 输入：
-```text
-abc
-yabd
-```
-期望输出：
-```text
-2
-```
-### V03-EX04 0/1 背包最大价值
-
-- 归属卷：第 3 卷
-- 覆盖模块：DP-06 0/1 背包，DP-05 选或不选
-- 考场用途：每件物品最多选一次，容量限制下求最大价值
-
-**题目描述：** 有 `n` 件物品和容量为 `W` 的背包。第 `i` 件物品重量为 `w[i]`，价值为 `v[i]`，每件物品最多选一次。求不超过容量时的最大总价值。
-
-**输入格式：** 第一行两个整数 `n W`。接下来 `n` 行，每行两个整数 `w[i] v[i]`。
-
-**输出格式：** 输出一个整数，表示最大总价值。
-
-**样例输入：**
-```text
-4 7
-3 4
-4 5
-2 3
-3 7
-```
-
-**样例输出：**
-```text
-12
-```
-
-**Motivation：** 状态定义为 `dp[j]`：已经处理若干件物品后，容量不超过 `j` 的最大价值。处理第 `i` 件物品时，最后选择只有两种：不选它，或者从 `j-w[i]` 转移并选它。因为每件物品只能选一次，容量循环必须从大到小，防止同一件物品被重复使用。复杂度 `O(nW)`，空间 `O(W)`。
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n, W;
-    cin >> n >> W;
-    vector<int> w(n + 1), v(n + 1);
-    for (int i = 1; i <= n; i++) {
-        cin >> w[i] >> v[i];
-    }
-
-    vector<long long> dp(W + 1, 0);
-    for (int i = 1; i <= n; i++) {
-        for (int j = W; j >= w[i]; j--) {
-            dp[j] = max(dp[j], dp[j - w[i]] + v[i]);
-        }
-    }
-
-    cout << dp[W] << '\n';
-    return 0;
-}
-```
-
-**测试设计：**
-
-测试 1 输入：
-```text
-3 5
-2 6
-2 10
-3 12
-```
-期望输出：
-```text
-22
-```
-
-测试 2 输入：
-```text
-2 0
-1 10
-2 20
-```
-期望输出：
-```text
-0
-```
-### V03-EX05 完全背包最大价值
-
-- 归属卷：第 3 卷
-- 覆盖模块：DP-07 完全背包，DP-24 背包变体
-- 考场用途：每种物品可无限次选择，容量限制下求最大价值
-
-**题目描述：** 有 `n` 种物品和容量为 `W` 的背包。第 `i` 种物品重量为 `w[i]`，价值为 `v[i]`，每种物品可以选择任意多次。求不超过容量时的最大总价值。
-
-**输入格式：** 第一行两个整数 `n W`。接下来 `n` 行，每行两个整数 `w[i] v[i]`。
-
-**输出格式：** 输出一个整数，表示最大总价值。
-
-**样例输入：**
-```text
-3 10
-2 3
-3 4
-5 8
-```
-
-**样例输出：**
-```text
-16
-```
-
-**Motivation：** 状态定义为 `dp[j]`：容量不超过 `j` 时的最大价值。最后一步是再放入一个第 `i` 种物品，于是从 `dp[j-w[i]]` 转移。因为同一种物品可以重复用，容量循环从小到大，让本轮刚更新出的 `dp[j-w[i]]` 继续参与转移。复杂度 `O(nW)`，空间 `O(W)`。
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n, W;
-    cin >> n >> W;
-    vector<int> w(n + 1), v(n + 1);
-    for (int i = 1; i <= n; i++) {
-        cin >> w[i] >> v[i];
-    }
-
-    vector<long long> dp(W + 1, 0);
-    for (int i = 1; i <= n; i++) {
-        for (int j = w[i]; j <= W; j++) {
-            dp[j] = max(dp[j], dp[j - w[i]] + v[i]);
-        }
-    }
-
-    cout << dp[W] << '\n';
-    return 0;
-}
-```
-
-**测试设计：**
-
-测试 1 输入：
-```text
-1 7
-3 5
-```
-期望输出：
-```text
-10
-```
-
-测试 2 输入：
-```text
-2 2
-3 10
-4 20
-```
-期望输出：
-```text
-0
-```
-### V03-EX06 分组背包最大价值
-
-- 归属卷：第 3 卷
-- 覆盖模块：DP-08 分组背包，DP-24 背包变体
-- 考场用途：每组最多选一件物品，训练从组到容量的转移顺序
-
-**题目描述：** 有 `G` 组物品和容量为 `W` 的背包。每组里有若干件物品，同一组最多选一件，也可以不选。求不超过容量时的最大总价值。
-
-**输入格式：** 第一行两个整数 `G W`。接下来对每一组，先输入整数 `k`，表示该组物品数；再输入 `k` 行，每行两个整数 `weight value`。
-
-**输出格式：** 输出一个整数，表示最大总价值。
-
-**样例输入：**
-```text
-3 7
-2
-2 6
-3 8
-2
-4 7
-2 4
-2
-3 5
-1 2
-```
-
-**样例输出：**
-```text
-15
-```
-
-**Motivation：** 状态定义为 `dp[j]`：处理完前若干组后，容量不超过 `j` 的最大价值。最后一步是在当前组中选择一件物品，或者当前组不选。为了保证一组内最多选一件，处理新组时必须从上一组的 `old` 数组转移，不能让本组更新结果再次选本组物品。复杂度 `O(总物品数 * W)`，空间 `O(W)`。
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int G, W;
-    cin >> G >> W;
-    vector<long long> dp(W + 1, 0);
-
-    for (int group_id = 1; group_id <= G; group_id++) {
-        int k;
-        cin >> k;
-        vector<int> weight(k + 1), value(k + 1);
-        for (int i = 1; i <= k; i++) {
-            cin >> weight[i] >> value[i];
-        }
-
-        vector<long long> old = dp;
-        for (int j = 0; j <= W; j++) {
-            dp[j] = old[j];
-        }
-        for (int i = 1; i <= k; i++) {
-            for (int j = weight[i]; j <= W; j++) {
-                dp[j] = max(dp[j], old[j - weight[i]] + value[i]);
-            }
-        }
-    }
-
-    cout << dp[W] << '\n';
-    return 0;
-}
-```
-
-**测试设计：**
-
-测试 1 输入：
-```text
-2 5
-2
-5 10
-4 9
-2
-1 4
-2 7
-```
-期望输出：
-```text
-13
-```
-
-测试 2 输入：
-```text
-2 3
-1
-4 10
-1
-3 5
-```
-期望输出：
-```text
-5
-```
-### V03-EX07 最长不下降子序列与最少删除
-
-- 归属卷：第 3 卷
-- 覆盖模块：DP-11 LIS，DP-23 LIS/LCS 常见变体速查
-- 考场用途：区分严格递增和不下降，输出长度和最少删除数
-
-**题目描述：** 给定长度为 `n` 的整数序列。求最长不下降子序列长度，并求最少删除多少个元素可以让剩余序列不下降。
-
-**输入格式：** 第一行一个整数 `n`。第二行 `n` 个整数 `a[1..n]`。
-
-**输出格式：** 输出两个整数，分别表示最长不下降子序列长度和最少删除数。
-
-**样例输入：**
-```text
-7
-3 1 2 2 4 3 5
-```
-
-**样例输出：**
-```text
-5 2
-```
-
-**Motivation：** 状态定义为 `dp[i]`：以第 `i` 个元素结尾的最长不下降子序列长度。这样定义是因为最后一步一定选择了 `a[i]`，前一个被选元素只能来自某个 `j<i` 且 `a[j]<=a[i]` 的位置。答案是 `max(dp[i])`，最少删除数为 `n - max(dp[i])`。复杂度 `O(n^2)`，空间 `O(n)`。
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n;
-    cin >> n;
-    vector<long long> a(n + 1);
-    for (int i = 1; i <= n; i++) {
-        cin >> a[i];
-    }
-
-    vector<int> dp(n + 1, 1);
-    int best = 0;
-    for (int i = 1; i <= n; i++) {
-        for (int j = 1; j < i; j++) {
-            if (a[j] <= a[i]) {
-                dp[i] = max(dp[i], dp[j] + 1);
-            }
-        }
-        best = max(best, dp[i]);
-    }
-
-    cout << best << ' ' << n - best << '\n';
-    return 0;
-}
-```
-
-**测试设计：**
-
-测试 1 输入：
-```text
-4
-5 5 5 5
-```
-期望输出：
-```text
-4 0
-```
-
-测试 2 输入：
-```text
-3
-5 4 3
-```
-期望输出：
-```text
-1 2
-```
-### V03-EX08 最长公共子序列长度
-
-- 归属卷：第 3 卷
-- 覆盖模块：DP-09 LCS，DP-23 LIS/LCS 常见变体速查
-- 考场用途：两个字符串前缀 DP，训练匹配和跳过的最后一步
-
-**题目描述：** 给定两个字符串 `a` 和 `b`，求它们的最长公共子序列长度。子序列可以不连续，但字符相对顺序必须保持。
-
-**输入格式：** 第一行字符串 `a`。第二行字符串 `b`。
-
-**输出格式：** 输出一个整数，表示最长公共子序列长度。
-
-**样例输入：**
-```text
-ABCBDAB
-BDCABA
-```
-
-**样例输出：**
-```text
-4
-```
-
-**Motivation：** 状态定义为 `dp[i][j]`：`a` 的前 `i` 个字符和 `b` 的前 `j` 个字符的 LCS 长度。这样定义是因为最后一步要么匹配 `a[i]` 与 `b[j]`，要么跳过其中一个末尾字符。若字符相等，从 `dp[i-1][j-1]+1` 转移；否则从 `dp[i-1][j]` 和 `dp[i][j-1]` 取最大。复杂度 `O(nm)`，空间 `O(nm)`。
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    string a, b;
-    cin >> a >> b;
-    int n = (int)a.size();
-    int m = (int)b.size();
-    a = " " + a;
-    b = " " + b;
-
-    vector<vector<int>> dp(n + 1, vector<int>(m + 1, 0));
-    for (int i = 1; i <= n; i++) {
-        for (int j = 1; j <= m; j++) {
-            if (a[i] == b[j]) {
-                dp[i][j] = dp[i - 1][j - 1] + 1;
-            } else {
-                dp[i][j] = max(dp[i - 1][j], dp[i][j - 1]);
-            }
-        }
-    }
-
-    cout << dp[n][m] << '\n';
-    return 0;
-}
-```
-
-**测试设计：**
-
-测试 1 输入：
-```text
-abc
-def
-```
-期望输出：
-```text
-0
-```
-
-测试 2 输入：
-```text
-ABC
-AC
-```
-期望输出：
-```text
-2
-```
-### V03-EX09 最长公共上升子序列
-
-- 归属卷：第 3 卷
-- 覆盖模块：DP-23 LCIS 变体，DP-09 LCS，DP-11 LIS
-- 考场用途：两个序列公共匹配，同时要求值严格上升
-
-**题目描述：** 给定两个整数序列 `a[1..n]` 和 `b[1..m]`。求它们的最长公共上升子序列长度，即子序列必须同时出现在两个序列中，并且数值严格递增。
-
-**输入格式：** 第一行整数 `n`。第二行 `n` 个整数。第三行整数 `m`。第四行 `m` 个整数。
-
-**输出格式：** 输出一个整数，表示 LCIS 长度。
-
-**样例输入：**
-```text
-5
-1 3 2 4 6
-6
-3 1 2 4 5 6
-```
-
-**样例输出：**
-```text
-4
-```
-
-**Motivation：** 状态定义为 `dp[j]`：处理完当前 `a` 的前缀后，以 `b[j]` 作为最后一个公共元素的 LCIS 长度。这样定义把 LCS 的公共位置和 LIS 的结尾值合在一起。枚举 `a[i]` 时，用 `best` 维护所有 `b[j] < a[i]` 且可接到当前值前面的最大长度；当 `a[i] == b[j]`，最后一步就是把当前相等值接在 `best` 后面。复杂度 `O(nm)`，空间 `O(m)`。
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n, m;
-    cin >> n;
-    vector<int> a(n + 1);
-    for (int i = 1; i <= n; i++) cin >> a[i];
-    cin >> m;
-    vector<int> b(m + 1);
-    for (int j = 1; j <= m; j++) cin >> b[j];
-
-    vector<int> dp(m + 1, 0);
-    for (int i = 1; i <= n; i++) {
-        int best = 0;
-        for (int j = 1; j <= m; j++) {
-            if (a[i] == b[j]) {
-                dp[j] = max(dp[j], best + 1);
-            } else if (b[j] < a[i]) {
-                best = max(best, dp[j]);
-            }
-        }
-    }
-
-    int answer = 0;
-    for (int j = 1; j <= m; j++) answer = max(answer, dp[j]);
-    cout << answer << '\n';
-    return 0;
-}
-```
-
-**测试设计：**
-
-测试 1 输入：
-```text
-3
-1 2 3
-3
-3 2 1
-```
-期望输出：
-```text
-1
-```
-
-测试 2 输入：
-```text
-3
-1 2 3
-3
-4 5 6
-```
-期望输出：
-```text
-0
-```
-### V03-EX10 石子合并区间 DP
-
-- 归属卷：第 3 卷
-- 覆盖模块：DP-13 区间 DP
-- 考场用途：训练区间长度枚举、分割点枚举和前缀和代价
-
-**题目描述：** 有 `n` 堆石子排成一行，第 `i` 堆有 `a[i]` 个石子。每次只能合并相邻的两段石子，代价为这两段石子的总数。求把所有石子合并成一堆的最小总代价。
-
-**输入格式：** 第一行一个整数 `n`。第二行 `n` 个整数 `a[1..n]`。
-
-**输出格式：** 输出一个整数，表示最小总代价。
-
-**样例输入：**
-```text
-4
-4 5 9 4
-```
-
-**样例输出：**
-```text
-44
-```
-
-**Motivation：** 状态定义为 `dp[l][r]`：把连续区间 `l..r` 合并成一堆的最小代价。这样定义是因为任何一次最终合并前，区间一定被某个分割点 `k` 分成两段 `l..k` 和 `k+1..r`。最后一步代价是整个区间石子总和，所以转移为 `dp[l][k]+dp[k+1][r]+sum(l,r)`。复杂度 `O(n^3)`，空间 `O(n^2)`。
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n;
-    cin >> n;
-    vector<long long> a(n + 1), prefix(n + 1, 0);
-    for (int i = 1; i <= n; i++) {
-        cin >> a[i];
-        prefix[i] = prefix[i - 1] + a[i];
-    }
-
-    vector<vector<long long>> dp(n + 2, vector<long long>(n + 2, 0));
-    for (int len = 2; len <= n; len++) {
-        for (int l = 1; l + len - 1 <= n; l++) {
-            int r = l + len - 1;
-            dp[l][r] = 4'000'000'000'000'000'000LL;
-            long long total = prefix[r] - prefix[l - 1];
-            for (int k = l; k < r; k++) {
-                dp[l][r] = min(dp[l][r], dp[l][k] + dp[k + 1][r] + total);
-            }
-        }
-    }
-
-    cout << dp[1][n] << '\n';
-    return 0;
-}
-```
-
-**测试设计：**
-
-测试 1 输入：
-```text
-1
-10
-```
-期望输出：
-```text
-0
-```
-
-测试 2 输入：
-```text
-3
-1 2 3
-```
-期望输出：
-```text
-9
-```
-### V03-EX11 树上最大独立集
-
-- 归属卷：第 3 卷
-- 覆盖模块：DP-14 树形 DP，TREE-01 根树 DFS 顺序
-- 考场用途：树上相邻节点不能同时选的选或不选模型
-
-**题目描述：** 给定一棵 `n` 个点的树，每个点 `i` 有权值 `value[i]`。你可以选择若干个点，但任意一条边的两个端点不能同时被选。求可获得的最大权值和。
-
-**输入格式：** 第一行一个整数 `n`。第二行 `n` 个整数 `value[1..n]`。接下来 `n-1` 行，每行两个整数 `u v` 表示一条无向边。
-
-**输出格式：** 输出一个整数，表示最大权值和。
-
-**样例输入：**
-```text
-5
-10 1 5 4 7
-1 2
-1 3
-2 4
-2 5
-```
-
-**样例输出：**
-```text
-21
-```
-
-**Motivation：** 状态定义为 `dp[u][0]` 和 `dp[u][1]`：在以 `u` 为根的子树内，`u` 不选或选时的最大权值。这样定义是因为父子是否能选只由当前点是否被选决定。最后一步是合并每个子树：若选 `u`，孩子都不能选；若不选 `u`，每个孩子可选可不选取最大。复杂度 `O(n)`，空间 `O(n)`。
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int n;
-vector<long long> value_node;
-vector<vector<int>> graph_edges;
-vector<array<long long, 2>> dp;
-
-void dfs(int u, int parent) {
-    dp[u][0] = 0;
-    dp[u][1] = value_node[u];
-    for (int v : graph_edges[u]) {
-        if (v == parent) continue;
-        dfs(v, u);
-        dp[u][0] += max(dp[v][0], dp[v][1]);
-        dp[u][1] += dp[v][0];
-    }
-}
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    cin >> n;
-    value_node.assign(n + 1, 0);
-    graph_edges.assign(n + 1, {});
-    dp.assign(n + 1, {0, 0});
-
-    for (int i = 1; i <= n; i++) cin >> value_node[i];
-    for (int i = 1; i <= n - 1; i++) {
-        int u, v;
-        cin >> u >> v;
-        graph_edges[u].push_back(v);
-        graph_edges[v].push_back(u);
-    }
-
-    dfs(1, 0);
-    cout << max(dp[1][0], dp[1][1]) << '\n';
-    return 0;
-}
-```
-
-**测试设计：**
-
-测试 1 输入：
-```text
-1
-8
-```
-期望输出：
-```text
-8
-```
-
-测试 2 输入：
-```text
-3
-5 100 5
-1 2
-2 3
-```
-期望输出：
-```text
-100
-```
-### V03-EX12 DAG 最长路径
-
-- 归属卷：第 3 卷
-- 覆盖模块：DP-15 DAG DP，GRAPH-05 拓扑 DAG DP
-- 考场用途：有向无环图上按拓扑序做最长路径 DP
-
-**题目描述：** 给定一个有向无环图，有 `n` 个点和 `m` 条有向边。每条边 `u -> v` 有非负权值 `w`。求图中任意起点到任意终点的一条路径的最大边权和。
-
-**输入格式：** 第一行两个整数 `n m`。接下来 `m` 行，每行三个整数 `u v w`，表示一条有向边。
-
-**输出格式：** 输出一个整数，表示最大路径权值和。
-
-**样例输入：**
-```text
-5 5
-1 2 3
-1 3 2
-2 4 4
-3 4 1
-4 5 5
-```
-
-**样例输出：**
-```text
-12
-```
-
-**Motivation：** 状态定义为 `dp[v]`：以点 `v` 作为终点的最大路径权值和。这样定义是因为 DAG 中按拓扑序处理后，所有能转移到 `v` 的前驱都已经算完。最后一步一定是某条边 `u -> v`，转移为 `dp[v]=max(dp[v],dp[u]+w)`。复杂度 `O(n+m)`，空间 `O(n+m)`。
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-struct Edge {
-    int to;
-    long long weight;
-};
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n, m;
-    cin >> n >> m;
-    vector<vector<Edge>> graph_edges(n + 1);
-    vector<int> indegree(n + 1, 0);
-    for (int i = 1; i <= m; i++) {
-        int u, v;
-        long long w;
-        cin >> u >> v >> w;
-        graph_edges[u].push_back({v, w});
-        indegree[v]++;
-    }
-
-    queue<int> q;
-    for (int i = 1; i <= n; i++) {
-        if (indegree[i] == 0) q.push(i);
-    }
-
-    vector<long long> dp(n + 1, 0);
-    long long answer = 0;
-    while (!q.empty()) {
-        int u = q.front();
-        q.pop();
-        answer = max(answer, dp[u]);
-        for (const Edge& edge : graph_edges[u]) {
-            int v = edge.to;
-            dp[v] = max(dp[v], dp[u] + edge.weight);
-            indegree[v]--;
-            if (indegree[v] == 0) q.push(v);
-        }
-    }
-
-    cout << answer << '\n';
-    return 0;
-}
-```
-
-**测试设计：**
-
-测试 1 输入：
-```text
-3 0
-```
-期望输出：
-```text
-0
-```
-
-测试 2 输入：
-```text
-4 4
-1 2 5
-1 3 2
-2 4 1
-3 4 10
-```
-期望输出：
-```text
-12
-```
-### V03-EX13 状压最短访问路径
-
-- 归属卷：第 3 卷
-- 覆盖模块：DP-16 状压 DP
-- 考场用途：`n <= 16` 时用集合状态表示已经访问的点
-
-**题目描述：** 有 `n` 个景点，编号 `1..n`，从景点 `i` 到景点 `j` 的代价为 `cost[i][j]`。你从景点 `1` 出发，每个景点必须恰好访问一次，可以在任意景点结束。求最小总代价。
-
-**输入格式：** 第一行一个整数 `n`。接下来 `n` 行，每行 `n` 个整数，表示代价矩阵 `cost[1..n][1..n]`。
-
-**输出格式：** 输出一个整数，表示最小总代价。
-
-**样例输入：**
-```text
-4
-0 10 15 20
-10 0 35 25
-15 35 0 30
-20 25 30 0
-```
-
-**样例输出：**
-```text
-65
-```
-
-**Motivation：** 状态定义为 `dp[mask][last]`：已经访问的景点集合为 `mask`，当前停在 `last` 时的最小总代价。这样定义是因为后续只关心哪些点访问过以及最后停在哪里。最后一步是从某个 `last` 走到一个未访问点 `next`，新集合加入 `next`。复杂度 `O(2^n * n^2)`，空间 `O(2^n * n)`。
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n;
-    cin >> n;
-    vector<vector<long long>> cost(n + 1, vector<long long>(n + 1, 0));
-    for (int i = 1; i <= n; i++) {
-        for (int j = 1; j <= n; j++) {
-            cin >> cost[i][j];
-        }
-    }
-
-    int total_mask = 1 << n;
-    const long long INF = 4'000'000'000'000'000'000LL;
-    vector<vector<long long>> dp(total_mask, vector<long long>(n + 1, INF));
-    int start_mask = 1 << 0;
-    dp[start_mask][1] = 0;
-
-    for (int mask = 0; mask < total_mask; mask++) {
-        for (int last = 1; last <= n; last++) {
-            if (dp[mask][last] == INF) continue;
-            for (int next = 1; next <= n; next++) {
-                int bit = 1 << (next - 1);
-                if ((mask & bit) != 0) continue;
-                int new_mask = mask | bit;
-                dp[new_mask][next] = min(dp[new_mask][next], dp[mask][last] + cost[last][next]);
-            }
-        }
-    }
-
-    int full_mask = total_mask - 1;
-    long long answer = INF;
-    for (int last = 1; last <= n; last++) {
-        answer = min(answer, dp[full_mask][last]);
-    }
-
-    cout << answer << '\n';
-    return 0;
-}
-```
-
-**测试设计：**
-
-测试 1 输入：
-```text
-1
-0
-```
-期望输出：
-```text
-0
-```
-
-测试 2 输入：
-```text
-3
-0 2 9
-1 0 6
-15 7 0
-```
-期望输出：
-```text
-8
-```
-### V03-EX14 数位 DP 统计无相邻相同数字
-
-- 归属卷：第 3 卷
-- 覆盖模块：DP-17 数位 DP
-- 考场用途：统计 `1..N` 中满足数字约束的整数个数
-
-**题目描述：** 给定正整数 `N`，统计 `1..N` 中有多少个整数满足：十进制表示中任意相邻两位数字都不相同。
-
-**输入格式：** 一行一个正整数 `N`，长度不超过 `18`。
-
-**输出格式：** 输出一个整数，表示满足条件的整数个数。
-
-**样例输入：**
-```text
-20
-```
-
-**样例输出：**
-```text
-19
-```
-
-**Motivation：** 状态定义为 `dfs(pos, prev, tight, started)`：处理到第 `pos` 位，上一位数字为 `prev`，是否贴着上界，是否已经开始填非前导零数字时的方案数。这样定义是因为后续合法性只取决于上一位数字和上界限制，不需要知道完整前缀。最后一步是枚举当前位置填的数字，如果已经开始且等于上一位则跳过。复杂度 `O(位数 * 11 * 2 * 10)`，空间 `O(位数 * 11 * 2)`。
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-string digits;
-long long memo[25][11][2];
-bool visited[25][11][2];
-
-long long dfs(int pos, int prev, bool tight, bool started) {
-    int len = (int)digits.size() - 1;
-    if (pos > len) {
-        return started ? 1 : 0;
-    }
-    int prev_index = prev + 1;
-    if (!tight && visited[pos][prev_index][started ? 1 : 0]) {
-        return memo[pos][prev_index][started ? 1 : 0];
-    }
-
-    int limit = tight ? digits[pos] - '0' : 9;
-    long long ways = 0;
-    for (int d = 0; d <= limit; d++) {
-        bool next_tight = tight && (d == limit);
-        if (!started && d == 0) {
-            ways += dfs(pos + 1, -1, next_tight, false);
-        } else {
-            if (started && d == prev) continue;
-            ways += dfs(pos + 1, d, next_tight, true);
-        }
-    }
-
-    if (!tight) {
-        visited[pos][prev_index][started ? 1 : 0] = true;
-        memo[pos][prev_index][started ? 1 : 0] = ways;
-    }
-    return ways;
-}
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    string n;
-    cin >> n;
-    digits = " " + n;
-    cout << dfs(1, -1, true, false) << '\n';
-    return 0;
-}
-```
-
-**测试设计：**
-
-测试 1 输入：
-```text
-9
-```
-期望输出：
-```text
-9
-```
-
-测试 2 输入：
-```text
-100
-```
-期望输出：
-```text
-90
-```
-### V03-EX15 股票冷冻期状态升维
-
-- 归属卷：第 3 卷
-- 覆盖模块：DP-26 状态升维与有后效性，DP-03B 状态维度路由
-- 考场用途：发现只用 `dp[i]` 不够时，把持有和冷冻状态加进 DP
-
-**题目描述：** 给定 `n` 天股票价格 `price[1..n]`。每天你可以选择买入、卖出或什么都不做。任意时刻最多持有一股。卖出股票后的第二天不能买入，也就是有一天冷冻期。求最大利润。
-
-**输入格式：** 第一行一个整数 `n`。第二行 `n` 个整数 `price[1..n]`。
-
-**输出格式：** 输出一个整数，表示最大利润。
-
-**样例输入：**
-```text
-5
-1 2 3 0 2
-```
-
-**样例输出：**
-```text
-3
-```
-
-**Motivation：** 如果只定义 `dp[i]` 为前 `i` 天最大利润，会丢失“今天是否持股”和“今天是否刚卖出”这些会影响明天操作的历史信息。升维后定义 `dp[i][0]` 表示第 `i` 天结束后空仓且不在刚卖出状态，`dp[i][1]` 表示持股，`dp[i][2]` 表示今天刚卖出。最后一步分别是休息、买入、卖出。复杂度 `O(n)`，空间 `O(n)`，也可滚动优化到 `O(1)`。
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n;
-    cin >> n;
-    vector<long long> price(n + 1);
-    for (int i = 1; i <= n; i++) {
-        cin >> price[i];
-    }
-
-    const long long NEG = -4'000'000'000'000'000'000LL;
-    vector<array<long long, 3>> dp(n + 1);
-    for (int i = 0; i <= n; i++) {
-        dp[i] = {NEG, NEG, NEG};
-    }
-
-    dp[0][0] = 0;
-    for (int i = 1; i <= n; i++) {
-        dp[i][0] = max(dp[i - 1][0], dp[i - 1][2]);
-        dp[i][1] = max(dp[i - 1][1], dp[i - 1][0] - price[i]);
-        dp[i][2] = dp[i - 1][1] + price[i];
-    }
-
-    cout << max(dp[n][0], dp[n][2]) << '\n';
-    return 0;
-}
-```
-
-**测试设计：**
-
-测试 1 输入：
-```text
-1
-5
-```
-期望输出：
-```text
-0
-```
-
-测试 2 输入：
-```text
-6
-6 1 3 2 4 7
-```
-期望输出：
-```text
-6
-```
-### V03-CEX01 分成 k 段最小化最大段和
-
-- 归属卷：第 3 卷
-- 覆盖模块：线性 DP、前缀和、最后一段
-- 考场用途：练习用最后一段位置推转移。
-- 参考题型来源：参考来源：洛谷 DP 分段模型、OI Wiki DP 基础。
-
-**题目描述：** 把数组切成 `k` 个连续非空段，使最大段和最小。
-
-**输入格式：** 第一行 `n k`，第二行数组。
-
-**输出格式：** 输出最小可能最大段和。
-
-**样例输入：**
-```text
-5 2
-7 2 5 10 8
-```
-
-**样例输出：**
-```text
-18
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-    int n, k;
-    cin >> n >> k;
-    vector<long long> a(n + 1), pre(n + 1);
-    for (int i = 1; i <= n; i++) { cin >> a[i]; pre[i] = pre[i - 1] + a[i]; }
-    const long long INF = (long long)4e18;
-    vector<vector<long long>> dp(k + 1, vector<long long>(n + 1, INF));
-    dp[0][0] = 0;
-    for (int p = 1; p <= k; p++) {
-        for (int i = 1; i <= n; i++) {
-            for (int j = 0; j < i; j++) {
-                long long seg = pre[i] - pre[j];
-                dp[p][i] = min(dp[p][i], max(dp[p - 1][j], seg));
-            }
-        }
-    }
-    cout << dp[k][n] << '\n';
-    return 0;
-}
-```
-
-**测试设计：** 额外测试：构造最小规模、重复值、边界值各一组，和样例一起运行。
-
-***
-### V03-CEX02 多重背包二进制拆分
-
-- 归属卷：第 3 卷
-- 覆盖模块：多重背包、0/1 背包复用
-- 考场用途：把有限件物品拆成若干 0/1 物品。
-- 参考题型来源：参考来源：洛谷背包问题题单。
-
-**题目描述：** 每种物品有重量、价值和数量，容量为 `W`，求最大价值。
-
-**输入格式：** 第一行 `n W`，之后 `w v c`。
-
-**输出格式：** 输出最大价值。
-
-**样例输入：**
-```text
-2 10
-3 4 3
-4 5 2
-```
-
-**样例输出：**
-```text
-13
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-    int n, W;
-    cin >> n >> W;
-    vector<int> weight(n + 1), value(n + 1), cnt(n + 1);
-    for (int i = 1; i <= n; i++) cin >> weight[i] >> value[i] >> cnt[i];
-    vector<long long> dp(W + 1, 0);
-    for (int i = 1; i <= n; i++) {
-        int c = cnt[i];
-        for (int b = 1; c > 0; b <<= 1) {
-            int take = min(b, c);
-            c -= take;
-            int w = weight[i] * take, v = value[i] * take;
-            for (int j = W; j >= w; j--) dp[j] = max(dp[j], dp[j - w] + v);
-        }
-    }
-    cout << *max_element(dp.begin(), dp.end()) << '\n';
-    return 0;
-}
-```
-
-**测试设计：** 额外测试：构造最小规模、重复值、边界值各一组，和样例一起运行。
-
-***
-### V03-CEX03 相同字符一起删除
-
-- 归属卷：第 3 卷
-- 覆盖模块：区间 DP、删除模型
-- 考场用途：练习区间删除不是只枚举切点。
-- 参考题型来源：参考来源：经典区间 DP 删除题型。
-
-**题目描述：** 每次可删除一段相同字符，删除后两侧合并，求删完整串最少次数。
-
-**输入格式：** 输入一个小写字符串。
-
-**输出格式：** 输出最少次数。
-
-**样例输入：**
-```text
-aba
-```
-
-**样例输出：**
-```text
-2
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-    string s;
-    cin >> s;
-    int n = (int)s.size();
-    s = " " + s;
-    vector<vector<int>> dp(n + 2, vector<int>(n + 2, 0));
-    for (int len = 1; len <= n; len++) {
-        for (int l = 1; l + len - 1 <= n; l++) {
-            int r = l + len - 1;
-            dp[l][r] = 1 + dp[l + 1][r];
-            for (int k = l + 1; k <= r; k++) {
-                if (s[k] == s[l]) dp[l][r] = min(dp[l][r], dp[l + 1][k - 1] + dp[k][r]);
-            }
-        }
-    }
-    cout << dp[1][n] << '\n';
-    return 0;
-}
-```
-
-**测试设计：** 额外测试：构造最小规模、重复值、边界值各一组，和样例一起运行。
-
-***
-### V03-CEX04 依赖树背包
-
-- 归属卷：第 3 卷
-- 覆盖模块：树形 DP、背包合并
-- 考场用途：选子节点必须选父节点的依赖型模型。
-- 参考题型来源：参考来源：洛谷树形背包/依赖背包题型。
-
-**题目描述：** 每个物品有父依赖、重量和价值，选子必须选父，容量 `W`，求最大价值。
-
-**输入格式：** 第一行 `n W`，之后每行 `parent weight value`，`parent=0` 是根。
-
-**输出格式：** 输出最大价值。
-
-**样例输入：**
-```text
-4 5
-0 2 3
-1 2 4
-1 3 5
-2 1 2
-```
-
-**样例输出：**
-```text
-9
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-
-int n, W;
-vector<vector<pair<int,int>>> child;
-vector<int> w, v;
-vector<vector<long long>> dp;
-void dfs(int u) {
-    dp[u].assign(W + 1, -4e18);
-    dp[u][w[u]] = v[u];
-    for (auto [to, dummy] : child[u]) {
-        dfs(to);
-        vector<long long> ndp = dp[u];
-        for (int i = 0; i <= W; i++) if (dp[u][i] > -3e18) {
-            for (int j = 0; i + j <= W; j++) if (dp[to][j] > -3e18) {
-                ndp[i + j] = max(ndp[i + j], dp[u][i] + dp[to][j]);
-            }
-        }
-        dp[u] = ndp;
-    }
-}
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-    cin >> n >> W;
-    child.assign(n + 1, {});
-    w.assign(n + 1, 0); v.assign(n + 1, 0);
-    int root = 1;
-    for (int i = 1; i <= n; i++) {
-        int p;
-        cin >> p >> w[i] >> v[i];
-        if (p == 0) root = i;
-        else child[p].push_back({i, 0});
-    }
-    dp.resize(n + 1);
-    dfs(root);
-    cout << *max_element(dp[root].begin(), dp[root].end()) << '\n';
-    return 0;
-}
-```
-
-**测试设计：** 额外测试：构造最小规模、重复值、边界值各一组，和样例一起运行。
-
-***
-### V03-CEX05 数位 DP 统计数字和被 3 整除
-
-- 归属卷：第 3 卷
-- 覆盖模块：数位 DP、tight、started
-- 考场用途：把范围计数转成 `solve(R)-solve(L-1)`。
-- 参考题型来源：参考来源：OI Wiki 数位 DP、洛谷数位 DP 题型。
-
-**题目描述：** 统计 `[L,R]` 中正整数的数位和能被 3 整除的个数。
-
-**输入格式：** 输入 `L R`。
-
-**输出格式：** 输出个数。
-
-**样例输入：**
-```text
-1 20
-```
-
-**样例输出：**
-```text
-6
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-
-long long memo[20][2][2][200];
-vector<int> digits;
-long long dfs(int pos, int tight, int started, int sum) {
-    if (pos == (int)digits.size()) return started && sum % 3 == 0;
-    long long &res = memo[pos][tight][started][sum];
-    if (!tight && res != -1) return res;
-    long long ans = 0;
-    int lim = tight ? digits[pos] : 9;
-    for (int d = 0; d <= lim; d++) {
-        ans += dfs(pos + 1, tight && d == lim, started || d != 0, sum + (started || d != 0 ? d : 0));
-    }
-    if (!tight) res = ans;
-    return ans;
-}
-long long solve(long long x) {
-    if (x <= 0) return 0;
-    digits.clear();
-    string s = to_string(x);
-    for (char c : s) digits.push_back(c - '0');
-    memset(memo, -1, sizeof(memo));
-    return dfs(0, 1, 0, 0);
-}
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-    long long L, R;
-    cin >> L >> R;
-    cout << solve(R) - solve(L - 1) << '\n';
-    return 0;
-}
-```
-
-**测试设计：** 额外测试：构造最小规模、重复值、边界值各一组，和样例一起运行。
-
-***
-
-<!-- V02_EXAMPLES_END -->
-
 
 
 ---
@@ -23675,1119 +18413,6 @@ weights = 3 2 2 1, limit = 3
 (deadline=1, profit=10), (deadline=1, profit=20), (deadline=2, profit=5)
 输出：25
 ```
-
-<!-- V02_EXAMPLES_START -->
-
-# v0.2 本卷例题训练区
-
-这一节是 0.2 新增的实战例题。每题都配完整可运行代码和样例；考试时优先看“覆盖模块”和“考场用途”，再复制对应代码骨架。
-
-### V03A-EX01 最少总等待时间排序贪心
-
-- 归属卷：第 3A 卷
-- 覆盖模块：排序贪心、交换论证、最短处理时间优先
-- 考场用途：任务顺序可自由调整且目标是等待时间总和时，按耗时从小到大排序。
-
-**题目描述：** 有 `n` 个任务，第 `i` 个任务耗时 `t[i]`。一次只能处理一个任务，任务顺序可以任意调整。一个任务的等待时间是它开始前已经处理完的任务总耗时。求最小总等待时间。
-
-**输入格式：** 第一行一个整数 `n`。第二行 `n` 个整数表示任务耗时。
-
-**输出格式：** 输出最小总等待时间。
-
-**样例输入：**
-```text
-3
-3 1 2
-```
-
-**样例输出：**
-```text
-4
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n;
-    cin >> n;
-    vector<long long> t(n + 1);
-    for (int i = 1; i <= n; i++) cin >> t[i];
-    sort(t.begin() + 1, t.end());
-
-    long long elapsed = 0;
-    long long ans = 0;
-    for (int i = 1; i <= n; i++) {
-        ans += elapsed;
-        elapsed += t[i];
-    }
-
-    cout << ans << '\n';
-    return 0;
-}
-```
-
-**测试设计：**
-
-测试 1 输入：
-```text
-3
-3 1 2
-```
-期望输出：
-```text
-4
-```
-
-测试 2 输入：
-```text
-4
-5 5 1 2
-```
-期望输出：
-```text
-12
-```
-### V03A-EX02 最多不重叠活动
-
-- 归属卷：第 3A 卷
-- 覆盖模块：区间贪心、按右端点排序、活动选择
-- 考场用途：区间互不重叠、要选最多个时，优先尝试按结束时间从早到晚选。
-
-**题目描述：** 给定 `n` 个半开区间 `[l, r)`，选择尽量多的区间，使任意两个被选区间不重叠。若一个区间的结束时间等于另一个区间的开始时间，允许同时选择。
-
-**输入格式：** 第一行一个整数 `n`。接下来 `n` 行，每行两个整数 `l r`。
-
-**输出格式：** 输出最多能选择的区间数量。
-
-**样例输入：**
-```text
-4
-1 3
-2 4
-3 5
-0 7
-```
-
-**样例输出：**
-```text
-2
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-struct Seg {
-    long long l;
-    long long r;
-};
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n;
-    cin >> n;
-    vector<Seg> seg(n + 1);
-    for (int i = 1; i <= n; i++) cin >> seg[i].l >> seg[i].r;
-
-    sort(seg.begin() + 1, seg.end(), [](const Seg &a, const Seg &b) {
-        if (a.r != b.r) return a.r < b.r;
-        return a.l < b.l;
-    });
-
-    long long lastEnd = -(1LL << 60);
-    int ans = 0;
-    for (int i = 1; i <= n; i++) {
-        if (seg[i].l >= lastEnd) {
-            ans++;
-            lastEnd = seg[i].r;
-        }
-    }
-
-    cout << ans << '\n';
-    return 0;
-}
-```
-
-**测试设计：**
-
-测试 1 输入：
-```text
-4
-1 3
-2 4
-3 5
-0 7
-```
-期望输出：
-```text
-2
-```
-
-测试 2 输入：
-```text
-5
-1 2
-2 3
-3 4
-1 4
-4 5
-```
-期望输出：
-```text
-4
-```
-### V03A-EX03 最少点覆盖闭区间
-
-- 归属卷：第 3A 卷
-- 覆盖模块：区间选点、排序贪心、右端点策略
-- 考场用途：每个闭区间至少被一个点覆盖时，每次在当前最早结束区间的右端点放点。
-
-**题目描述：** 给定 `n` 个闭区间 `[l, r]`。请选择尽量少的整数点，使每个区间内至少包含一个被选点。输出最少点数和这些点。
-
-**输入格式：** 第一行一个整数 `n`。接下来 `n` 行，每行两个整数 `l r`。
-
-**输出格式：** 第一行输出最少点数。第二行按选择顺序输出所有点。
-
-**样例输入：**
-```text
-3
-1 3
-2 5
-3 6
-```
-
-**样例输出：**
-```text
-1
-3
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-struct Seg {
-    long long l;
-    long long r;
-};
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n;
-    cin >> n;
-    vector<Seg> seg(n + 1);
-    for (int i = 1; i <= n; i++) cin >> seg[i].l >> seg[i].r;
-
-    sort(seg.begin() + 1, seg.end(), [](const Seg &a, const Seg &b) {
-        if (a.r != b.r) return a.r < b.r;
-        return a.l < b.l;
-    });
-
-    vector<long long> points;
-    long long lastPoint = -(1LL << 60);
-    for (int i = 1; i <= n; i++) {
-        if (lastPoint < seg[i].l) {
-            lastPoint = seg[i].r;
-            points.push_back(lastPoint);
-        }
-    }
-
-    cout << points.size() << '\n';
-    for (int i = 0; i < (int)points.size(); i++) {
-        if (i) cout << ' ';
-        cout << points[i];
-    }
-    cout << '\n';
-    return 0;
-}
-```
-
-**测试设计：**
-
-测试 1 输入：
-```text
-3
-1 3
-2 5
-3 6
-```
-期望输出：
-```text
-1
-3
-```
-
-测试 2 输入：
-```text
-4
-1 2
-3 4
-2 3
-5 5
-```
-期望输出：
-```text
-3
-2 4 5
-```
-### V03A-EX04 合并果子的堆贪心
-
-- 归属卷：第 3A 卷
-- 覆盖模块：堆贪心、Huffman 思想、每次取两个最小
-- 考场用途：每次合并产生代价，总代价最小，优先考虑小根堆。
-
-**题目描述：** 有 `n` 堆果子，每次可以选择两堆合并，新堆大小为两堆之和，本次代价也是两堆之和。求把所有果子合成一堆的最小总代价。
-
-**输入格式：** 第一行一个整数 `n`。第二行 `n` 个整数表示每堆果子数量。
-
-**输出格式：** 输出最小总代价。
-
-**样例输入：**
-```text
-4
-1 2 3 4
-```
-
-**样例输出：**
-```text
-19
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n;
-    cin >> n;
-    priority_queue<long long, vector<long long>, greater<long long>> pq;
-    for (int i = 1; i <= n; i++) {
-        long long x;
-        cin >> x;
-        pq.push(x);
-    }
-
-    long long ans = 0;
-    while ((int)pq.size() > 1) {
-        long long a = pq.top();
-        pq.pop();
-        long long b = pq.top();
-        pq.pop();
-        ans += a + b;
-        pq.push(a + b);
-    }
-
-    cout << ans << '\n';
-    return 0;
-}
-```
-
-**测试设计：**
-
-测试 1 输入：
-```text
-4
-1 2 3 4
-```
-期望输出：
-```text
-19
-```
-
-测试 2 输入：
-```text
-3
-10 20 30
-```
-期望输出：
-```text
-90
-```
-### V03A-EX05 最少会议室
-
-- 归属卷：第 3A 卷
-- 覆盖模块：堆贪心、区间扫描、资源复用
-- 考场用途：求最少机器、教室、会议室数量时，按开始时间扫，用小根堆维护最早结束资源。
-
-**题目描述：** 给定 `n` 个半开会议区间 `[l, r)`，同一间会议室中结束时间等于下一场开始时间时可以复用。求最少需要多少间会议室。
-
-**输入格式：** 第一行一个整数 `n`。接下来 `n` 行，每行两个整数 `l r`。
-
-**输出格式：** 输出最少会议室数量。
-
-**样例输入：**
-```text
-4
-1 4
-2 5
-6 7
-3 8
-```
-
-**样例输出：**
-```text
-3
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-struct Seg {
-    long long l;
-    long long r;
-};
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n;
-    cin >> n;
-    vector<Seg> seg(n + 1);
-    for (int i = 1; i <= n; i++) cin >> seg[i].l >> seg[i].r;
-
-    sort(seg.begin() + 1, seg.end(), [](const Seg &a, const Seg &b) {
-        if (a.l != b.l) return a.l < b.l;
-        return a.r < b.r;
-    });
-
-    priority_queue<long long, vector<long long>, greater<long long>> ends;
-    int ans = 0;
-    for (int i = 1; i <= n; i++) {
-        if (!ends.empty() && ends.top() <= seg[i].l) {
-            ends.pop();
-        }
-        ends.push(seg[i].r);
-        ans = max(ans, (int)ends.size());
-    }
-
-    cout << ans << '\n';
-    return 0;
-}
-```
-
-**测试设计：**
-
-测试 1 输入：
-```text
-4
-1 4
-2 5
-6 7
-3 8
-```
-期望输出：
-```text
-3
-```
-
-测试 2 输入：
-```text
-5
-1 2
-2 3
-3 4
-1 4
-4 5
-```
-期望输出：
-```text
-2
-```
-### V03A-EX06 截止时间课程的反悔贪心
-
-- 归属卷：第 3A 卷
-- 覆盖模块：反悔贪心、截止时间、最大堆删除最差选择
-- 考场用途：先按截止时间尝试加入，超时就删掉耗时最长的任务。
-
-**题目描述：** 有 `n` 门课程，第 `i` 门需要 `t[i]` 天完成，必须在第 `d[i]` 天或之前完成。一天只能学习一门课的一天内容。求最多能完成多少门课。
-
-**输入格式：** 第一行一个整数 `n`。接下来 `n` 行，每行两个整数 `t d`。
-
-**输出格式：** 输出最多能完成的课程数。
-
-**样例输入：**
-```text
-4
-100 200
-200 1300
-1000 1250
-2000 3200
-```
-
-**样例输出：**
-```text
-3
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-struct Course {
-    long long t;
-    long long d;
-};
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n;
-    cin >> n;
-    vector<Course> c(n + 1);
-    for (int i = 1; i <= n; i++) cin >> c[i].t >> c[i].d;
-
-    sort(c.begin() + 1, c.end(), [](const Course &a, const Course &b) {
-        if (a.d != b.d) return a.d < b.d;
-        return a.t < b.t;
-    });
-
-    priority_queue<long long> chosen;
-    long long total = 0;
-    for (int i = 1; i <= n; i++) {
-        total += c[i].t;
-        chosen.push(c[i].t);
-        if (total > c[i].d) {
-            total -= chosen.top();
-            chosen.pop();
-        }
-    }
-
-    cout << chosen.size() << '\n';
-    return 0;
-}
-```
-
-**测试设计：**
-
-测试 1 输入：
-```text
-4
-100 200
-200 1300
-1000 1250
-2000 3200
-```
-期望输出：
-```text
-3
-```
-
-测试 2 输入：
-```text
-3
-5 5
-4 6
-2 6
-```
-期望输出：
-```text
-2
-```
-### V03A-EX07 0/1 背包反例转 DP
-
-- 归属卷：第 3A 卷
-- 覆盖模块：贪心反例、性价比失败、0/1 背包 DP
-- 考场用途：看到容量和选或不选时，不要只按价值密度贪心；普通 0/1 背包应转 DP。
-
-**题目描述：** 有 `n` 个物品，每个物品有重量 `w[i]` 和价值 `v[i]`，每个物品最多选一次。背包容量为 `W`，求最大总价值。
-
-**输入格式：** 第一行两个整数 `n W`。接下来 `n` 行，每行两个整数 `w v`。
-
-**输出格式：** 输出最大总价值。
-
-**样例输入：**
-```text
-3 50
-10 60
-20 100
-30 120
-```
-
-**样例输出：**
-```text
-220
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n, W;
-    cin >> n >> W;
-    vector<int> w(n + 1), v(n + 1);
-    for (int i = 1; i <= n; i++) cin >> w[i] >> v[i];
-
-    vector<long long> dp(W + 1, 0);
-    for (int i = 1; i <= n; i++) {
-        for (int cap = W; cap >= w[i]; cap--) {
-            dp[cap] = max(dp[cap], dp[cap - w[i]] + v[i]);
-        }
-    }
-
-    cout << dp[W] << '\n';
-    return 0;
-}
-```
-
-**测试设计：**
-
-测试 1 输入：
-```text
-3 50
-10 60
-20 100
-30 120
-```
-期望输出：
-```text
-220
-```
-
-测试 2 输入：
-```text
-4 7
-6 13
-4 8
-3 6
-2 4
-```
-期望输出：
-```text
-14
-```
-### V03A-EX08 普通硬币找零反例转完全背包
-
-- 归属卷：第 3A 卷
-- 覆盖模块：贪心反例、硬币找零、完全背包 DP
-- 考场用途：币值不是标准币制时，最大面值优先不可靠，应使用 DP 求最少硬币数。
-
-**题目描述：** 给定 `n` 种硬币面值，每种硬币可以使用任意多次。求凑出金额 `S` 所需的最少硬币数；若无法凑出，输出 `-1`。
-
-**输入格式：** 第一行两个整数 `n S`。第二行 `n` 个整数表示硬币面值。
-
-**输出格式：** 输出最少硬币数，无法凑出输出 `-1`。
-
-**样例输入：**
-```text
-3 6
-1 3 4
-```
-
-**样例输出：**
-```text
-2
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n, S;
-    cin >> n >> S;
-    vector<int> coin(n + 1);
-    for (int i = 1; i <= n; i++) cin >> coin[i];
-
-    const int INF = 1000000000;
-    vector<int> dp(S + 1, INF);
-    dp[0] = 0;
-    for (int i = 1; i <= n; i++) {
-        for (int sum = coin[i]; sum <= S; sum++) {
-            dp[sum] = min(dp[sum], dp[sum - coin[i]] + 1);
-        }
-    }
-
-    cout << (dp[S] == INF ? -1 : dp[S]) << '\n';
-    return 0;
-}
-```
-
-**测试设计：**
-
-测试 1 输入：
-```text
-3 6
-1 3 4
-```
-期望输出：
-```text
-2
-```
-
-测试 2 输入：
-```text
-2 7
-2 4
-```
-期望输出：
-```text
--1
-```
-### V03A-EX09 加权区间选择转 DP
-
-- 归属卷：第 3A 卷
-- 覆盖模块：区间贪心反例、加权区间调度、排序后二分 DP
-- 考场用途：最多活动可以贪心，但最大收益区间选择通常要 DP。
-
-**题目描述：** 给定 `n` 个半开区间 `[l, r)`，每个区间有收益 `w`。选择若干互不重叠区间，使总收益最大。端点相接不算重叠。
-
-**输入格式：** 第一行一个整数 `n`。接下来 `n` 行，每行三个整数 `l r w`。
-
-**输出格式：** 输出最大总收益。
-
-**样例输入：**
-```text
-3
-1 3 5
-3 5 5
-1 5 20
-```
-
-**样例输出：**
-```text
-20
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-struct Job {
-    long long l;
-    long long r;
-    long long w;
-};
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n;
-    cin >> n;
-    vector<Job> job(n + 1);
-    for (int i = 1; i <= n; i++) cin >> job[i].l >> job[i].r >> job[i].w;
-
-    sort(job.begin() + 1, job.end(), [](const Job &a, const Job &b) {
-        if (a.r != b.r) return a.r < b.r;
-        return a.l < b.l;
-    });
-
-    vector<long long> ends(n + 1, 0);
-    for (int i = 1; i <= n; i++) ends[i] = job[i].r;
-
-    vector<long long> dp(n + 1, 0);
-    for (int i = 1; i <= n; i++) {
-        int p = int(upper_bound(ends.begin() + 1, ends.begin() + i, job[i].l) - ends.begin()) - 1;
-        dp[i] = max(dp[i - 1], dp[p] + job[i].w);
-    }
-
-    cout << dp[n] << '\n';
-    return 0;
-}
-```
-
-**测试设计：**
-
-测试 1 输入：
-```text
-3
-1 3 5
-3 5 5
-1 5 20
-```
-期望输出：
-```text
-20
-```
-
-测试 2 输入：
-```text
-4
-1 2 50
-2 3 50
-1 3 120
-3 4 1
-```
-期望输出：
-```text
-121
-```
-### V03A-EX10 相邻限制选择转线性 DP
-
-- 归属卷：第 3A 卷
-- 覆盖模块：局部最优失败、线性 DP、选或不选
-- 考场用途：相邻不能同时选时，不要只看当前最大值；需要记录前缀最优。
-
-**题目描述：** 给定 `n` 个位置的收益 `a[i]`，选择若干位置，使任意两个被选位置不相邻，最大化收益和。
-
-**输入格式：** 第一行一个整数 `n`。第二行 `n` 个整数。
-
-**输出格式：** 输出最大收益和。
-
-**样例输入：**
-```text
-5
-2 7 9 3 1
-```
-
-**样例输出：**
-```text
-12
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n;
-    cin >> n;
-    vector<long long> a(n + 1, 0);
-    for (int i = 1; i <= n; i++) cin >> a[i];
-
-    vector<long long> dp(n + 1, 0);
-    if (n >= 1) dp[1] = max(0LL, a[1]);
-    for (int i = 2; i <= n; i++) {
-        dp[i] = max(dp[i - 1], dp[i - 2] + a[i]);
-    }
-
-    cout << dp[n] << '\n';
-    return 0;
-}
-```
-
-**测试设计：**
-
-测试 1 输入：
-```text
-5
-2 7 9 3 1
-```
-期望输出：
-```text
-12
-```
-
-测试 2 输入：
-```text
-4
-5 1 1 5
-```
-期望输出：
-```text
-10
-```
-### V03A-CEX01 活动选择结束时间贪心
-
-- 归属卷：第 3A 卷
-- 覆盖模块：区间贪心、交换论证
-- 考场用途：最经典可贪心模型。
-- 参考题型来源：参考来源：洛谷区间贪心题型。
-
-**题目描述：** 给出若干活动起止时间，求最多选多少个互不重叠活动。
-
-**输入格式：** 第一行 n，之后 n 行 l r。
-
-**输出格式：** 输出最多数量。
-
-**样例输入：**
-```text
-4
-1 3
-2 4
-3 5
-6 7
-```
-
-**样例输出：**
-```text
-3
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-    int n;
-    cin >> n;
-    vector<pair<int,int>> a(n + 1);
-    for (int i = 1; i <= n; i++) cin >> a[i].second >> a[i].first;
-    sort(a.begin() + 1, a.end());
-    int cnt = 0, last = -2000000000;
-    for (int i = 1; i <= n; i++) if (a[i].second >= last) {
-        cnt++;
-        last = a[i].first;
-    }
-    cout << cnt << '\n';
-    return 0;
-}
-```
-
-**测试设计：** 额外测试：构造最小规模、重复值、边界值各一组，和样例一起运行。
-
-***
-### V03A-CEX02 会议室最少数量
-
-- 归属卷：第 3A 卷
-- 覆盖模块：排序、堆贪心
-- 考场用途：同时占用区间数量用小根堆。
-- 参考题型来源：参考来源：经典会议室/区间调度题型。
-
-**题目描述：** 给出会议时间，求最少会议室数量。
-
-**输入格式：** 第一行 n，之后 n 行 l r。
-
-**输出格式：** 输出最少数量。
-
-**样例输入：**
-```text
-3
-0 30
-5 10
-15 20
-```
-
-**样例输出：**
-```text
-2
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-    int n;
-    cin >> n;
-    vector<pair<int,int>> a(n + 1);
-    for (int i = 1; i <= n; i++) cin >> a[i].first >> a[i].second;
-    sort(a.begin() + 1, a.end());
-    priority_queue<int, vector<int>, greater<int>> pq;
-    for (int i = 1; i <= n; i++) {
-        if (!pq.empty() && pq.top() <= a[i].first) pq.pop();
-        pq.push(a[i].second);
-    }
-    cout << pq.size() << '\n';
-    return 0;
-}
-```
-
-**测试设计：** 额外测试：构造最小规模、重复值、边界值各一组，和样例一起运行。
-
-***
-### V03A-CEX03 最少点刺破区间
-
-- 归属卷：第 3A 卷
-- 覆盖模块：区间按右端排序
-- 考场用途：证明每次选最早结束点。
-- 参考题型来源：参考来源：洛谷区间选点题型。
-
-**题目描述：** 选择尽量少的点，使每个闭区间至少包含一个点。
-
-**输入格式：** 第一行 n，之后 n 行 l r。
-
-**输出格式：** 输出最少点数。
-
-**样例输入：**
-```text
-3
-1 3
-2 5
-6 8
-```
-
-**样例输出：**
-```text
-2
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-    int n;
-    cin >> n;
-    vector<pair<int,int>> a(n + 1);
-    for (int i = 1; i <= n; i++) cin >> a[i].first >> a[i].second;
-    sort(a.begin() + 1, a.end(), [](auto x, auto y) {
-        return x.second < y.second;
-    });
-    int points = 0, last = -2000000000;
-    for (int i = 1; i <= n; i++) {
-        if (last < a[i].first) {
-            last = a[i].second;
-            points++;
-        }
-    }
-    cout << points << '\n';
-    return 0;
-}
-```
-
-**测试设计：** 额外测试：构造最小规模、重复值、边界值各一组，和样例一起运行。
-
-***
-### V03A-CEX04 单价贪心失败的 0/1 背包
-
-- 归属卷：第 3A 卷
-- 覆盖模块：反例、0/1 背包
-- 考场用途：看到选/不选和容量，别按性价比硬贪。
-- 参考题型来源：参考来源：洛谷背包题单。
-
-**题目描述：** 给 0/1 背包，输出最大价值。
-
-**输入格式：** 第一行 n W，之后 w v。
-
-**输出格式：** 输出最大价值。
-
-**样例输入：**
-```text
-3 50
-10 60
-20 100
-30 120
-```
-
-**样例输出：**
-```text
-220
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-    int n, W;
-    cin >> n >> W;
-    vector<int> w(n + 1), v(n + 1);
-    for (int i = 1; i <= n; i++) cin >> w[i] >> v[i];
-    vector<int> dp(W + 1, 0);
-    for (int i = 1; i <= n; i++) {
-        for (int j = W; j >= w[i]; j--) dp[j] = max(dp[j], dp[j - w[i]] + v[i]);
-    }
-    cout << dp[W] << '\n';
-    return 0;
-}
-```
-
-**测试设计：** 额外测试：构造最小规模、重复值、边界值各一组，和样例一起运行。
-
-***
-### V03A-CEX05 截止日任务反悔贪心
-
-- 归属卷：第 3A 卷
-- 覆盖模块：排序、堆、反悔贪心
-- 考场用途：先收下，超过容量就反悔删最小收益。
-- 参考题型来源：参考来源：经典课程安排/反悔贪心题型。
-
-**题目描述：** 每个任务有截止日和收益，每天最多做一个，求最大收益。
-
-**输入格式：** 第一行 n T，之后 deadline profit。
-
-**输出格式：** 输出最大收益。
-
-**样例输入：**
-```text
-4 4
-1 10
-2 20
-2 15
-3 5
-```
-
-**样例输出：**
-```text
-40
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-    int n, T;
-    cin >> n >> T;
-    vector<pair<int,int>> jobs(n + 1);
-    for (int i = 1; i <= n; i++) cin >> jobs[i].first >> jobs[i].second;
-    sort(jobs.begin() + 1, jobs.end());
-    priority_queue<int, vector<int>, greater<int>> pq;
-    long long sum = 0;
-    for (int i = 1; i <= n; i++) {
-        pq.push(jobs[i].second);
-        sum += jobs[i].second;
-        if ((int)pq.size() > jobs[i].first) {
-            sum -= pq.top();
-            pq.pop();
-        }
-    }
-    cout << sum << '\n';
-    return 0;
-}
-```
-
-**测试设计：** 额外测试：构造最小规模、重复值、边界值各一组，和样例一起运行。
-
-***
-
-<!-- V02_EXAMPLES_END -->
 
 
 
@@ -26836,1328 +20461,6 @@ if (it != memo.end()) {
 哈希：memo[{1,2}]=5 后 find({1,2}) 存在
 multiset：插入 5,5，find 后 erase 一个迭代器，还剩一个 5
 ```
-
-<!-- V02_EXAMPLES_START -->
-
-# v0.2 本卷例题训练区
-
-这一节是 0.2 新增的实战例题。每题都配完整可运行代码和样例；考试时优先看“覆盖模块”和“考场用途”，再复制对应代码骨架。
-
-### V04-EX01 区间和查询
-
-- 归属卷：第 4 卷
-- 覆盖模块：前缀和
-- 考场用途：静态数组多次区间求和，`O(nq)` 会超时，前缀和可把每问降到 `O(1)`。
-
-**题目描述：** 给定长度为 `n` 的整数数组，回答 `q` 次闭区间 `[l,r]` 的元素和。
-
-**输入格式：** 第一行两个整数 `n q`。第二行 `n` 个整数。接下来 `q` 行，每行两个整数 `l r`。
-
-**输出格式：** 对每个询问输出一行区间和。
-
-**样例输入：**
-```text
-5 3
-1 2 3 4 5
-1 3
-2 5
-4 4
-```
-
-**样例输出：**
-```text
-6
-14
-4
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-using ll = long long;
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n, q;
-    cin >> n >> q;
-    vector<ll> pre(n + 1, 0);
-    for (int i = 1; i <= n; i++) {
-        ll x;
-        cin >> x;
-        pre[i] = pre[i - 1] + x;
-    }
-
-    while (q--) {
-        int l, r;
-        cin >> l >> r;
-        cout << pre[r] - pre[l - 1] << '\n';
-    }
-    return 0;
-}
-```
-
-**测试设计：**
-- 用例 1：单点数组和重复查询。
-```text
-输入：
-1 2
--5
-1 1
-1 1
-期望输出：
--5
--5
-```
-- 用例 2：含负数区间。
-```text
-输入：
-4 3
-10 -2 3 7
-1 4
-2 3
-3 4
-期望输出：
-18
-1
-10
-```
-### V04-EX02 矩形区域求和
-
-- 归属卷：第 4 卷
-- 覆盖模块：二维前缀和
-- 考场用途：静态矩阵多次子矩形求和，用容斥公式 `O(1)` 回答。
-
-**题目描述：** 给定 `n*m` 矩阵，回答 `q` 次子矩形 `(x1,y1)` 到 `(x2,y2)` 的元素和。
-
-**输入格式：** 第一行三个整数 `n m q`。接下来 `n` 行每行 `m` 个整数。接下来 `q` 行每行四个整数 `x1 y1 x2 y2`。
-
-**输出格式：** 对每个询问输出一行矩形和。
-
-**样例输入：**
-```text
-3 4 3
-1 2 3 4
-5 6 7 8
-9 10 11 12
-1 1 1 4
-2 2 3 3
-1 1 3 4
-```
-
-**样例输出：**
-```text
-10
-34
-78
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-using ll = long long;
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n, m, q;
-    cin >> n >> m >> q;
-    vector<vector<ll>> pre(n + 1, vector<ll>(m + 1, 0));
-
-    for (int i = 1; i <= n; i++) {
-        for (int j = 1; j <= m; j++) {
-            ll x;
-            cin >> x;
-            pre[i][j] = pre[i - 1][j] + pre[i][j - 1] - pre[i - 1][j - 1] + x;
-        }
-    }
-
-    while (q--) {
-        int x1, y1, x2, y2;
-        cin >> x1 >> y1 >> x2 >> y2;
-        ll ans = pre[x2][y2] - pre[x1 - 1][y2] - pre[x2][y1 - 1] + pre[x1 - 1][y1 - 1];
-        cout << ans << '\n';
-    }
-    return 0;
-}
-```
-
-**测试设计：**
-- 用例 1：单格矩形。
-```text
-输入：
-2 2 2
-1 2
-3 4
-1 1 1 1
-2 2 2 2
-期望输出：
-1
-4
-```
-- 用例 2：含负数整矩阵。
-```text
-输入：
-2 3 2
-1 -1 2
-3 4 -2
-1 1 2 3
-1 2 2 2
-期望输出：
-7
-3
-```
-### V04-EX03 批量区间加
-
-- 归属卷：第 4 卷
-- 覆盖模块：差分
-- 考场用途：多次区间加，最后一次性输出最终数组。
-
-**题目描述：** 给定长度为 `n` 的数组，执行 `q` 次操作：把闭区间 `[l,r]` 中所有数加上 `x`。输出所有操作后的数组。
-
-**输入格式：** 第一行两个整数 `n q`。第二行 `n` 个整数。接下来 `q` 行每行三个整数 `l r x`。
-
-**输出格式：** 输出一行 `n` 个整数，表示最终数组。
-
-**样例输入：**
-```text
-5 3
-1 2 3 4 5
-1 3 10
-2 5 -2
-4 4 7
-```
-
-**样例输出：**
-```text
-11 10 11 9 3
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-using ll = long long;
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n, q;
-    cin >> n >> q;
-    vector<ll> a(n + 1), diff(n + 2, 0);
-    for (int i = 1; i <= n; i++) cin >> a[i];
-
-    for (int i = 1; i <= n; i++) {
-        diff[i] += a[i] - a[i - 1];
-    }
-
-    while (q--) {
-        int l, r;
-        ll x;
-        cin >> l >> r >> x;
-        diff[l] += x;
-        diff[r + 1] -= x;
-    }
-
-    vector<ll> ans(n + 1, 0);
-    for (int i = 1; i <= n; i++) {
-        ans[i] = ans[i - 1] + diff[i];
-        if (i > 1) cout << ' ';
-        cout << ans[i];
-    }
-    cout << '\n';
-    return 0;
-}
-```
-
-**测试设计：**
-- 用例 1：没有变化的抵消操作。
-```text
-输入：
-3 2
-5 5 5
-1 3 2
-1 3 -2
-期望输出：
-5 5 5
-```
-- 用例 2：单点区间加。
-```text
-输入：
-4 2
-0 0 0 0
-2 2 7
-4 4 -1
-期望输出：
-0 7 0 -1
-```
-### V04-EX04 最长和不超过 S 的连续子数组
-
-- 归属卷：第 4 卷
-- 覆盖模块：双指针、滑动窗口
-- 考场用途：非负数组上维护单调窗口，线性求最长合法区间。
-
-**题目描述：** 给定长度为 `n` 的非负整数数组和整数 `S`，求元素和不超过 `S` 的最长连续子数组长度。
-
-**输入格式：** 第一行两个整数 `n S`。第二行 `n` 个非负整数。
-
-**输出格式：** 输出一个整数，表示最长长度。
-
-**样例输入：**
-```text
-5 7
-2 1 3 2 4
-```
-
-**样例输出：**
-```text
-3
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-using ll = long long;
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n;
-    ll S;
-    cin >> n >> S;
-    vector<ll> a(n + 1);
-    for (int i = 1; i <= n; i++) cin >> a[i];
-
-    int ans = 0;
-    int l = 1;
-    ll sum = 0;
-    for (int r = 1; r <= n; r++) {
-        sum += a[r];
-        while (l <= r && sum > S) {
-            sum -= a[l];
-            l++;
-        }
-        ans = max(ans, r - l + 1);
-    }
-
-    cout << ans << '\n';
-    return 0;
-}
-```
-
-**测试设计：**
-- 用例 1：所有元素都可选。
-```text
-输入：
-4 100
-1 2 3 4
-期望输出：
-4
-```
-- 用例 2：没有任何正数元素能进入，但 0 可以形成窗口。
-```text
-输入：
-5 0
-0 0 3 0 0
-期望输出：
-2
-```
-### V04-EX05 左侧最近严格更大元素
-
-- 归属卷：第 4 卷
-- 覆盖模块：单调栈
-- 考场用途：每个位置找最近满足大小关系的位置，把朴素向左扫描降为 `O(n)`。
-
-**题目描述：** 给定长度为 `n` 的数组，对每个位置 `i` 输出左侧最近的 `j`，满足 `j<i` 且 `a[j]>a[i]`。不存在则输出 `0`。
-
-**输入格式：** 第一行整数 `n`。第二行 `n` 个整数。
-
-**输出格式：** 输出一行 `n` 个整数，第 `i` 个为答案。
-
-**样例输入：**
-```text
-5
-2 1 3 2 5
-```
-
-**样例输出：**
-```text
-0 1 0 3 0
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-using ll = long long;
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n;
-    cin >> n;
-    vector<ll> a(n + 1);
-    for (int i = 1; i <= n; i++) cin >> a[i];
-
-    vector<int> ans(n + 1, 0), st;
-    for (int i = 1; i <= n; i++) {
-        while (!st.empty() && a[st.back()] <= a[i]) st.pop_back();
-        ans[i] = st.empty() ? 0 : st.back();
-        st.push_back(i);
-    }
-
-    for (int i = 1; i <= n; i++) {
-        if (i > 1) cout << ' ';
-        cout << ans[i];
-    }
-    cout << '\n';
-    return 0;
-}
-```
-
-**测试设计：**
-- 用例 1：严格递减数组。
-```text
-输入：
-4
-9 7 5 3
-期望输出：
-0 1 2 3
-```
-- 用例 2：相等元素不算严格更大。
-```text
-输入：
-4
-2 2 1 2
-期望输出：
-0 0 2 0
-```
-### V04-EX06 滑动窗口最大值
-
-- 归属卷：第 4 卷
-- 覆盖模块：单调队列
-- 考场用途：固定长度窗口查询最大值，避免每个窗口重新扫描。
-
-**题目描述：** 给定长度为 `n` 的数组和窗口长度 `k`，输出每个长度为 `k` 的连续窗口最大值。
-
-**输入格式：** 第一行两个整数 `n k`。第二行 `n` 个整数。
-
-**输出格式：** 输出 `n-k+1` 个整数，依次为每个窗口最大值。
-
-**样例输入：**
-```text
-8 3
-1 3 -1 -3 5 3 6 7
-```
-
-**样例输出：**
-```text
-3 3 5 5 6 7
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-using ll = long long;
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n, k;
-    cin >> n >> k;
-    vector<ll> a(n + 1);
-    for (int i = 1; i <= n; i++) cin >> a[i];
-
-    deque<int> dq;
-    vector<ll> ans;
-    for (int i = 1; i <= n; i++) {
-        while (!dq.empty() && dq.front() <= i - k) dq.pop_front();
-        while (!dq.empty() && a[dq.back()] <= a[i]) dq.pop_back();
-        dq.push_back(i);
-        if (i >= k) ans.push_back(a[dq.front()]);
-    }
-
-    for (int i = 0; i < (int)ans.size(); i++) {
-        if (i) cout << ' ';
-        cout << ans[i];
-    }
-    cout << '\n';
-    return 0;
-}
-```
-
-**测试设计：**
-- 用例 1：窗口长度为 1。
-```text
-输入：
-4 1
-4 1 3 2
-期望输出：
-4 1 3 2
-```
-- 用例 2：窗口覆盖全数组。
-```text
-输入：
-5 5
--2 -8 -1 -3 -4
-期望输出：
--1
-```
-### V04-EX07 合并果子最小代价
-
-- 归属卷：第 4 卷
-- 覆盖模块：堆、STL `priority_queue`
-- 考场用途：每次取当前最小的两个元素合并，典型小根堆贪心。
-
-**题目描述：** 有 `n` 堆果子，每次选择两堆合并，代价为两堆重量之和，新堆重量也为该和。求把所有果子合成一堆的最小总代价。
-
-**输入格式：** 第一行整数 `n`。第二行 `n` 个正整数表示每堆重量。
-
-**输出格式：** 输出最小总代价。若 `n=1`，答案为 `0`。
-
-**样例输入：**
-```text
-4
-1 2 3 4
-```
-
-**样例输出：**
-```text
-19
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-using ll = long long;
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n;
-    cin >> n;
-    priority_queue<ll, vector<ll>, greater<ll>> pq;
-    for (int i = 1; i <= n; i++) {
-        ll x;
-        cin >> x;
-        pq.push(x);
-    }
-
-    ll ans = 0;
-    while ((int)pq.size() >= 2) {
-        ll a = pq.top();
-        pq.pop();
-        ll b = pq.top();
-        pq.pop();
-        ans += a + b;
-        pq.push(a + b);
-    }
-
-    cout << ans << '\n';
-    return 0;
-}
-```
-
-**测试设计：**
-- 用例 1：只有一堆。
-```text
-输入：
-1
-10
-期望输出：
-0
-```
-- 用例 2：权值相同。
-```text
-输入：
-4
-5 5 5 5
-期望输出：
-40
-```
-### V04-EX08 在线合并与连通查询
-
-- 归属卷：第 4 卷
-- 覆盖模块：DSU 并查集
-- 考场用途：只合并、不删除的连通性维护。
-
-**题目描述：** 初始有 `n` 个互不相交的集合。执行 `q` 次操作：`U a b` 合并 `a,b` 所在集合；`Q a b` 询问 `a,b` 是否在同一集合。
-
-**输入格式：** 第一行两个整数 `n q`。接下来 `q` 行，每行一个字符 `op` 和两个整数 `a b`。
-
-**输出格式：** 对每个 `Q` 输出 `Yes` 或 `No`。
-
-**样例输入：**
-```text
-5 6
-Q 1 2
-U 1 2
-Q 1 2
-U 3 4
-U 2 3
-Q 1 4
-```
-
-**样例输出：**
-```text
-No
-Yes
-Yes
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-struct DSU {
-    vector<int> fa, sz;
-
-    void init(int n) {
-        fa.resize(n + 1);
-        sz.assign(n + 1, 1);
-        iota(fa.begin(), fa.end(), 0);
-    }
-
-    int find(int x) {
-        while (x != fa[x]) {
-            fa[x] = fa[fa[x]];
-            x = fa[x];
-        }
-        return x;
-    }
-
-    void unite(int a, int b) {
-        a = find(a);
-        b = find(b);
-        if (a == b) return;
-        if (sz[a] < sz[b]) swap(a, b);
-        fa[b] = a;
-        sz[a] += sz[b];
-    }
-
-    bool same(int a, int b) {
-        return find(a) == find(b);
-    }
-};
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n, q;
-    cin >> n >> q;
-    DSU dsu;
-    dsu.init(n);
-
-    while (q--) {
-        char op;
-        int a, b;
-        cin >> op >> a >> b;
-        if (op == 'U') {
-            dsu.unite(a, b);
-        } else {
-            cout << (dsu.same(a, b) ? "Yes" : "No") << '\n';
-        }
-    }
-    return 0;
-}
-```
-
-**测试设计：**
-- 用例 1：重复合并同一集合。
-```text
-输入：
-3 4
-U 1 2
-U 2 1
-Q 1 2
-Q 1 3
-期望输出：
-Yes
-No
-```
-- 用例 2：自查询。
-```text
-输入：
-2 2
-Q 1 1
-Q 1 2
-期望输出：
-Yes
-No
-```
-### V04-EX09 逆序对数量
-
-- 归属卷：第 4 卷
-- 覆盖模块：树状数组、坐标压缩
-- 考场用途：值域大但只出现 `n` 个数时，压缩后用树状数组统计排名。
-
-**题目描述：** 给定长度为 `n` 的数组，求逆序对数量，即满足 `i<j` 且 `a[i]>a[j]` 的二元组个数。
-
-**输入格式：** 第一行整数 `n`。第二行 `n` 个整数。
-
-**输出格式：** 输出逆序对数量。
-
-**样例输入：**
-```text
-5
-5 3 2 4 1
-```
-
-**样例输出：**
-```text
-8
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-using ll = long long;
-
-struct BIT {
-    int n = 0;
-    vector<ll> bit;
-
-    void init(int n_) {
-        n = n_;
-        bit.assign(n + 1, 0);
-    }
-
-    void add(int pos, ll val) {
-        for (; pos <= n; pos += pos & -pos) bit[pos] += val;
-    }
-
-    ll prefix(int pos) {
-        ll res = 0;
-        for (; pos > 0; pos -= pos & -pos) res += bit[pos];
-        return res;
-    }
-};
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n;
-    cin >> n;
-    vector<ll> a(n + 1), xs;
-    xs.reserve(n);
-    for (int i = 1; i <= n; i++) {
-        cin >> a[i];
-        xs.push_back(a[i]);
-    }
-
-    sort(xs.begin(), xs.end());
-    xs.erase(unique(xs.begin(), xs.end()), xs.end());
-
-    BIT fw;
-    fw.init((int)xs.size());
-    ll ans = 0;
-    for (int i = 1; i <= n; i++) {
-        int id = (int)(lower_bound(xs.begin(), xs.end(), a[i]) - xs.begin()) + 1;
-        ll previous = i - 1;
-        ll not_greater = fw.prefix(id);
-        ans += previous - not_greater;
-        fw.add(id, 1);
-    }
-
-    cout << ans << '\n';
-    return 0;
-}
-```
-
-**测试设计：**
-- 用例 1：已经升序。
-```text
-输入：
-4
-1 2 3 4
-期望输出：
-0
-```
-- 用例 2：有重复值，严格大于才算。
-```text
-输入：
-4
-2 2 1 1
-期望输出：
-4
-```
-### V04-EX10 区间加与区间和
-
-- 归属卷：第 4 卷
-- 覆盖模块：线段树、懒标记
-- 考场用途：动态区间修改和区间查询同时存在时使用 lazy segment tree。
-
-**题目描述：** 给定数组，支持两种操作：`A l r x` 表示把 `[l,r]` 全部加 `x`；`Q l r` 表示查询 `[l,r]` 的区间和。
-
-**输入格式：** 第一行两个整数 `n q`。第二行 `n` 个整数。接下来 `q` 行，每行一个操作。
-
-**输出格式：** 对每个 `Q` 输出一行答案。
-
-**样例输入：**
-```text
-5 5
-1 2 3 4 5
-Q 1 5
-A 2 4 10
-Q 1 3
-A 5 5 -2
-Q 4 5
-```
-
-**样例输出：**
-```text
-15
-26
-17
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-using ll = long long;
-
-struct SegTree {
-    int n = 0;
-    vector<ll> tree, lazy;
-
-    void init(int n_) {
-        n = n_;
-        tree.assign(4 * n + 4, 0);
-        lazy.assign(4 * n + 4, 0);
-    }
-
-    void build(int p, int l, int r, const vector<ll>& a) {
-        if (l == r) {
-            tree[p] = a[l];
-            return;
-        }
-        int mid = (l + r) / 2;
-        build(p * 2, l, mid, a);
-        build(p * 2 + 1, mid + 1, r, a);
-        tree[p] = tree[p * 2] + tree[p * 2 + 1];
-    }
-
-    void build(const vector<ll>& a) {
-        init((int)a.size() - 1);
-        build(1, 1, n, a);
-    }
-
-    void apply(int p, int l, int r, ll val) {
-        tree[p] += val * (r - l + 1);
-        lazy[p] += val;
-    }
-
-    void push(int p, int l, int r) {
-        if (lazy[p] == 0 || l == r) return;
-        int mid = (l + r) / 2;
-        apply(p * 2, l, mid, lazy[p]);
-        apply(p * 2 + 1, mid + 1, r, lazy[p]);
-        lazy[p] = 0;
-    }
-
-    void range_add(int p, int l, int r, int ql, int qr, ll val) {
-        if (qr < l || r < ql) return;
-        if (ql <= l && r <= qr) {
-            apply(p, l, r, val);
-            return;
-        }
-        push(p, l, r);
-        int mid = (l + r) / 2;
-        range_add(p * 2, l, mid, ql, qr, val);
-        range_add(p * 2 + 1, mid + 1, r, ql, qr, val);
-        tree[p] = tree[p * 2] + tree[p * 2 + 1];
-    }
-
-    ll query(int p, int l, int r, int ql, int qr) {
-        if (qr < l || r < ql) return 0;
-        if (ql <= l && r <= qr) return tree[p];
-        push(p, l, r);
-        int mid = (l + r) / 2;
-        return query(p * 2, l, mid, ql, qr) + query(p * 2 + 1, mid + 1, r, ql, qr);
-    }
-
-    void range_add(int l, int r, ll val) {
-        range_add(1, 1, n, l, r, val);
-    }
-
-    ll query(int l, int r) {
-        return query(1, 1, n, l, r);
-    }
-};
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n, q;
-    cin >> n >> q;
-    vector<ll> a(n + 1);
-    for (int i = 1; i <= n; i++) cin >> a[i];
-
-    SegTree seg;
-    seg.build(a);
-
-    while (q--) {
-        char op;
-        int l, r;
-        cin >> op >> l >> r;
-        if (op == 'A') {
-            ll x;
-            cin >> x;
-            seg.range_add(l, r, x);
-        } else {
-            cout << seg.query(l, r) << '\n';
-        }
-    }
-    return 0;
-}
-```
-
-**测试设计：**
-- 用例 1：单点修改后查询。
-```text
-输入：
-3 3
-1 1 1
-A 2 2 5
-Q 1 3
-Q 2 2
-期望输出：
-8
-6
-```
-- 用例 2：负数修改。
-```text
-输入：
-4 4
-10 20 30 40
-Q 2 4
-A 1 4 -10
-Q 1 1
-Q 1 4
-期望输出：
-90
-0
-60
-```
-### V04-EX11 静态区间最小值
-
-- 归属卷：第 4 卷
-- 覆盖模块：Sparse Table
-- 考场用途：数组不修改，区间最值大量查询，用 `O(n log n)` 预处理和 `O(1)` 查询。
-
-**题目描述：** 给定长度为 `n` 的数组，回答 `q` 次闭区间 `[l,r]` 的最小值。
-
-**输入格式：** 第一行两个整数 `n q`。第二行 `n` 个整数。接下来 `q` 行每行两个整数 `l r`。
-
-**输出格式：** 对每个询问输出一行最小值。
-
-**样例输入：**
-```text
-6 3
-5 2 4 7 1 3
-1 3
-2 5
-5 6
-```
-
-**样例输出：**
-```text
-2
-1
-1
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-using ll = long long;
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n, q;
-    cin >> n >> q;
-    vector<ll> a(n + 1);
-    for (int i = 1; i <= n; i++) cin >> a[i];
-
-    vector<int> lg(n + 1, 0);
-    for (int i = 2; i <= n; i++) lg[i] = lg[i / 2] + 1;
-    int K = lg[n] + 1;
-    vector<vector<ll>> st(K, vector<ll>(n + 1, 0));
-    for (int i = 1; i <= n; i++) st[0][i] = a[i];
-
-    for (int k = 1; k < K; k++) {
-        for (int i = 1; i + (1 << k) - 1 <= n; i++) {
-            st[k][i] = min(st[k - 1][i], st[k - 1][i + (1 << (k - 1))]);
-        }
-    }
-
-    while (q--) {
-        int l, r;
-        cin >> l >> r;
-        int len = r - l + 1;
-        int k = lg[len];
-        cout << min(st[k][l], st[k][r - (1 << k) + 1]) << '\n';
-    }
-    return 0;
-}
-```
-
-**测试设计：**
-- 用例 1：单点查询。
-```text
-输入：
-3 2
-8 6 7
-2 2
-1 1
-期望输出：
-6
-8
-```
-- 用例 2：全负数。
-```text
-输入：
-5 2
--1 -5 -3 -4 -2
-1 5
-3 5
-期望输出：
--5
--4
-```
-### V04-EX12 矩形批量加
-
-- 归属卷：第 4 卷
-- 覆盖模块：二维差分
-- 考场用途：多次矩形加，最后输出整张矩阵。
-
-**题目描述：** 初始 `n*m` 矩阵全为 `0`。执行 `q` 次操作，每次给子矩形 `(x1,y1)` 到 `(x2,y2)` 全部加 `v`。输出最终矩阵。
-
-**输入格式：** 第一行三个整数 `n m q`。接下来 `q` 行每行五个整数 `x1 y1 x2 y2 v`。
-
-**输出格式：** 输出 `n` 行，每行 `m` 个整数。
-
-**样例输入：**
-```text
-3 3 2
-1 1 2 2 5
-2 2 3 3 1
-```
-
-**样例输出：**
-```text
-5 5 0
-5 6 1
-0 1 1
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-using ll = long long;
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n, m, q;
-    cin >> n >> m >> q;
-    vector<vector<ll>> diff(n + 2, vector<ll>(m + 2, 0));
-
-    while (q--) {
-        int x1, y1, x2, y2;
-        ll v;
-        cin >> x1 >> y1 >> x2 >> y2 >> v;
-        diff[x1][y1] += v;
-        diff[x2 + 1][y1] -= v;
-        diff[x1][y2 + 1] -= v;
-        diff[x2 + 1][y2 + 1] += v;
-    }
-
-    for (int i = 1; i <= n; i++) {
-        for (int j = 1; j <= m; j++) {
-            diff[i][j] += diff[i - 1][j] + diff[i][j - 1] - diff[i - 1][j - 1];
-            if (j > 1) cout << ' ';
-            cout << diff[i][j];
-        }
-        cout << '\n';
-    }
-    return 0;
-}
-```
-
-**测试设计：**
-- 用例 1：单格加。
-```text
-输入：
-2 2 1
-2 2 2 2 9
-期望输出：
-0 0
-0 9
-```
-- 用例 2：整矩阵加后局部抵消。
-```text
-输入：
-2 3 2
-1 1 2 3 4
-1 2 1 3 -1
-期望输出：
-4 3 3
-4 4 4
-```
-
-## 第 5 卷：图论与树论例题
-### V04-CEX01 坐标压缩加树状数组逆序对
-
-- 归属卷：第 4 卷
-- 覆盖模块：坐标压缩、树状数组
-- 考场用途：值域很大但个数不大时直接压缩。
-- 参考题型来源：参考来源：洛谷逆序对模板题型。
-
-**题目描述：** 求数组逆序对数量。
-
-**输入格式：** 第一行 n，第二行数组。
-
-**输出格式：** 输出逆序对数。
-
-**样例输入：**
-```text
-5
-5 4 2 6 3
-```
-
-**样例输出：**
-```text
-6
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-
-struct BIT {
-    int n; vector<long long> t;
-    BIT(int n=0): n(n), t(n+1,0) {}
-    void add(int x,long long v){ for(;x<=n;x+=x&-x)t[x]+=v; }
-    long long sum(int x){ long long r=0; for(;x>0;x-=x&-x)r+=t[x]; return r; }
-};
-int main(){
-    ios::sync_with_stdio(false); cin.tie(nullptr);
-    int n; cin>>n; vector<int>a(n+1),xs;
-    for(int i=1;i<=n;i++){cin>>a[i]; xs.push_back(a[i]);}
-    sort(xs.begin(),xs.end()); xs.erase(unique(xs.begin(),xs.end()),xs.end());
-    BIT bit(xs.size()); long long inv=0;
-    for(int i=n;i>=1;i--){ int id=lower_bound(xs.begin(),xs.end(),a[i])-xs.begin()+1; inv+=bit.sum(id-1); bit.add(id,1); }
-    cout<<inv<<"\n"; return 0;
-}
-```
-
-**测试设计：** 额外测试：构造最小规模、重复值、边界值各一组，和样例一起运行。
-
-***
-### V04-CEX02 线段树区间加区间和
-
-- 归属卷：第 4 卷
-- 覆盖模块：线段树、lazy
-- 考场用途：动态区间修改查询。
-- 参考题型来源：参考来源：洛谷线段树模板题型。
-
-**题目描述：** 支持区间加和区间和查询。
-
-**输入格式：** 第一行 n q，操作 `1 l r v` 或 `2 l r`。
-
-**输出格式：** 查询输出区间和。
-
-**样例输入：**
-```text
-5 4
-1 1 3 2
-2 2 5
-1 4 5 1
-2 1 5
-```
-
-**样例输出：**
-```text
-4
-8
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-
-const int MAXN=200005;
-long long tree[MAXN*4], lazyv[MAXN*4];
-void push(int p,int l,int r){ if(!lazyv[p])return; int m=(l+r)/2; long long v=lazyv[p]; tree[p*2]+=v*(m-l+1); tree[p*2+1]+=v*(r-m); lazyv[p*2]+=v; lazyv[p*2+1]+=v; lazyv[p]=0; }
-void add(int p,int l,int r,int ql,int qr,long long v){ if(ql<=l&&r<=qr){tree[p]+=v*(r-l+1); lazyv[p]+=v; return;} push(p,l,r); int m=(l+r)/2; if(ql<=m)add(p*2,l,m,ql,qr,v); if(qr>m)add(p*2+1,m+1,r,ql,qr,v); tree[p]=tree[p*2]+tree[p*2+1]; }
-long long query(int p,int l,int r,int ql,int qr){ if(ql<=l&&r<=qr)return tree[p]; push(p,l,r); int m=(l+r)/2; long long ans=0; if(ql<=m)ans+=query(p*2,l,m,ql,qr); if(qr>m)ans+=query(p*2+1,m+1,r,ql,qr); return ans; }
-int main(){ ios::sync_with_stdio(false); cin.tie(nullptr); int n,q; cin>>n>>q; while(q--){int op,l,r; long long v; cin>>op>>l>>r; if(op==1){cin>>v; add(1,1,n,l,r,v);} else cout<<query(1,1,n,l,r)<<"\n";} return 0; }
-```
-
-**测试设计：** 额外测试：构造最小规模、重复值、边界值各一组，和样例一起运行。
-
-***
-### V04-CEX03 单调队列优化 DP
-
-- 归属卷：第 4 卷
-- 覆盖模块：单调队列、DP优化
-- 考场用途：转移只看最近 k 个最大 dp。
-- 参考题型来源：参考来源：洛谷单调队列优化题型。
-
-**题目描述：** 定义 `dp[i]=max(dp[j])+a[i]-C`，其中 `i-k<=j<i`，求最大 dp。
-
-**输入格式：** 第一行 n k C，第二行数组。
-
-**输出格式：** 输出最大值。
-
-**样例输入：**
-```text
-5 2 1
-3 2 5 1 4
-```
-
-**样例输出：**
-```text
-10
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-
-int main(){ ios::sync_with_stdio(false); cin.tie(nullptr); int n,k; long long C; cin>>n>>k>>C; vector<long long>a(n+1),dp(n+1); for(int i=1;i<=n;i++)cin>>a[i]; deque<int> dq; dq.push_back(0); for(int i=1;i<=n;i++){ while(!dq.empty()&&dq.front()<i-k)dq.pop_front(); dp[i]=dp[dq.front()]+a[i]-C; while(!dq.empty()&&dp[dq.back()]<=dp[i])dq.pop_back(); dq.push_back(i);} cout<<*max_element(dp.begin()+1,dp.end())<<"\n"; return 0; }
-```
-
-**测试设计：** 额外测试：构造最小规模、重复值、边界值各一组，和样例一起运行。
-
-***
-### V04-CEX04 离线删边转加边
-
-- 归属卷：第 4 卷
-- 覆盖模块：DSU、逆序离线
-- 考场用途：删边不好做，就倒过来加边。
-- 参考题型来源：参考来源：洛谷并查集离线题型。
-
-**题目描述：** 给一张图和删边序列，输出每次删除后连通块个数。
-
-**输入格式：** 第一行 n m，之后 m 条边；再 q 和 q 个边编号。
-
-**输出格式：** 每次删除后输出连通块数。
-
-**样例输入：**
-```text
-4 3
-1 2
-2 3
-3 4
-2
-2
-1
-```
-
-**样例输出：**
-```text
-2
-3
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-
-struct DSU{ vector<int> fa,sz; DSU(int n=0){fa.resize(n+1);sz.assign(n+1,1);iota(fa.begin(),fa.end(),0);} int find(int x){while(x!=fa[x]){fa[x]=fa[fa[x]];x=fa[x];}return x;} bool unite(int a,int b){a=find(a);b=find(b);if(a==b)return false;if(sz[a]<sz[b])swap(a,b);fa[b]=a;sz[a]+=sz[b];return true;} };
-int main(){ ios::sync_with_stdio(false); cin.tie(nullptr); int n,m; cin>>n>>m; vector<pair<int,int>> e(m+1); for(int i=1;i<=m;i++)cin>>e[i].first>>e[i].second; int q; cin>>q; vector<int> del(q+1),ban(m+1); for(int i=1;i<=q;i++){cin>>del[i];ban[del[i]]=1;} DSU d(n); int comp=n; for(int i=1;i<=m;i++)if(!ban[i]&&d.unite(e[i].first,e[i].second))comp--; vector<int> ans(q+1); for(int i=q;i>=1;i--){ans[i]=comp; if(d.unite(e[del[i]].first,e[del[i]].second))comp--;} for(int i=1;i<=q;i++)cout<<ans[i]<<"\n"; return 0; }
-```
-
-**测试设计：** 额外测试：构造最小规模、重复值、边界值各一组，和样例一起运行。
-
-***
-### V04-CEX05 Sparse Table 静态 RMQ
-
-- 归属卷：第 4 卷
-- 覆盖模块：Sparse Table、静态区间最小值
-- 考场用途：没有修改时比线段树简单。
-- 参考题型来源：参考来源：洛谷 ST 表模板题型。
-
-**题目描述：** 静态数组多次查询区间最小值。
-
-**输入格式：** 第一行 n q，第二行数组，之后 q 个 l r。
-
-**输出格式：** 每次输出最小值。
-
-**样例输入：**
-```text
-5 3
-4 2 7 1 5
-1 3
-2 5
-4 4
-```
-
-**样例输出：**
-```text
-2
-1
-1
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-
-int main(){ ios::sync_with_stdio(false); cin.tie(nullptr); int n,q; cin>>n>>q; vector<int>a(n+1),lg(n+1); for(int i=1;i<=n;i++)cin>>a[i]; for(int i=2;i<=n;i++)lg[i]=lg[i/2]+1; int K=lg[n]+1; vector<vector<int>> st(K,vector<int>(n+1)); st[0]=a; for(int k=1;k<K;k++)for(int i=1;i+(1<<k)-1<=n;i++)st[k][i]=min(st[k-1][i],st[k-1][i+(1<<(k-1))]); while(q--){int l,r;cin>>l>>r;int k=lg[r-l+1];cout<<min(st[k][l],st[k][r-(1<<k)+1])<<"\n";} return 0; }
-```
-
-**测试设计：** 额外测试：构造最小规模、重复值、边界值各一组，和样例一起运行。
-
-***
-
-<!-- V02_EXAMPLES_END -->
 
 
 
@@ -32602,1479 +24905,6 @@ s=1 t=4
 输出：7
 ```
 
-<!-- V02_EXAMPLES_START -->
-
-# v0.2 本卷例题训练区
-
-这一节是 0.2 新增的实战例题。每题都配完整可运行代码和样例；考试时优先看“覆盖模块”和“考场用途”，再复制对应代码骨架。
-
-### V05-EX01 统一 1-index 建图统计
-
-- 归属卷：第 5 卷
-- 覆盖模块：统一 1-index 建图、邻接表、边权
-- 考场用途：把有向/无向边统一放进 `Graph`，后续算法都从同一套邻接表出发。
-
-**题目描述：** 给定一张带权图，点编号为 `1..n`。如果 `type=0` 表示无向图，如果 `type=1` 表示有向图。对每个点输出邻接边条数和从该点出发的邻接边权值和。无向边会同时出现在两个端点的邻接表中。
-
-**输入格式：** 第一行三个整数 `n m type`。接下来 `m` 行每行三个整数 `u v w`。
-
-**输出格式：** 输出 `n` 行，第 `i` 行两个整数：点 `i` 的邻接边条数和邻接边权值和。
-
-**样例输入：**
-```text
-4 3 0
-1 2 5
-2 3 7
-1 4 1
-```
-
-**样例输出：**
-```text
-2 6
-2 12
-1 7
-1 1
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-using ll = long long;
-
-struct AdjEdge {
-    int to;
-    ll w;
-};
-
-struct Graph {
-    int n = 0;
-    vector<vector<AdjEdge>> g;
-
-    Graph(int n_ = 0) {
-        init(n_);
-    }
-
-    void init(int n_) {
-        n = n_;
-        g.assign(n + 1, {});
-    }
-
-    void add_directed(int u, int v, ll w) {
-        g[u].push_back({v, w});
-    }
-
-    void add_undirected(int u, int v, ll w) {
-        g[u].push_back({v, w});
-        g[v].push_back({u, w});
-    }
-};
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n, m, type;
-    cin >> n >> m >> type;
-    Graph G(n);
-    for (int i = 1; i <= m; i++) {
-        int u, v;
-        ll w;
-        cin >> u >> v >> w;
-        if (type == 0) G.add_undirected(u, v, w);
-        else G.add_directed(u, v, w);
-    }
-
-    for (int u = 1; u <= n; u++) {
-        ll sum = 0;
-        for (auto e : G.g[u]) sum += e.w;
-        cout << G.g[u].size() << ' ' << sum << '\n';
-    }
-    return 0;
-}
-```
-
-**测试设计：**
-- 用例 1：有向图中出度为 0 的点。
-```text
-输入：
-3 2 1
-1 2 4
-1 3 5
-期望输出：
-2 9
-0 0
-0 0
-```
-- 用例 2：无边图。
-```text
-输入：
-3 0 0
-期望输出：
-0 0
-0 0
-0 0
-```
-### V05-EX02 无权最短路
-
-- 归属卷：第 5 卷
-- 覆盖模块：BFS、无权图最短路
-- 考场用途：所有边代价相同，求最少边数。
-
-**题目描述：** 给定无向无权图和两个点 `s,t`，求从 `s` 到 `t` 的最少边数。若不可达，输出 `-1`。
-
-**输入格式：** 第一行四个整数 `n m s t`。接下来 `m` 行每行两个整数 `u v`。
-
-**输出格式：** 输出一个整数，表示最短距离或 `-1`。
-
-**样例输入：**
-```text
-5 5 1 5
-1 2
-2 3
-3 5
-1 4
-4 5
-```
-
-**样例输出：**
-```text
-2
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n, m, s, t;
-    cin >> n >> m >> s >> t;
-    vector<vector<int>> g(n + 1);
-    for (int i = 1; i <= m; i++) {
-        int u, v;
-        cin >> u >> v;
-        g[u].push_back(v);
-        g[v].push_back(u);
-    }
-
-    vector<int> dist(n + 1, -1);
-    queue<int> q;
-    dist[s] = 0;
-    q.push(s);
-    while (!q.empty()) {
-        int u = q.front();
-        q.pop();
-        for (int v : g[u]) {
-            if (dist[v] != -1) continue;
-            dist[v] = dist[u] + 1;
-            q.push(v);
-        }
-    }
-
-    cout << dist[t] << '\n';
-    return 0;
-}
-```
-
-**测试设计：**
-- 用例 1：起点等于终点。
-```text
-输入：
-3 2 2 2
-1 2
-2 3
-期望输出：
-0
-```
-- 用例 2：不可达。
-```text
-输入：
-4 1 1 4
-1 2
-期望输出：
--1
-```
-### V05-EX03 非负权单源最短路
-
-- 归属卷：第 5 卷
-- 覆盖模块：Dijkstra、优先队列
-- 考场用途：边权非负的大图单源最短路。
-
-**题目描述：** 给定一张有向非负权图和源点 `s`，输出 `s` 到所有点的最短距离。不可达点输出 `-1`。
-
-**输入格式：** 第一行三个整数 `n m s`。接下来 `m` 行每行三个整数 `u v w`，表示有向边 `u -> v`。
-
-**输出格式：** 输出一行 `n` 个整数，第 `i` 个为 `s` 到 `i` 的最短距离或 `-1`。
-
-**样例输入：**
-```text
-4 4 1
-1 2 2
-1 3 5
-2 3 1
-3 4 4
-```
-
-**样例输出：**
-```text
-0 2 3 7
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-using ll = long long;
-const ll INF = (1LL << 62);
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n, m, s;
-    cin >> n >> m >> s;
-    vector<vector<pair<int, ll>>> g(n + 1);
-    for (int i = 1; i <= m; i++) {
-        int u, v;
-        ll w;
-        cin >> u >> v >> w;
-        g[u].push_back({v, w});
-    }
-
-    vector<ll> dist(n + 1, INF);
-    priority_queue<pair<ll, int>, vector<pair<ll, int>>, greater<pair<ll, int>>> pq;
-    dist[s] = 0;
-    pq.push({0, s});
-
-    while (!pq.empty()) {
-        auto [du, u] = pq.top();
-        pq.pop();
-        if (du != dist[u]) continue;
-        for (auto [v, w] : g[u]) {
-            if (du + w < dist[v]) {
-                dist[v] = du + w;
-                pq.push({dist[v], v});
-            }
-        }
-    }
-
-    for (int i = 1; i <= n; i++) {
-        if (i > 1) cout << ' ';
-        cout << (dist[i] == INF ? -1 : dist[i]);
-    }
-    cout << '\n';
-    return 0;
-}
-```
-
-**测试设计：**
-- 用例 1：存在不可达点。
-```text
-输入：
-4 1 1
-1 2 7
-期望输出：
-0 7 -1 -1
-```
-- 用例 2：重边取更短。
-```text
-输入：
-3 3 1
-1 2 10
-1 2 3
-2 3 4
-期望输出：
-0 3 7
-```
-### V05-EX04 小图任意两点最短路
-
-- 归属卷：第 5 卷
-- 覆盖模块：Floyd
-- 考场用途：`n` 较小且有多次任意两点最短路询问。
-
-**题目描述：** 给定有向带权图，边权可以为负但保证没有负环。回答 `q` 次任意两点最短路询问，不可达输出 `-1`。
-
-**输入格式：** 第一行三个整数 `n m q`，通常 `n <= 500`。接下来 `m` 行每行三个整数 `u v w`。接下来 `q` 行每行两个整数 `s t`。
-
-**输出格式：** 对每个询问输出一行最短距离或 `-1`。
-
-**样例输入：**
-```text
-3 3 3
-1 2 4
-1 3 10
-2 3 -2
-1 3
-3 1
-1 2
-```
-
-**样例输出：**
-```text
-2
--1
-4
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-using ll = long long;
-const ll INF = (1LL << 60);
-const int MAXN = 505;
-
-ll dista[MAXN][MAXN];
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n, m, q;
-    cin >> n >> m >> q;
-    for (int i = 1; i <= n; i++) {
-        for (int j = 1; j <= n; j++) {
-            dista[i][j] = (i == j ? 0 : INF);
-        }
-    }
-
-    for (int i = 1; i <= m; i++) {
-        int u, v;
-        ll w;
-        cin >> u >> v >> w;
-        dista[u][v] = min(dista[u][v], w);
-    }
-
-    for (int k = 1; k <= n; k++) {
-        for (int i = 1; i <= n; i++) {
-            if (dista[i][k] == INF) continue;
-            for (int j = 1; j <= n; j++) {
-                if (dista[k][j] == INF) continue;
-                dista[i][j] = min(dista[i][j], dista[i][k] + dista[k][j]);
-            }
-        }
-    }
-
-    while (q--) {
-        int s, t;
-        cin >> s >> t;
-        cout << (dista[s][t] == INF ? -1 : dista[s][t]) << '\n';
-    }
-    return 0;
-}
-```
-
-**测试设计：**
-- 用例 1：重边。
-```text
-输入：
-2 2 1
-1 2 5
-1 2 3
-1 2
-期望输出：
-3
-```
-- 用例 2：通过中转更短。
-```text
-输入：
-4 4 2
-1 2 2
-2 4 2
-1 3 10
-3 4 1
-1 4
-3 2
-期望输出：
-4
--1
-```
-### V05-EX05 负权单源最短路与负环检测
-
-- 归属卷：第 5 卷
-- 覆盖模块：Bellman-Ford
-- 考场用途：有负权边时稳妥求单源最短路，并判断源点可达负环。
-
-**题目描述：** 给定有向图和源点 `s`，边权可能为负。若从 `s` 可达某个负环，输出 `NEGATIVE CYCLE`；否则输出 `s` 到所有点的最短距离，不可达输出 `-1`。
-
-**输入格式：** 第一行三个整数 `n m s`。接下来 `m` 行每行三个整数 `u v w`。
-
-**输出格式：** 若存在源点可达负环，输出一行 `NEGATIVE CYCLE`。否则输出一行 `n` 个整数。
-
-**样例输入：**
-```text
-3 3 1
-1 2 4
-1 3 10
-2 3 -2
-```
-
-**样例输出：**
-```text
-0 4 2
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-using ll = long long;
-const ll INF = (1LL << 60);
-
-struct Edge {
-    int u, v;
-    ll w;
-};
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n, m, s;
-    cin >> n >> m >> s;
-    vector<Edge> edges(m + 1);
-    for (int i = 1; i <= m; i++) cin >> edges[i].u >> edges[i].v >> edges[i].w;
-
-    vector<ll> dist(n + 1, INF);
-    dist[s] = 0;
-    for (int round = 1; round <= n - 1; round++) {
-        bool changed = false;
-        for (int i = 1; i <= m; i++) {
-            auto e = edges[i];
-            if (dist[e.u] != INF && dist[e.u] + e.w < dist[e.v]) {
-                dist[e.v] = dist[e.u] + e.w;
-                changed = true;
-            }
-        }
-        if (!changed) break;
-    }
-
-    bool neg = false;
-    for (int i = 1; i <= m; i++) {
-        auto e = edges[i];
-        if (dist[e.u] != INF && dist[e.u] + e.w < dist[e.v]) neg = true;
-    }
-
-    if (neg) {
-        cout << "NEGATIVE CYCLE\n";
-        return 0;
-    }
-
-    for (int i = 1; i <= n; i++) {
-        if (i > 1) cout << ' ';
-        cout << (dist[i] == INF ? -1 : dist[i]);
-    }
-    cout << '\n';
-    return 0;
-}
-```
-
-**测试设计：**
-- 用例 1：源点可达负环。
-```text
-输入：
-3 3 1
-1 2 1
-2 3 -2
-3 2 -2
-期望输出：
-NEGATIVE CYCLE
-```
-- 用例 2：负环存在但源点不可达，不影响答案。
-```text
-输入：
-4 2 1
-2 3 -5
-3 2 1
-期望输出：
-0 -1 -1 -1
-```
-### V05-EX06 DAG 最长路
-
-- 归属卷：第 5 卷
-- 覆盖模块：拓扑排序、DAG DP
-- 考场用途：依赖关系无环时，按拓扑序做路径 DP。
-
-**题目描述：** 给定有向带权图和起终点 `s,t`。若图有环，输出 `CYCLE`；否则输出从 `s` 到 `t` 的最长路径长度。若 `t` 不可达，输出 `-1`。
-
-**输入格式：** 第一行四个整数 `n m s t`。接下来 `m` 行每行三个整数 `u v w`。
-
-**输出格式：** 输出 `CYCLE`、`-1` 或最长路径长度。
-
-**样例输入：**
-```text
-4 5 1 4
-1 2 3
-1 3 2
-2 3 1
-2 4 4
-3 4 5
-```
-
-**样例输出：**
-```text
-9
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-using ll = long long;
-const ll NEG = -(1LL << 60);
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n, m, s, t;
-    cin >> n >> m >> s >> t;
-    vector<vector<pair<int, ll>>> g(n + 1);
-    vector<int> indeg(n + 1, 0);
-    for (int i = 1; i <= m; i++) {
-        int u, v;
-        ll w;
-        cin >> u >> v >> w;
-        g[u].push_back({v, w});
-        indeg[v]++;
-    }
-
-    queue<int> q;
-    for (int i = 1; i <= n; i++) {
-        if (indeg[i] == 0) q.push(i);
-    }
-
-    vector<int> topo;
-    while (!q.empty()) {
-        int u = q.front();
-        q.pop();
-        topo.push_back(u);
-        for (auto [v, w] : g[u]) {
-            indeg[v]--;
-            if (indeg[v] == 0) q.push(v);
-        }
-    }
-
-    if ((int)topo.size() != n) {
-        cout << "CYCLE\n";
-        return 0;
-    }
-
-    vector<ll> dp(n + 1, NEG);
-    dp[s] = 0;
-    for (int u : topo) {
-        if (dp[u] == NEG) continue;
-        for (auto [v, w] : g[u]) {
-            dp[v] = max(dp[v], dp[u] + w);
-        }
-    }
-
-    cout << (dp[t] == NEG ? -1 : dp[t]) << '\n';
-    return 0;
-}
-```
-
-**测试设计：**
-- 用例 1：存在环。
-```text
-输入：
-3 3 1 3
-1 2 1
-2 3 1
-3 2 1
-期望输出：
-CYCLE
-```
-- 用例 2：终点不可达。
-```text
-输入：
-4 2 1 4
-1 2 5
-2 3 5
-期望输出：
--1
-```
-### V05-EX07 最小生成树总权值
-
-- 归属卷：第 5 卷
-- 覆盖模块：MST、Kruskal、DSU
-- 考场用途：无向带权图连接所有点的最小成本。
-
-**题目描述：** 给定无向带权图，求最小生成树总权值。若图不连通，输出 `orz`。
-
-**输入格式：** 第一行两个整数 `n m`。接下来 `m` 行每行三个整数 `u v w`。
-
-**输出格式：** 输出最小生成树总权值，或 `orz`。
-
-**样例输入：**
-```text
-4 5
-1 2 1
-2 3 2
-3 4 3
-1 4 10
-1 3 5
-```
-
-**样例输出：**
-```text
-6
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-using ll = long long;
-
-struct Edge {
-    int u, v;
-    ll w;
-};
-
-struct DSU {
-    vector<int> fa, sz;
-
-    void init(int n) {
-        fa.resize(n + 1);
-        sz.assign(n + 1, 1);
-        iota(fa.begin(), fa.end(), 0);
-    }
-
-    int find(int x) {
-        while (x != fa[x]) {
-            fa[x] = fa[fa[x]];
-            x = fa[x];
-        }
-        return x;
-    }
-
-    bool unite(int a, int b) {
-        a = find(a);
-        b = find(b);
-        if (a == b) return false;
-        if (sz[a] < sz[b]) swap(a, b);
-        fa[b] = a;
-        sz[a] += sz[b];
-        return true;
-    }
-};
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n, m;
-    cin >> n >> m;
-    vector<Edge> edges(m);
-    for (int i = 0; i < m; i++) cin >> edges[i].u >> edges[i].v >> edges[i].w;
-
-    sort(edges.begin(), edges.end(), [](const Edge& a, const Edge& b) {
-        return a.w < b.w;
-    });
-
-    DSU dsu;
-    dsu.init(n);
-    ll total = 0;
-    int used = 0;
-    for (auto e : edges) {
-        if (dsu.unite(e.u, e.v)) {
-            total += e.w;
-            used++;
-        }
-    }
-
-    if (used != n - 1) cout << "orz\n";
-    else cout << total << '\n';
-    return 0;
-}
-```
-
-**测试设计：**
-- 用例 1：不连通。
-```text
-输入：
-4 2
-1 2 1
-3 4 2
-期望输出：
-orz
-```
-- 用例 2：存在负边。
-```text
-输入：
-3 3
-1 2 -5
-2 3 2
-1 3 10
-期望输出：
--3
-```
-### V05-EX08 二分图最大匹配
-
-- 归属卷：第 5 卷
-- 覆盖模块：二分图、Kuhn 匹配
-- 考场用途：左右部点各最多匹配一次，求最大配对数。
-
-**题目描述：** 给定一个二分图，左部有 `nL` 个点，右部有 `nR` 个点，边只从左部连向右部。求最大匹配数。
-
-**输入格式：** 第一行三个整数 `nL nR m`。接下来 `m` 行每行两个整数 `u v`，表示左部点 `u` 可匹配右部点 `v`。
-
-**输出格式：** 输出最大匹配数。
-
-**样例输入：**
-```text
-3 3 4
-1 1
-1 2
-2 2
-3 2
-```
-
-**样例输出：**
-```text
-2
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-bool dfs(int u, const vector<vector<int>>& adj, vector<int>& seen, vector<int>& matchR, int tag) {
-    if (seen[u] == tag) return false;
-    seen[u] = tag;
-    for (int r : adj[u]) {
-        if (matchR[r] == 0 || dfs(matchR[r], adj, seen, matchR, tag)) {
-            matchR[r] = u;
-            return true;
-        }
-    }
-    return false;
-}
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int nL, nR, m;
-    cin >> nL >> nR >> m;
-    vector<vector<int>> adj(nL + 1);
-    for (int i = 1; i <= m; i++) {
-        int u, v;
-        cin >> u >> v;
-        adj[u].push_back(v);
-    }
-
-    vector<int> matchR(nR + 1, 0), seen(nL + 1, 0);
-    int ans = 0;
-    for (int u = 1; u <= nL; u++) {
-        if (dfs(u, adj, seen, matchR, u)) ans++;
-    }
-
-    cout << ans << '\n';
-    return 0;
-}
-```
-
-**测试设计：**
-- 用例 1：完美匹配。
-```text
-输入：
-2 2 2
-1 1
-2 2
-期望输出：
-2
-```
-- 用例 2：所有左部都只能抢同一个右部。
-```text
-输入：
-3 1 3
-1 1
-2 1
-3 1
-期望输出：
-1
-```
-### V05-EX09 强连通分量大小
-
-- 归属卷：第 5 卷
-- 覆盖模块：SCC、Tarjan
-- 考场用途：有向图先缩强连通分量，再接 DAG 处理。
-
-**题目描述：** 给定有向图，求强连通分量个数，并输出每个分量的大小。为了输出稳定，分量大小按升序输出。
-
-**输入格式：** 第一行两个整数 `n m`。接下来 `m` 行每行两个整数 `u v`，表示有向边。
-
-**输出格式：** 第一行输出 SCC 个数。第二行按升序输出所有 SCC 大小。
-
-**样例输入：**
-```text
-4 4
-1 2
-2 1
-2 3
-3 4
-```
-
-**样例输出：**
-```text
-3
-1 1 2
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-struct Tarjan {
-    int n = 0;
-    int timer = 0;
-    vector<vector<int>> g;
-    vector<int> dfn, low, inStack, st, compSize;
-
-    void init(int n_) {
-        n = n_;
-        g.assign(n + 1, {});
-        dfn.assign(n + 1, 0);
-        low.assign(n + 1, 0);
-        inStack.assign(n + 1, 0);
-        st.clear();
-        compSize.clear();
-        timer = 0;
-    }
-
-    void add_edge(int u, int v) {
-        g[u].push_back(v);
-    }
-
-    void dfs(int u) {
-        dfn[u] = low[u] = ++timer;
-        st.push_back(u);
-        inStack[u] = 1;
-        for (int v : g[u]) {
-            if (!dfn[v]) {
-                dfs(v);
-                low[u] = min(low[u], low[v]);
-            } else if (inStack[v]) {
-                low[u] = min(low[u], dfn[v]);
-            }
-        }
-        if (low[u] == dfn[u]) {
-            int cnt = 0;
-            while (true) {
-                int x = st.back();
-                st.pop_back();
-                inStack[x] = 0;
-                cnt++;
-                if (x == u) break;
-            }
-            compSize.push_back(cnt);
-        }
-    }
-
-    vector<int> run() {
-        for (int i = 1; i <= n; i++) {
-            if (!dfn[i]) dfs(i);
-        }
-        sort(compSize.begin(), compSize.end());
-        return compSize;
-    }
-};
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n, m;
-    cin >> n >> m;
-    Tarjan solver;
-    solver.init(n);
-    for (int i = 1; i <= m; i++) {
-        int u, v;
-        cin >> u >> v;
-        solver.add_edge(u, v);
-    }
-
-    vector<int> sizes = solver.run();
-    cout << sizes.size() << '\n';
-    for (int i = 0; i < (int)sizes.size(); i++) {
-        if (i) cout << ' ';
-        cout << sizes[i];
-    }
-    cout << '\n';
-    return 0;
-}
-```
-
-**测试设计：**
-- 用例 1：整图一个 SCC。
-```text
-输入：
-3 3
-1 2
-2 3
-3 1
-期望输出：
-1
-3
-```
-- 用例 2：无边图。
-```text
-输入：
-3 0
-期望输出：
-3
-1 1 1
-```
-### V05-EX10 LCA 与树上距离
-
-- 归属卷：第 5 卷
-- 覆盖模块：LCA、倍增、树上距离
-- 考场用途：多次询问树上两点最近公共祖先和路径长度。
-
-**题目描述：** 给定一棵带权无向树，以 `1` 为根。对每个询问 `u v`，输出 `LCA(u,v)` 和两点距离。
-
-**输入格式：** 第一行两个整数 `n q`。接下来 `n-1` 行每行三个整数 `u v w`。接下来 `q` 行每行两个整数 `u v`。
-
-**输出格式：** 对每个询问输出一行两个整数：最近公共祖先和距离。
-
-**样例输入：**
-```text
-5 3
-1 2 3
-1 3 2
-2 4 4
-2 5 1
-4 5
-4 3
-2 3
-```
-
-**样例输出：**
-```text
-2 5
-1 9
-1 5
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-using ll = long long;
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n, q;
-    cin >> n >> q;
-    vector<vector<pair<int, ll>>> g(n + 1);
-    for (int i = 1; i <= n - 1; i++) {
-        int u, v;
-        ll w;
-        cin >> u >> v >> w;
-        g[u].push_back({v, w});
-        g[v].push_back({u, w});
-    }
-
-    int LOG = 1;
-    while ((1 << LOG) <= n) LOG++;
-    vector<vector<int>> up(LOG, vector<int>(n + 1, 1));
-    vector<int> depth(n + 1, 0);
-    vector<ll> distRoot(n + 1, 0);
-
-    queue<int> bfs;
-    vector<int> vis(n + 1, 0);
-    bfs.push(1);
-    vis[1] = 1;
-    up[0][1] = 1;
-    depth[1] = 0;
-    while (!bfs.empty()) {
-        int u = bfs.front();
-        bfs.pop();
-        for (auto [v, w] : g[u]) {
-            if (vis[v]) continue;
-            vis[v] = 1;
-            up[0][v] = u;
-            depth[v] = depth[u] + 1;
-            distRoot[v] = distRoot[u] + w;
-            bfs.push(v);
-        }
-    }
-
-    for (int k = 1; k < LOG; k++) {
-        for (int v = 1; v <= n; v++) {
-            up[k][v] = up[k - 1][up[k - 1][v]];
-        }
-    }
-
-    auto lift = [&](int u, int steps) {
-        for (int k = 0; k < LOG; k++) {
-            if (steps & (1 << k)) u = up[k][u];
-        }
-        return u;
-    };
-
-    auto lca = [&](int a, int b) {
-        if (depth[a] < depth[b]) swap(a, b);
-        a = lift(a, depth[a] - depth[b]);
-        if (a == b) return a;
-        for (int k = LOG - 1; k >= 0; k--) {
-            if (up[k][a] != up[k][b]) {
-                a = up[k][a];
-                b = up[k][b];
-            }
-        }
-        return up[0][a];
-    };
-
-    while (q--) {
-        int u, v;
-        cin >> u >> v;
-        int c = lca(u, v);
-        ll d = distRoot[u] + distRoot[v] - 2LL * distRoot[c];
-        cout << c << ' ' << d << '\n';
-    }
-    return 0;
-}
-```
-
-**测试设计：**
-- 用例 1：同一点查询。
-```text
-输入：
-2 1
-1 2 8
-2 2
-期望输出：
-2 0
-```
-- 用例 2：链状树。
-```text
-输入：
-4 2
-1 2 1
-2 3 2
-3 4 3
-4 2
-1 4
-期望输出：
-2 5
-1 6
-```
-### V05-EX11 树上最大独立集
-
-- 归属卷：第 5 卷
-- 覆盖模块：树形 DP
-- 考场用途：父子不能同时选的树上选点最优值。
-
-**题目描述：** 给定一棵无向树，每个点有权值。选择若干点，使任意一条边的两个端点不能同时被选，求最大权值和。
-
-**输入格式：** 第一行整数 `n`。第二行 `n` 个整数表示点权。接下来 `n-1` 行每行两个整数 `u v`。
-
-**输出格式：** 输出最大权值和。
-
-**样例输入：**
-```text
-5
-1 2 3 4 5
-1 2
-1 3
-2 4
-2 5
-```
-
-**样例输出：**
-```text
-12
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-using ll = long long;
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n;
-    cin >> n;
-    vector<ll> w(n + 1);
-    for (int i = 1; i <= n; i++) cin >> w[i];
-
-    vector<vector<int>> g(n + 1);
-    for (int i = 1; i <= n - 1; i++) {
-        int u, v;
-        cin >> u >> v;
-        g[u].push_back(v);
-        g[v].push_back(u);
-    }
-
-    vector<array<ll, 2>> dp(n + 1);
-    function<void(int, int)> dfs = [&](int u, int p) {
-        dp[u][0] = 0;
-        dp[u][1] = w[u];
-        for (int v : g[u]) {
-            if (v == p) continue;
-            dfs(v, u);
-            dp[u][0] += max(dp[v][0], dp[v][1]);
-            dp[u][1] += dp[v][0];
-        }
-    };
-
-    dfs(1, 0);
-    cout << max(dp[1][0], dp[1][1]) << '\n';
-    return 0;
-}
-```
-
-**测试设计：**
-- 用例 1：单点树。
-```text
-输入：
-1
-7
-期望输出：
-7
-```
-- 用例 2：星形树，中心很大。
-```text
-输入：
-4
-10 3 4 5
-1 2
-1 3
-1 4
-期望输出：
-12
-```
-### V05-EX12 无向图桥边
-
-- 归属卷：第 5 卷
-- 覆盖模块：Lowlink、桥、1-index 边号
-- 考场用途：找删除后会增加连通块数量的关键边，并正确处理重边。
-
-**题目描述：** 给定无向图，边按输入顺序编号为 `1..m`。输出所有桥的边号，按升序排列。
-
-**输入格式：** 第一行两个整数 `n m`。接下来 `m` 行每行两个整数 `u v`。
-
-**输出格式：** 第一行输出桥的数量。第二行输出所有桥的边号；若没有桥，第二行为空行。
-
-**样例输入：**
-```text
-5 5
-1 2
-2 3
-3 1
-3 4
-4 5
-```
-
-**样例输出：**
-```text
-2
-4 5
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-struct Edge {
-    int to;
-    int eid;
-};
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n, m;
-    cin >> n >> m;
-    vector<vector<Edge>> g(n + 1);
-    for (int id = 1; id <= m; id++) {
-        int u, v;
-        cin >> u >> v;
-        g[u].push_back({v, id});
-        g[v].push_back({u, id});
-    }
-
-    vector<int> dfn(n + 1, 0), low(n + 1, 0), bridges;
-    int timer = 0;
-
-    function<void(int, int)> dfs = [&](int u, int parentEdge) {
-        dfn[u] = low[u] = ++timer;
-        for (auto e : g[u]) {
-            int v = e.to;
-            if (!dfn[v]) {
-                dfs(v, e.eid);
-                low[u] = min(low[u], low[v]);
-                if (low[v] > dfn[u]) bridges.push_back(e.eid);
-            } else if (e.eid != parentEdge) {
-                low[u] = min(low[u], dfn[v]);
-            }
-        }
-    };
-
-    for (int i = 1; i <= n; i++) {
-        if (!dfn[i]) dfs(i, 0);
-    }
-
-    sort(bridges.begin(), bridges.end());
-    cout << bridges.size() << '\n';
-    for (int i = 0; i < (int)bridges.size(); i++) {
-        if (i) cout << ' ';
-        cout << bridges[i];
-    }
-    cout << '\n';
-    return 0;
-}
-```
-
-**测试设计：**
-- 用例 1：环图没有桥。
-```text
-输入：
-3 3
-1 2
-2 3
-3 1
-期望输出：
-0
-
-```
-- 用例 2：重边不是桥，尾部单边是桥。
-```text
-输入：
-3 3
-1 2
-1 2
-2 3
-期望输出：
-1
-3
-```
-### V05-CEX01 Dijkstra 同时统计最短路条数
-
-- 归属卷：第 5 卷
-- 覆盖模块：Dijkstra、路径计数
-- 考场用途：图题经常不只要距离。
-- 参考题型来源：参考来源：洛谷最短路题单。
-
-**题目描述：** 求 `s` 到 `t` 最短距离和最短路条数。
-
-**输入格式：** 第一行 n m s t，之后无向边 u v w。
-
-**输出格式：** 输出距离和条数。
-
-**样例输入：**
-```text
-4 4 1 4
-1 2 1
-2 4 1
-1 3 1
-3 4 1
-```
-
-**样例输出：**
-```text
-2 2
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-
-int main(){ ios::sync_with_stdio(false); cin.tie(nullptr); int n,m,s,t;cin>>n>>m>>s>>t; vector<vector<pair<int,int>>> g(n+1); for(int i=1;i<=m;i++){int u,v,w;cin>>u>>v>>w;g[u].push_back({v,w});g[v].push_back({u,w});} const long long INF=4e18; vector<long long>d(n+1,INF),cnt(n+1); priority_queue<pair<long long,int>,vector<pair<long long,int>>,greater<pair<long long,int>>>pq; d[s]=0;cnt[s]=1;pq.push({0,s}); while(!pq.empty()){auto [du,u]=pq.top();pq.pop(); if(du!=d[u])continue; for(auto [v,w]:g[u]){ if(d[v]>du+w){d[v]=du+w;cnt[v]=cnt[u];pq.push({d[v],v});} else if(d[v]==du+w)cnt[v]+=cnt[u]; }} cout<<(d[t]==INF?-1:d[t])<<" "<<(d[t]==INF?0:cnt[t])<<"\n"; return 0; }
-```
-
-**测试设计：** 额外测试：构造最小规模、重复值、边界值各一组，和样例一起运行。
-
-***
-### V05-CEX02 0-1 BFS
-
-- 归属卷：第 5 卷
-- 覆盖模块：deque、边权 0/1 最短路
-- 考场用途：边权只有 0/1 时替代 Dijkstra。
-- 参考题型来源：参考来源：OI Wiki 0-1 BFS。
-
-**题目描述：** 无向图边权 0 或 1，求 1 到 n 最短路。
-
-**输入格式：** 第一行 n m，之后 u v w。
-
-**输出格式：** 输出距离。
-
-**样例输入：**
-```text
-4 4
-1 2 0
-2 4 1
-1 3 1
-3 4 0
-```
-
-**样例输出：**
-```text
-1
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-
-int main(){ ios::sync_with_stdio(false); cin.tie(nullptr); int n,m;cin>>n>>m; vector<vector<pair<int,int>>>g(n+1); for(int i=1;i<=m;i++){int u,v,w;cin>>u>>v>>w;g[u].push_back({v,w});g[v].push_back({u,w});} deque<int>dq; vector<int>d(n+1,1e9); d[1]=0;dq.push_back(1); while(!dq.empty()){int u=dq.front();dq.pop_front(); for(auto [v,w]:g[u]) if(d[v]>d[u]+w){d[v]=d[u]+w; if(w==0)dq.push_front(v);else dq.push_back(v);} } cout<<(d[n]==(int)1e9?-1:d[n])<<"\n"; return 0; }
-```
-
-**测试设计：** 额外测试：构造最小规模、重复值、边界值各一组，和样例一起运行。
-
-***
-### V05-CEX03 Kruskal 输出总权和最大边
-
-- 归属卷：第 5 卷
-- 覆盖模块：MST、DSU
-- 考场用途：MST 后常要附加统计。
-- 参考题型来源：参考来源：洛谷最小生成树题单。
-
-**题目描述：** 求最小生成树权值和及树中最大边权。
-
-**输入格式：** 第一行 n m，之后 u v w。
-
-**输出格式：** 不连通输出 orz。
-
-**样例输入：**
-```text
-4 5
-1 2 1
-2 3 2
-3 4 3
-1 4 10
-2 4 4
-```
-
-**样例输出：**
-```text
-6 3
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-
-struct DSU{vector<int>f;DSU(int n){f.resize(n+1);iota(f.begin(),f.end(),0);}int find(int x){return x==f[x]?x:f[x]=find(f[x]);}bool unite(int a,int b){a=find(a);b=find(b);if(a==b)return false;f[b]=a;return true;}};
-int main(){ios::sync_with_stdio(false);cin.tie(nullptr);int n,m;cin>>n>>m; struct E{int u,v,w;}; vector<E>e(m); for(auto &x:e)cin>>x.u>>x.v>>x.w; sort(e.begin(),e.end(),[](E a,E b){return a.w<b.w;}); DSU d(n); long long ans=0;int cnt=0,last=0; for(auto x:e)if(d.unite(x.u,x.v)){ans+=x.w;cnt++;last=x.w;} if(cnt<n-1)cout<<"orz\n"; else cout<<ans<<" "<<last<<"\n"; return 0;}
-```
-
-**测试设计：** 额外测试：构造最小规模、重复值、边界值各一组，和样例一起运行。
-
-***
-### V05-CEX04 拓扑排序最少学期
-
-- 归属卷：第 5 卷
-- 覆盖模块：拓扑排序、DAG DP
-- 考场用途：依赖题常把拓扑和 DP 拼起来。
-- 参考题型来源：参考来源：洛谷拓扑排序题单。
-
-**题目描述：** 课程依赖 `u->v` 表示先学 u，求最少学期数；有环输出 CYCLE。
-
-**输入格式：** 第一行 n m，之后 u v。
-
-**输出格式：** 输出学期数或 CYCLE。
-
-**样例输入：**
-```text
-4 3
-1 2
-1 3
-3 4
-```
-
-**样例输出：**
-```text
-3
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-
-int main(){ios::sync_with_stdio(false);cin.tie(nullptr);int n,m;cin>>n>>m; vector<vector<int>>g(n+1); vector<int>ind(n+1); for(int i=1;i<=m;i++){int u,v;cin>>u>>v;g[u].push_back(v);ind[v]++;} queue<int>q; vector<int>sem(n+1,1); for(int i=1;i<=n;i++)if(!ind[i])q.push(i); int seen=0,ans=1; while(!q.empty()){int u=q.front();q.pop();seen++;ans=max(ans,sem[u]); for(int v:g[u]){sem[v]=max(sem[v],sem[u]+1); if(--ind[v]==0)q.push(v);}} if(seen<n)cout<<"CYCLE\n"; else cout<<ans<<"\n"; return 0;}
-```
-
-**测试设计：** 额外测试：构造最小规模、重复值、边界值各一组，和样例一起运行。
-
-***
-### V05-CEX05 LCA 查询路径最小边
-
-- 归属卷：第 5 卷
-- 覆盖模块：LCA、倍增、树上路径
-- 考场用途：LCA 常和路径聚合值一起考。
-- 参考题型来源：参考来源：洛谷 LCA/树上路径题型。
-
-**题目描述：** 给树，查询两点路径上的最小边权。
-
-**输入格式：** 第一行 n q，之后 n-1 边，之后 q 个查询。
-
-**输出格式：** 每次输出最小边权。
-
-**样例输入：**
-```text
-4 2
-1 2 5
-2 3 4
-2 4 7
-3 4
-1 3
-```
-
-**样例输出：**
-```text
-4
-4
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-
-const int LOG=20;
-int main(){ios::sync_with_stdio(false);cin.tie(nullptr);int n,q;cin>>n>>q; vector<vector<pair<int,int>>>g(n+1); for(int i=1;i<n;i++){int u,v,w;cin>>u>>v>>w;g[u].push_back({v,w});g[v].push_back({u,w});} vector<array<int,LOG>>up(n+1),mn(n+1); vector<int>dep(n+1); function<void(int,int)>dfs=[&](int u,int p){up[u][0]=p; for(int k=1;k<LOG;k++){up[u][k]=up[up[u][k-1]][k-1];mn[u][k]=min(mn[u][k-1],mn[up[u][k-1]][k-1]);} for(auto [v,w]:g[u])if(v!=p){dep[v]=dep[u]+1;mn[v][0]=w;dfs(v,u);}}; for(int k=0;k<LOG;k++)mn[1][k]=1e9; dfs(1,1); while(q--){int a,b;cin>>a>>b;int ans=1e9;if(dep[a]<dep[b])swap(a,b);int diff=dep[a]-dep[b];for(int k=0;k<LOG;k++)if(diff>>k&1){ans=min(ans,mn[a][k]);a=up[a][k];} if(a!=b){for(int k=LOG-1;k>=0;k--)if(up[a][k]!=up[b][k]){ans=min(ans,mn[a][k]);ans=min(ans,mn[b][k]);a=up[a][k];b=up[b][k];} ans=min(ans,mn[a][0]);ans=min(ans,mn[b][0]);} cout<<ans<<"\n";} return 0;}
-```
-
-**测试设计：** 额外测试：构造最小规模、重复值、边界值各一组，和样例一起运行。
-
-***
-
-<!-- V02_EXAMPLES_END -->
-
 
 
 ---
@@ -34082,7 +24912,7 @@ int main(){ios::sync_with_stdio(false);cin.tie(nullptr);int n,q;cin>>n>>q; vecto
 
 # 第 6 卷：数学与字符串
 
-> 自动由 MATH/STR/SIM 模块重建。定位是常用数论、组合、矩阵、字符串和高精度补充。
+> 自动由 MATH/STR/SIM 模块重建。定位是常用数论、组合、矩阵、方程求解、字符串和模拟补充。
 
 ## 数学与字符串速查索引
 
@@ -34097,6 +24927,7 @@ int main(){ios::sync_with_stdio(false);cin.tie(nullptr);int n,q;cin>>n>>q; vecto
 | `JSON/CSV/INI 解析` | `SIM-04` |
 | `手写解释器/小语言模拟` | `SIM-05` |
 | `日期/时区/历法` | `SIM-06` |
+| `方程组/高斯消元/求根` | `SIM-07` |
 | `字符串匹配/前缀/哈希` | `STR-02/03` |
 | `最长回文/回文半径/区间回文判断` | `STR-05 Manacher` |
 
@@ -36052,6 +26883,12 @@ Trie 节点编号从 0 开始，0 是根节点。
 | 总模式长度 `<= 2e5` | AC 自动机稳 |
 | 总模式长度 `<= 1e6` | 静态数组 AC 更稳；本模板用 vector，写法更短 |
 
+依赖的标准容器：
+
+- `string`：模式串和文本。
+- `queue<int>`：BFS 构造 fail 指针。
+- `vector`：短模板写法；若总长度很大，可改成静态全局数组。
+
 输入如何整理：
 
 ```cpp
@@ -36407,6 +27244,11 @@ d2[i]：以 i-1 和 i 中间为中心的偶数回文半径。
 | `n <= 2000` | 中心扩展或区间 DP 都能尝试 |
 | `n <= 1e5` | Manacher 稳 |
 | `n <= 1e6` | Manacher + 静态全局数组，避免反复分配 |
+
+依赖的标准容器：
+
+- `string`：存原串和 1-index 处理串。
+- 静态全局数组 `d1[]/d2[]`：存奇偶回文半径。
 
 输入如何整理：
 
@@ -39836,1216 +30678,711 @@ tz
 2026-05-17 20:30:00
 ```
 
-<!-- V02_EXAMPLES_START -->
 
-# v0.2 本卷例题训练区
+---
 
-这一节是 0.2 新增的实战例题。每题都配完整可运行代码和样例；考试时优先看“覆盖模块”和“考场用途”，再复制对应代码骨架。
 
-### V06-EX01 多数 gcd 与有界 lcm
+<!-- source: 03_modules/SIM-07-equation-solving.md -->
+# SIM-07 方程求解：高斯消元、模方程、一元方程与多项式
 
-- 归属卷：第 6 卷
-- 覆盖模块：MATH-01 gcd/lcm
-- 考场用途：处理整除、约分和周期同步，顺手练习 lcm 防溢出。
+模块编号：SIM-07
 
-**题目描述：** 给定 `n` 个整数，求它们的最大公约数 `g`。同时求最小公倍数 `l`，若 `l` 超过给定上限 `limit`，输出 `OVER`。
+模块名称：方程求解模板：线性方程组、高斯消元、模意义方程、一元方程迭代、多项式求值与低次公式
 
-**输入格式：** 第一行两个整数 `n limit`。第二行 `n` 个整数。
+标签：模拟、数学、方程求解、高斯消元、模方程、二分、牛顿法、多项式、C++17、考场模板
 
-**输出格式：** 第一行输出 `g`。第二行若最小公倍数不超过 `limit` 输出 `l`，否则输出 `OVER`。
+一句话用途：题目把条件写成若干方程、要求求未知数或判无解/多解时，先判断是线性方程组、模方程、一元连续方程还是低次多项式，再套对应模板。
 
-**样例输入：**
-```text
-4 1000
-6 10 15 30
+题面触发词：
+
+- 给出 `n` 个未知数和 `m` 条线性约束，求每个未知数。
+- 解方程组、判断唯一解/无解/无穷多解。
+- 所有运算在 `mod p` 意义下进行。
+- 求 `f(x)=0` 的一个根，答案允许误差 `1e-6`。
+- 给多项式系数，求某点函数值或求区间内根。
+- 一元一次/二次方程，输出实根。
+
+什么时候用：
+
+- 方程是一次的：用高斯消元，实数版或模质数版。
+- 单条同余方程 `a*x ≡ b (mod m)`：用 `gcd + exgcd`。
+- 一元连续函数有单调性或已知区间两端异号：用二分。
+- 已有较好初值、函数和导数好算：可用牛顿法做加速或备用。
+- 多项式求值：用 Horner，少写幂函数。
+- 一元一次/二次：直接公式，比迭代更稳。
+
+不要什么时候用：
+
+- 模数不是质数且是多元方程组：普通模高斯只对可逆主元安全，复合模需要拆 CRT 或更高阶线性代数。
+- 方程里有乘积项如 `x*y`、`x^2+y^2`：不是线性方程组，不能直接高斯。
+- 二分区间两端不异号且没有单调性证明：可能漏根。
+- 牛顿法没有好初值或导数会接近 0：容易飞出有效区间。
+- 只要求整数解且变量范围很小：直接枚举/搜索可能更短。
+
+复杂度：
+
+- 实数高斯消元：`O(m*n*min(m,n))`，方阵常记 `O(n^3)`。
+- 模质数高斯消元：同上，每个主元多一次快速幂求逆，方阵约 `O(n^3 + n log mod)`。
+- 单条线性同余：`O(log mod)`。
+- 二分求根：`O(iter * eval)`，常用 80 到 100 次。
+- 牛顿法：`O(iter * eval)`，常用 30 到 60 次。
+- Horner 多项式求值：`O(deg)`。
+- 一次/二次公式：`O(1)`。
+
+数据范围参考：
+
+- `n <= 100`：静态二维数组高斯最舒服。
+- `n <= 500`：`O(n^3)` 可能还能过，注意常数和时限。
+- 模数为 `998244353`、`1e9+7` 等质数时，模高斯最稳。
+- 浮点答案误差 `1e-6`：二分 80 次通常足够。
+- 多项式次数高且 `x` 很大时，`double` 可能溢出，按题意改 `long double` 或取模 Horner。
+
+依赖的标准容器：
+
+- 静态数组 `a[MAXN][MAXN]`：方程矩阵，行列按 1-index。
+- `double`：实数高斯、二分、牛顿、公式根。
+- `long long`：模方程系数和答案。
+- `vector<double>`：只在输出低次公式根时临时装答案；核心矩阵仍是静态数组。
+
+输入如何整理：
+
+```cpp
+int m, n;
+cin >> m >> n;
+for (int i = 1; i <= m; i++) {
+    for (int j = 1; j <= n; j++) cin >> a[i][j];
+    cin >> a[i][n + 1]; // 右端常数
+}
 ```
 
-**样例输出：**
+接口：
+
 ```text
-1
-30
+gauss_real(m,n) -> 0 无解，1 唯一解，2 多解；答案在 ans_real[1..n]。
+gauss_mod_prime(m,n,mod) -> 模质数方程组，返回值同上；答案在 ans_mod[1..n]。
+solve_linear_congruence(a,b,mod,x0,step) -> 解 a*x ≡ b (mod mod)，通解 x=x0+k*step。
+poly_eval(deg,c,x) -> Horner 求 c[0]+c[1]x+...+c[deg]x^deg。
+poly_derivative_eval(deg,c,x) -> 多项式导数在 x 的值。
+bisect_poly_root(deg,c,l,r,root) -> 区间两端异号时二分一个根。
+newton_poly_root(deg,c,start,root) -> 从 start 出发尝试牛顿求根。
+solve_quadratic_formula(a,b,c,roots) -> 解 a*x^2+b*x+c=0，返回根数，-1 表示任意实数。
 ```
 
-**完整代码：**
+## 先判断题目属于哪一类
+
+| 题面形式 | 优先模板 | 关键检查 |
+|---|---|---|
+| `a11*x1+...+a1n*xn=b1` | 实数高斯 | `EPS`、主元、无解/多解 |
+| 同上但 `mod p` | 模质数高斯 | `p` 是质数、负数取模 |
+| `a*x ≡ b (mod m)` | `gcd + exgcd` | `gcd(a,m)` 是否整除 `b` |
+| `f(x)=0`，连续且有区间 | 二分 | 两端异号或单调性 |
+| `f(x)=0`，有导数和初值 | 牛顿 | 导数别接近 0 |
+| 多项式代入 | Horner | 系数顺序和溢出 |
+| 一次/二次 | 公式 | 退化和判别式 `EPS` |
+
+## 高斯消元的行列约定
+
+增广矩阵按 1-index 存：
+
+```text
+a[i][1..n]     是第 i 条方程的系数
+a[i][n + 1]    是右端常数
+ans[1..n]      是未知数 x1..xn
+where[col]     记录第 col 个未知数在哪一行成为主元
+```
+
+判定顺序：
+
+1. 每一列找绝对值最大的主元。
+2. 主元行归一化。
+3. 消掉其他所有行的这一列。
+4. 最后检查 `0 = 非零`，这是无解。
+5. 有变量没主元，是多解；所有变量有主元，是唯一解。
+
+模板代码：
+
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
+
 using ll = long long;
 
-ll gcd_ll(ll a, ll b) {
-    if (a < 0) a = -a;
-    if (b < 0) b = -b;
-    while (b) {
-        ll t = a % b;
-        a = b;
-        b = t;
-    }
-    return a;
-}
+const int MAXN = 105;
+const double EPS = 1e-10;
 
-ll lcm_limit(ll a, ll b, ll limit) {
-    if (a == 0 || b == 0) return 0;
-    __int128 aa = a, bb = b;
-    if (aa < 0) aa = -aa;
-    if (bb < 0) bb = -bb;
-    ll g = gcd_ll(a, b);
-    aa /= g;
-    if (aa > (__int128)limit / bb) return limit + 1;
-    __int128 res = aa * bb;
-    return res > limit ? limit + 1 : (ll)res;
-}
+double mat_real[MAXN][MAXN];
+double ans_real[MAXN];
+int where_real[MAXN];
 
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
+ll mat_mod[MAXN][MAXN];
+ll ans_mod[MAXN];
+int where_mod[MAXN];
 
-    int n;
-    ll limit;
-    cin >> n >> limit;
-    vector<ll> a(n + 1);
-    ll g = 0, l = 1;
-    bool over = false;
-    for (int i = 1; i <= n; i++) {
-        cin >> a[i];
-        g = gcd_ll(g, a[i]);
-        if (!over) {
-            l = lcm_limit(l, a[i], limit);
-            if (l > limit) over = true;
-        }
-    }
-    cout << g << '\n';
-    if (over) cout << "OVER\n";
-    else cout << l << '\n';
+double coef_poly[MAXN];
+
+int sign_double(double x) {
+    if (x > EPS) return 1;
+    if (x < -EPS) return -1;
     return 0;
 }
-```
 
-**测试设计：**
-
-1. 输入：
-```text
-3 100
-12 12 12
-```
-期望输出：
-```text
-12
-12
-```
-
-2. 输入：
-```text
-3 100
-20 30 70
-```
-期望输出：
-```text
-10
-OVER
-```
-
-***
-### V06-EX02 快速幂取模
-
-- 归属卷：第 6 卷
-- 覆盖模块：MATH-02 快速幂、取模规范
-- 考场用途：避免 `pow` 浮点误差，处理负底数和 `mod=1`。
-
-**题目描述：** 给定 `q` 次询问，每次给出 `a b mod`，输出 `a^b mod mod`。保证 `b>=0` 且 `mod>0`。
-
-**输入格式：** 第一行一个整数 `q`。接下来 `q` 行，每行三个整数 `a b mod`。
-
-**输出格式：** 每个询问输出一行答案。
-
-**样例输入：**
-```text
-3
-2 10 1000
--2 3 5
-5 0 7
-```
-
-**样例输出：**
-```text
-24
-2
-1
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-using ll = long long;
-
-ll norm(ll x, ll mod) {
+ll norm_mod(ll x, ll mod) {
     x %= mod;
     if (x < 0) x += mod;
     return x;
 }
 
 ll mul_mod(ll a, ll b, ll mod) {
-    return (ll)((__int128)norm(a, mod) * norm(b, mod) % mod);
+    return (ll)((__int128)norm_mod(a, mod) * norm_mod(b, mod) % mod);
 }
 
-ll pow_mod(ll a, ll b, ll mod) {
-    if (mod == 1) return 0;
+ll pow_mod(ll a, ll e, ll mod) {
     ll res = 1 % mod;
-    a = norm(a, mod);
-    while (b > 0) {
-        if (b & 1) res = mul_mod(res, a, mod);
-        a = mul_mod(a, a, mod);
-        b >>= 1;
-    }
-    return res;
-}
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int q;
-    cin >> q;
-    while (q--) {
-        ll a, b, mod;
-        cin >> a >> b >> mod;
-        cout << pow_mod(a, b, mod) << '\n';
-    }
-    return 0;
-}
-```
-
-**测试设计：**
-
-1. 输入：
-```text
-1
-123 456 1
-```
-期望输出：
-```text
-0
-```
-
-2. 输入：
-```text
-2
-10 2 6
-3 4 100
-```
-期望输出：
-```text
-4
-81
-```
-
-***
-### V06-EX03 组合数多次查询
-
-- 归属卷：第 6 卷
-- 覆盖模块：MATH-03 组合数、逆元
-- 考场用途：质数模数下快速回答 `C(n,k)`。
-
-**题目描述：** 给定质数 `MOD` 和最大值 `N`，回答 `q` 次组合数查询 `C(n,k) mod MOD`。若 `k<0` 或 `k>n`，输出 `0`。
-
-**输入格式：** 第一行 `N MOD q`。接下来 `q` 行，每行 `n k`。
-
-**输出格式：** 每个询问输出一行答案。
-
-**样例输入：**
-```text
-10 1000000007 4
-5 2
-6 0
-6 7
-10 5
-```
-
-**样例输出：**
-```text
-10
-1
-0
-252
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-using ll = long long;
-
-ll mod_pow(ll a, ll e, ll mod) {
-    ll r = 1 % mod;
-    a %= mod;
-    if (a < 0) a += mod;
+    a = norm_mod(a, mod);
     while (e > 0) {
-        if (e & 1) r = (ll)((__int128)r * a % mod);
-        a = (ll)((__int128)a * a % mod);
+        if (e & 1) res = mul_mod(res, a, mod);
+        a = mul_mod(a, a, mod);
         e >>= 1;
     }
-    return r;
-}
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int N, q;
-    ll MOD;
-    cin >> N >> MOD >> q;
-    vector<ll> fac(N + 1), ifac(N + 1);
-    fac[0] = 1;
-    for (int i = 1; i <= N; i++) fac[i] = fac[i - 1] * i % MOD;
-    ifac[N] = mod_pow(fac[N], MOD - 2, MOD);
-    for (int i = N; i >= 1; i--) ifac[i - 1] = ifac[i] * i % MOD;
-
-    while (q--) {
-        int n, k;
-        cin >> n >> k;
-        if (n < 0 || n > N || k < 0 || k > n) {
-            cout << 0 << '\n';
-        } else {
-            cout << fac[n] * ifac[k] % MOD * ifac[n - k] % MOD << '\n';
-        }
-    }
-    return 0;
-}
-```
-
-**测试设计：**
-
-1. 输入：
-```text
-6 7 3
-6 3
-4 2
-5 -1
-```
-期望输出：
-```text
-6
-6
-0
-```
-
-2. 输入：
-```text
-5 1000000007 2
-5 5
-5 1
-```
-期望输出：
-```text
-1
-5
-```
-
-***
-### V06-EX04 素数筛与质数计数
-
-- 归属卷：第 6 卷
-- 覆盖模块：MATH-04 筛法
-- 考场用途：预处理质数表并回答前缀计数。
-
-**题目描述：** 给定 `N` 和 `q` 次询问，每次给出 `x`，输出 `1..x` 中质数个数。
-
-**输入格式：** 第一行 `N q`。接下来 `q` 行，每行一个 `x`。
-
-**输出格式：** 每个询问输出一行答案。
-
-**样例输入：**
-```text
-20 4
-1
-2
-10
-20
-```
-
-**样例输出：**
-```text
-0
-1
-4
-8
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int N, q;
-    cin >> N >> q;
-    vector<int> spf(N + 1), primes, pref(N + 1);
-    for (int i = 2; i <= N; i++) {
-        if (spf[i] == 0) {
-            spf[i] = i;
-            primes.push_back(i);
-        }
-        for (int p : primes) {
-            if (p > spf[i] || 1LL * i * p > N) break;
-            spf[i * p] = p;
-        }
-    }
-    for (int i = 1; i <= N; i++) pref[i] = pref[i - 1] + (spf[i] == i);
-
-    while (q--) {
-        int x;
-        cin >> x;
-        x = max(0, min(x, N));
-        cout << pref[x] << '\n';
-    }
-    return 0;
-}
-```
-
-**测试设计：**
-
-1. 输入：
-```text
-30 3
-0
-29
-30
-```
-期望输出：
-```text
-0
-10
-10
-```
-
-2. 输入：
-```text
-5 2
-4
-5
-```
-期望输出：
-```text
-2
-3
-```
-
-***
-### V06-EX05 质因数分解与约数个数
-
-- 归属卷：第 6 卷
-- 覆盖模块：MATH-04 质因数分解
-- 考场用途：从质因子指数计算约数个数。
-
-**题目描述：** 给定 `q` 个正整数 `x`，对每个 `x` 输出质因数分解和约数个数。分解格式为 `p^a`，按质因子升序；若 `x=1`，分解输出 `1`。
-
-**输入格式：** 第一行一个整数 `q`。接下来 `q` 行，每行一个整数 `x`。
-
-**输出格式：** 每个 `x` 输出两行：第一行为分解，第二行为约数个数。
-
-**样例输入：**
-```text
-2
-360
-97
-```
-
-**样例输出：**
-```text
-2^3 3^2 5^1
-24
-97^1
-2
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-using ll = long long;
-
-vector<pair<ll, int>> factorize(ll x) {
-    vector<pair<ll, int>> res;
-    for (ll d = 2; d <= x / d; d += (d == 2 ? 1 : 2)) {
-        if (x % d == 0) {
-            int c = 0;
-            while (x % d == 0) {
-                x /= d;
-                c++;
-            }
-            res.push_back({d, c});
-        }
-    }
-    if (x > 1) res.push_back({x, 1});
     return res;
 }
 
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int q;
-    cin >> q;
-    while (q--) {
-        ll x;
-        cin >> x;
-        auto f = factorize(x);
-        if (f.empty()) {
-            cout << "1\n1\n";
-            continue;
-        }
-        ll cnt = 1;
-        for (int i = 0; i < (int)f.size(); i++) {
-            if (i) cout << ' ';
-            cout << f[i].first << '^' << f[i].second;
-            cnt *= f[i].second + 1;
-        }
-        cout << '\n' << cnt << '\n';
+ll exgcd(ll a, ll b, ll &x, ll &y) {
+    if (b == 0) {
+        x = 1;
+        y = 0;
+        return a;
     }
-    return 0;
-}
-```
-
-**测试设计：**
-
-1. 输入：
-```text
-3
-1
-12
-100
-```
-期望输出：
-```text
-1
-1
-2^2 3^1
-6
-2^2 5^2
-9
-```
-
-2. 输入：
-```text
-1
-99991
-```
-期望输出：
-```text
-99991^1
-2
-```
-
-***
-### V06-EX06 KMP 多次匹配
-
-- 归属卷：第 6 卷
-- 覆盖模块：STR-02 KMP
-- 考场用途：输出模式串全部出现位置，处理重叠匹配。
-
-**题目描述：** 给定文本串 `text` 和模式串 `pat`，输出 `pat` 在 `text` 中所有出现位置，位置按 1-index 输出。若没有出现，输出 `NONE`。
-
-**输入格式：** 第一行 `text`。第二行 `pat`。
-
-**输出格式：** 一行，所有出现位置从小到大输出；没有出现则输出 `NONE`。
-
-**样例输入：**
-```text
-ababa
-aba
-```
-
-**样例输出：**
-```text
-1 3
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-vector<int> prefix_function(const string &s) {
-    int n = (int)s.size();
-    vector<int> pi(n, 0);
-    for (int i = 1; i < n; i++) {
-        int j = pi[i - 1];
-        while (j > 0 && s[i] != s[j]) j = pi[j - 1];
-        if (s[i] == s[j]) j++;
-        pi[i] = j;
-    }
-    return pi;
+    ll x1, y1;
+    ll g = exgcd(b, a % b, x1, y1);
+    x = y1;
+    y = x1 - (a / b) * y1;
+    return g;
 }
 
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
+ll inv_mod_coprime(ll a, ll mod) {
+    ll x, y;
+    ll g = exgcd(norm_mod(a, mod), mod, x, y);
+    if (g != 1) return -1;
+    return norm_mod(x, mod);
+}
 
-    string text, pat;
-    cin >> text >> pat;
-    string s = pat + char(1) + text;
-    vector<int> pi = prefix_function(s);
-    int m = (int)pat.size();
-    vector<int> ans;
-    for (int i = m + 1; i < (int)s.size(); i++) {
-        if (pi[i] == m) ans.push_back(i - 2 * m + 1);
+int gauss_real(int m, int n) {
+    for (int i = 1; i <= n; i++) where_real[i] = 0;
+
+    int row = 1;
+    for (int col = 1; col <= n && row <= m; col++) {
+        int sel = row;
+        for (int i = row + 1; i <= m; i++) {
+            if (fabs(mat_real[i][col]) > fabs(mat_real[sel][col])) {
+                sel = i;
+            }
+        }
+        if (fabs(mat_real[sel][col]) < EPS) continue;
+
+        for (int j = col; j <= n + 1; j++) {
+            swap(mat_real[sel][j], mat_real[row][j]);
+        }
+
+        where_real[col] = row;
+        double div = mat_real[row][col];
+        for (int j = col; j <= n + 1; j++) mat_real[row][j] /= div;
+
+        for (int i = 1; i <= m; i++) {
+            if (i == row) continue;
+            double factor = mat_real[i][col];
+            if (fabs(factor) < EPS) continue;
+            for (int j = col; j <= n + 1; j++) {
+                mat_real[i][j] -= factor * mat_real[row][j];
+            }
+        }
+        row++;
     }
-    if (ans.empty()) {
-        cout << "NONE\n";
+
+    for (int i = 1; i <= m; i++) {
+        bool all_zero = true;
+        for (int j = 1; j <= n; j++) {
+            if (fabs(mat_real[i][j]) > EPS) {
+                all_zero = false;
+                break;
+            }
+        }
+        if (all_zero && fabs(mat_real[i][n + 1]) > EPS) return 0;
+    }
+
+    for (int i = 1; i <= n; i++) {
+        ans_real[i] = where_real[i] ? mat_real[where_real[i]][n + 1] : 0.0;
+    }
+    for (int i = 1; i <= n; i++) {
+        if (!where_real[i]) return 2;
+    }
+    return 1;
+}
+
+int gauss_mod_prime(int m, int n, ll mod) {
+    for (int i = 1; i <= n; i++) where_mod[i] = 0;
+
+    int row = 1;
+    for (int col = 1; col <= n && row <= m; col++) {
+        int sel = 0;
+        for (int i = row; i <= m; i++) {
+            if (norm_mod(mat_mod[i][col], mod) != 0) {
+                sel = i;
+                break;
+            }
+        }
+        if (!sel) continue;
+
+        for (int j = col; j <= n + 1; j++) {
+            swap(mat_mod[sel][j], mat_mod[row][j]);
+            mat_mod[row][j] = norm_mod(mat_mod[row][j], mod);
+        }
+
+        where_mod[col] = row;
+        ll inv = pow_mod(mat_mod[row][col], mod - 2, mod);
+        for (int j = col; j <= n + 1; j++) {
+            mat_mod[row][j] = mul_mod(mat_mod[row][j], inv, mod);
+        }
+
+        for (int i = 1; i <= m; i++) {
+            if (i == row) continue;
+            ll factor = norm_mod(mat_mod[i][col], mod);
+            if (factor == 0) continue;
+            for (int j = col; j <= n + 1; j++) {
+                mat_mod[i][j] = norm_mod(mat_mod[i][j] - mul_mod(factor, mat_mod[row][j], mod), mod);
+            }
+        }
+        row++;
+    }
+
+    for (int i = 1; i <= m; i++) {
+        bool all_zero = true;
+        for (int j = 1; j <= n; j++) {
+            if (norm_mod(mat_mod[i][j], mod) != 0) {
+                all_zero = false;
+                break;
+            }
+        }
+        if (all_zero && norm_mod(mat_mod[i][n + 1], mod) != 0) return 0;
+    }
+
+    for (int i = 1; i <= n; i++) {
+        ans_mod[i] = where_mod[i] ? norm_mod(mat_mod[where_mod[i]][n + 1], mod) : 0;
+    }
+    for (int i = 1; i <= n; i++) {
+        if (!where_mod[i]) return 2;
+    }
+    return 1;
+}
+
+bool solve_linear_congruence(ll a, ll b, ll mod, ll &x0, ll &step) {
+    if (mod <= 0) return false;
+    if (mod == 1) {
+        x0 = 0;
+        step = 1;
+        return true;
+    }
+
+    ll aa = norm_mod(a, mod);
+    ll g = gcd(aa, mod);
+    if (b % g != 0) return false;
+
+    ll reduced_mod = mod / g;
+    if (reduced_mod == 1) {
+        x0 = 0;
+        step = 1;
+        return true;
+    }
+
+    ll inv = inv_mod_coprime(aa / g, reduced_mod);
+    if (inv < 0) return false;
+    ll rhs = norm_mod(b / g, reduced_mod);
+    x0 = mul_mod(rhs, inv, reduced_mod);
+    step = reduced_mod;
+    return true;
+}
+
+double poly_eval(int deg, const double c[], double x) {
+    double res = c[deg];
+    for (int i = deg - 1; i >= 0; i--) {
+        res = res * x + c[i];
+    }
+    return res;
+}
+
+double poly_derivative_eval(int deg, const double c[], double x) {
+    if (deg == 0) return 0.0;
+    double res = deg * c[deg];
+    for (int i = deg - 1; i >= 1; i--) {
+        res = res * x + i * c[i];
+    }
+    return res;
+}
+
+bool bisect_poly_root(int deg, const double c[], double l, double r, double &root) {
+    double fl = poly_eval(deg, c, l);
+    double fr = poly_eval(deg, c, r);
+    if (fabs(fl) < EPS) {
+        root = l;
+        return true;
+    }
+    if (fabs(fr) < EPS) {
+        root = r;
+        return true;
+    }
+    if (fl * fr > 0) return false;
+
+    for (int it = 1; it <= 100; it++) {
+        double mid = (l + r) / 2.0;
+        double fm = poly_eval(deg, c, mid);
+        if (fabs(fm) < EPS) {
+            root = mid;
+            return true;
+        }
+        if (fl * fm <= 0) {
+            r = mid;
+            fr = fm;
+        } else {
+            l = mid;
+            fl = fm;
+        }
+        (void)fr;
+    }
+    root = (l + r) / 2.0;
+    return true;
+}
+
+bool newton_poly_root(int deg, const double c[], double start, double &root) {
+    double x = start;
+    for (int it = 1; it <= 60; it++) {
+        double fx = poly_eval(deg, c, x);
+        double dfx = poly_derivative_eval(deg, c, x);
+        if (!isfinite(fx) || !isfinite(dfx) || fabs(dfx) < EPS) return false;
+        double nx = x - fx / dfx;
+        if (!isfinite(nx)) return false;
+        if (fabs(nx - x) < 1e-12) {
+            root = nx;
+            return fabs(poly_eval(deg, c, root)) < 1e-7;
+        }
+        x = nx;
+    }
+    root = x;
+    return fabs(poly_eval(deg, c, root)) < 1e-7;
+}
+
+int solve_quadratic_formula(double a, double b, double c, double roots[]) {
+    if (fabs(a) < EPS) {
+        if (fabs(b) < EPS) {
+            return fabs(c) < EPS ? -1 : 0;
+        }
+        roots[1] = -c / b;
+        return 1;
+    }
+
+    double delta = b * b - 4.0 * a * c;
+    if (delta < -EPS) return 0;
+    if (fabs(delta) <= EPS) {
+        roots[1] = -b / (2.0 * a);
+        return 1;
+    }
+
+    double sqrt_delta = sqrt(max(0.0, delta));
+    double q = -0.5 * (b + (b >= 0 ? sqrt_delta : -sqrt_delta));
+    if (fabs(q) < EPS) {
+        roots[1] = (-b - sqrt_delta) / (2.0 * a);
+        roots[2] = (-b + sqrt_delta) / (2.0 * a);
     } else {
-        for (int i = 0; i < (int)ans.size(); i++) {
-            if (i) cout << ' ';
-            cout << ans[i];
-        }
-        cout << '\n';
+        roots[1] = q / a;
+        roots[2] = c / q;
     }
-    return 0;
+    if (roots[1] > roots[2]) swap(roots[1], roots[2]);
+    return 2;
 }
-```
 
-**测试设计：**
-
-1. 输入：
-```text
-aaaa
-aa
-```
-期望输出：
-```text
-1 2 3
-```
-
-2. 输入：
-```text
-abc
-d
-```
-期望输出：
-```text
-NONE
-```
-
-***
-### V06-EX07 Z 函数求最短循环节
-
-- 归属卷：第 6 卷
-- 覆盖模块：STR-02 Z 函数
-- 考场用途：判断字符串是否由更短模式重复构成。
-
-**题目描述：** 给定字符串 `s`，求最短循环节长度。若不存在更短循环节，则输出 `|s|`。
-
-**输入格式：** 一行字符串 `s`。
-
-**输出格式：** 输出一个整数。
-
-**样例输入：**
-```text
-ababab
-```
-
-**样例输出：**
-```text
-2
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-vector<int> z_function(const string &s) {
-    int n = (int)s.size();
-    vector<int> z(n, 0);
-    int l = 0, r = 0;
-    for (int i = 1; i < n; i++) {
-        if (i <= r) z[i] = min(r - i + 1, z[i - l]);
-        while (i + z[i] < n && s[z[i]] == s[i + z[i]]) z[i]++;
-        if (i + z[i] - 1 > r) {
-            l = i;
-            r = i + z[i] - 1;
-        }
+void print_real_solution(const string &tag, int n) {
+    cout << tag << '\n';
+    if (tag == "NO") return;
+    for (int i = 1; i <= n; i++) {
+        if (i > 1) cout << ' ';
+        double x = fabs(ans_real[i]) < 5e-13 ? 0.0 : ans_real[i];
+        cout << x;
     }
-    return z;
+    cout << '\n';
+}
+
+void print_mod_solution(const string &tag, int n) {
+    cout << tag << '\n';
+    if (tag == "NO") return;
+    for (int i = 1; i <= n; i++) {
+        if (i > 1) cout << ' ';
+        cout << ans_mod[i];
+    }
+    cout << '\n';
 }
 
 int main() {
     ios::sync_with_stdio(false);
     cin.tie(nullptr);
 
-    string s;
-    cin >> s;
-    int n = (int)s.size();
-    vector<int> z = z_function(s);
-    for (int p = 1; p <= n; p++) {
-        if (n % p == 0 && (p == n || z[p] >= n - p)) {
-            cout << p << '\n';
+    cout.setf(ios::fixed);
+    cout << setprecision(10);
+
+    string op;
+    if (!(cin >> op)) return 0;
+
+    if (op == "real") {
+        int m, n;
+        cin >> m >> n;
+        for (int i = 1; i <= m; i++) {
+            for (int j = 1; j <= n + 1; j++) cin >> mat_real[i][j];
+        }
+        int status = gauss_real(m, n);
+        if (status == 0) print_real_solution("NO", n);
+        else if (status == 1) print_real_solution("UNIQUE", n);
+        else print_real_solution("MANY", n);
+    } else if (op == "mod") {
+        int m, n;
+        ll mod;
+        cin >> m >> n >> mod;
+        if (mod <= 1) {
+            cout << "BAD_MOD\n";
             return 0;
         }
-    }
-    return 0;
-}
-```
-
-**测试设计：**
-
-1. 输入：
-```text
-abac
-```
-期望输出：
-```text
-4
-```
-
-2. 输入：
-```text
-x
-```
-期望输出：
-```text
-1
-```
-
-***
-### V06-EX08 Trie 前缀统计
-
-- 归属卷：第 6 卷
-- 覆盖模块：STR-03 Trie
-- 考场用途：维护词典并回答前缀数量。
-
-**题目描述：** 维护一个小写字母词典，支持 `add word` 插入单词，`ask prefix` 查询有多少已插入单词以 `prefix` 为前缀。
-
-**输入格式：** 第一行一个整数 `q`。接下来 `q` 行，每行为一个操作。
-
-**输出格式：** 对每个 `ask` 操作输出一行答案。
-
-**样例输入：**
-```text
-6
-add apple
-add app
-ask app
-ask apple
-add apply
-ask appl
-```
-
-**样例输出：**
-```text
-2
-1
-2
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-struct Trie {
-    struct Node {
-        int nxt[26]{};
-        int pass = 0;
-    };
-    vector<Node> tr;
-
-    Trie() {
-        tr.push_back(Node());
-    }
-
-    void insert(const string &s) {
-        int u = 0;
-        tr[u].pass++;
-        for (char c : s) {
-            int x = c - 'a';
-            if (!tr[u].nxt[x]) {
-                tr[u].nxt[x] = (int)tr.size();
-                tr.push_back(Node());
+        for (int i = 1; i <= m; i++) {
+            for (int j = 1; j <= n + 1; j++) {
+                cin >> mat_mod[i][j];
+                mat_mod[i][j] = norm_mod(mat_mod[i][j], mod);
             }
-            u = tr[u].nxt[x];
-            tr[u].pass++;
         }
-    }
-
-    int query(const string &s) const {
-        int u = 0;
-        for (char c : s) {
-            int x = c - 'a';
-            if (x < 0 || x >= 26 || !tr[u].nxt[x]) return 0;
-            u = tr[u].nxt[x];
+        int status = gauss_mod_prime(m, n, mod);
+        if (status == 0) print_mod_solution("NO", n);
+        else if (status == 1) print_mod_solution("UNIQUE", n);
+        else print_mod_solution("MANY", n);
+    } else if (op == "congruence") {
+        ll a, b, mod, x0, step;
+        cin >> a >> b >> mod;
+        if (!solve_linear_congruence(a, b, mod, x0, step)) {
+            cout << "NO\n";
+        } else {
+            cout << x0 << ' ' << step << '\n';
         }
-        return tr[u].pass;
-    }
-};
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int q;
-    cin >> q;
-    Trie trie;
-    while (q--) {
-        string op, s;
-        cin >> op >> s;
-        if (op == "add") trie.insert(s);
-        else cout << trie.query(s) << '\n';
-    }
-    return 0;
-}
-```
-
-**测试设计：**
-
-1. 输入：
-```text
-5
-ask a
-add a
-add ab
-ask a
-ask ab
-```
-期望输出：
-```text
-0
-2
-1
-```
-
-2. 输入：
-```text
-4
-add cat
-add car
-ask ca
-ask dog
-```
-期望输出：
-```text
-2
-0
-```
-
-***
-### V06-EX09 Rolling Hash 子串相等
-
-- 归属卷：第 6 卷
-- 覆盖模块：STR-03 Rolling Hash
-- 考场用途：多次判断两个子串是否相等。
-
-**题目描述：** 给定字符串 `s` 和 `q` 次询问，每次给出两个 1-index 闭区间 `[l1,r1]`、`[l2,r2]`，判断两个子串是否相等。
-
-**输入格式：** 第一行字符串 `s`。第二行整数 `q`。接下来 `q` 行，每行 `l1 r1 l2 r2`。
-
-**输出格式：** 相等输出 `YES`，否则输出 `NO`。
-
-**样例输入：**
-```text
-abacaba
-3
-1 3 5 7
-1 2 2 3
-3 3 7 7
-```
-
-**样例输出：**
-```text
-YES
-NO
-YES
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-using ull = unsigned long long;
-
-struct RollingHash {
-    static const ull BASE = 1315423911ULL;
-    vector<ull> h, pw;
-
-    void build(const string &s) {
-        int n = (int)s.size();
-        h.assign(n + 1, 0);
-        pw.assign(n + 1, 1);
-        for (int i = 0; i < n; i++) {
-            h[i + 1] = h[i] * BASE + (unsigned char)s[i] + 1;
-            pw[i + 1] = pw[i] * BASE;
-        }
-    }
-
-    ull get(int l, int r) const {
-        return h[r + 1] - h[l] * pw[r - l + 1];
-    }
-};
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    string s;
-    cin >> s;
-    RollingHash rh;
-    rh.build(s);
-    int q;
-    cin >> q;
-    while (q--) {
-        int l1, r1, l2, r2;
-        cin >> l1 >> r1 >> l2 >> r2;
-        --l1; --r1; --l2; --r2;
-        if (r1 - l1 != r2 - l2) cout << "NO\n";
-        else cout << (rh.get(l1, r1) == rh.get(l2, r2) ? "YES\n" : "NO\n");
-    }
-    return 0;
-}
-```
-
-**测试设计：**
-
-1. 输入：
-```text
-aaaa
-2
-1 2 2 3
-1 3 2 4
-```
-期望输出：
-```text
-YES
-YES
-```
-
-2. 输入：
-```text
-abcd
-2
-1 1 4 4
-1 2 3 4
-```
-期望输出：
-```text
-NO
-NO
-```
-
-***
-### V06-EX10 Manacher 回文询问
-
-- 归属卷：第 6 卷
-- 覆盖模块：STR-04 Manacher
-- 考场用途：预处理后快速判断任意区间是否回文。
-
-**题目描述：** 给定字符串 `s`，回答 `q` 次询问。每次给出 1-index 闭区间 `[l,r]`，判断 `s[l..r]` 是否为回文串。
-
-**输入格式：** 第一行字符串 `s`。第二行整数 `q`。接下来 `q` 行，每行 `l r`。
-
-**输出格式：** 回文输出 `YES`，否则输出 `NO`。
-
-**样例输入：**
-```text
-abacaba
-4
-1 7
-1 3
-2 4
-3 5
-```
-
-**样例输出：**
-```text
-YES
-YES
-NO
-YES
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-pair<vector<int>, vector<int>> manacher(const string &s) {
-    int n = (int)s.size();
-    vector<int> d1(n), d2(n);
-    for (int i = 0, l = 0, r = -1; i < n; i++) {
-        int k = (i > r) ? 1 : min(d1[l + r - i], r - i + 1);
-        while (i - k >= 0 && i + k < n && s[i - k] == s[i + k]) k++;
-        d1[i] = k;
-        if (i + k - 1 > r) {
-            l = i - k + 1;
-            r = i + k - 1;
-        }
-    }
-    for (int i = 0, l = 0, r = -1; i < n; i++) {
-        int k = (i > r) ? 0 : min(d2[l + r - i + 1], r - i + 1);
-        while (i - k - 1 >= 0 && i + k < n && s[i - k - 1] == s[i + k]) k++;
-        d2[i] = k;
-        if (i + k - 1 > r) {
-            l = i - k;
-            r = i + k - 1;
-        }
-    }
-    return {d1, d2};
-}
-
-bool is_pal(int l, int r, const vector<int> &d1, const vector<int> &d2) {
-    int len = r - l + 1;
-    if (len & 1) {
-        int mid = (l + r) / 2;
-        return d1[mid] >= len / 2 + 1;
-    }
-    int mid = (l + r + 1) / 2;
-    return d2[mid] >= len / 2;
-}
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    string s;
-    cin >> s;
-    auto data = manacher(s);
-    int q;
-    cin >> q;
-    while (q--) {
-        int l, r;
+    } else if (op == "eval") {
+        int deg;
+        double x;
+        cin >> deg;
+        for (int i = 0; i <= deg; i++) cin >> coef_poly[i];
+        cin >> x;
+        cout << poly_eval(deg, coef_poly, x) << '\n';
+    } else if (op == "bisect") {
+        int deg;
+        double l, r, root;
+        cin >> deg;
+        for (int i = 0; i <= deg; i++) cin >> coef_poly[i];
         cin >> l >> r;
-        --l; --r;
-        cout << (is_pal(l, r, data.first, data.second) ? "YES\n" : "NO\n");
+        if (bisect_poly_root(deg, coef_poly, l, r, root)) {
+            cout << root << ' ' << poly_eval(deg, coef_poly, root) << '\n';
+        } else {
+            cout << "NO_BRACKET\n";
+        }
+    } else if (op == "newton") {
+        int deg;
+        double start, root;
+        cin >> deg;
+        for (int i = 0; i <= deg; i++) cin >> coef_poly[i];
+        cin >> start;
+        if (newton_poly_root(deg, coef_poly, start, root)) {
+            cout << root << ' ' << poly_eval(deg, coef_poly, root) << '\n';
+        } else {
+            cout << "FAIL\n";
+        }
+    } else if (op == "quad") {
+        double a, b, c;
+        double roots[3] = {0, 0, 0};
+        cin >> a >> b >> c;
+        int cnt = solve_quadratic_formula(a, b, c, roots);
+        if (cnt < 0) {
+            cout << "INF\n";
+        } else {
+            cout << cnt << '\n';
+            for (int i = 1; i <= cnt; i++) {
+                double x = fabs(roots[i]) < 5e-13 ? 0.0 : roots[i];
+                cout << x << '\n';
+            }
+        }
     }
+
     return 0;
 }
 ```
 
-**测试设计：**
+调用示例：
 
-1. 输入：
-```text
-abba
-3
-1 4
-2 3
-1 3
-```
-期望输出：
-```text
-YES
-YES
-NO
+```cpp
+// 2x + y = 5
+// x - y = 1
+// 高斯后得到 x=2, y=1。
+int m = 2, n = 2;
+mat_real[1][1] = 2; mat_real[1][2] = 1;  mat_real[1][3] = 5;
+mat_real[2][1] = 1; mat_real[2][2] = -1; mat_real[2][3] = 1;
+int status = gauss_real(m, n);
+if (status == 1) {
+    cout << ans_real[1] << ' ' << ans_real[2] << '\n';
+}
+
+// 多项式 1 - 3x + 2x^2 在 x=3 的值。
+double c[3];
+c[0] = 1;
+c[1] = -3;
+c[2] = 2;
+cout << poly_eval(2, c, 3) << '\n'; // 10
 ```
 
-2. 输入：
+## 二分和牛顿怎么选
+
+二分是“慢但稳”：
+
+- 必须能保证根在区间里。
+- 最常见保证是 `f(l)` 与 `f(r)` 异号。
+- 如果函数单调，也可以二分找 `f(x) >= 0` 的边界。
+
+牛顿是“快但挑初值”：
+
 ```text
-abc
+x_{k+1} = x_k - f(x_k) / f'(x_k)
+```
+
+- 初值离根太远可能发散。
+- 导数接近 0 时要停。
+- 考场建议：能二分先二分；牛顿只在题目明确或需要加速时用。
+
+## 多项式求根的低心智路线
+
+```text
+一次：a*x+b=0，直接 -b/a。
+二次：a*x^2+b*x+c=0，判别式 delta=b^2-4ac。
+三次及以上：如果只求某个区间一个根，用二分/牛顿；不要临场硬抄三次公式。
+```
+
+如果题目要求“所有实根”：
+
+- 二次公式可以全部输出。
+- 高次多项式需要导数分段、Sturm、或题面给出特殊性质；普通 SIM 模板不强行覆盖。
+- 只给误差要求且区间小，可以按题意扫描小区间，再对异号段二分，但偶重根可能不会异号。
+
+常见坑：
+
+- 高斯消元一定要先判无解，再判多解。
+- 实数高斯主元要选绝对值最大行，别直接拿当前行。
+- `EPS` 不是越小越好；普通 `double` 用 `1e-9` 到 `1e-12`。
+- 多解时自由变量可以先置 0，但题目如果要求参数形式，要单独输出自由变量。
+- 模高斯这里默认 `mod` 是质数；复合模下非零数不一定有逆元。
+- 读入负数系数后要 `((x % mod) + mod) % mod`。
+- `a*x ≡ b (mod m)` 有解条件是 `gcd(a,m) | b`。
+- 二分根要求连续函数；离散答案二分和连续二分不是同一件事。
+- 区间两端同号不代表没有根，例如 `(x-1)^2=0`。
+- 牛顿法要防导数为 0、结果变成 `nan/inf`。
+- Horner 系数顺序必须统一，本模板用低次到高次：`c[0], c[1], ..., c[deg]`。
+- 二次公式里 `delta` 接近 0 时按一个根处理，避免输出两个几乎相同的根。
+- 输出浮点答案记得 `fixed << setprecision(...)`。
+
+暴力/部分分替代：
+
+- 未知数 `n <= 3` 且整数范围小：枚举所有变量检查方程。
+- 实数方程组只要求小数据：可以用 Cramer's rule 解 `2x2/3x3`，但高斯更通用。
+- 模方程变量很少且模数小：直接枚举 `0..mod-1`。
+- 一元方程区间很短且答案是整数：枚举整数点。
+- 多项式次数低：优先一次/二次公式。
+- Newton 不稳时，退回二分。
+
+升级方向：
+
+```text
+整数小范围枚举 -> 实数/模高斯
+单条同余 -> exgcd
+模质数方程组 -> 模高斯
+连续一元方程 -> 二分
+二分太慢且导数好算 -> 牛顿
+二次以内 -> 公式
+高次所有根 -> 导数分段 / Sturm / 专题数学
+```
+
+最小测试样例：
+
+```text
+输入
+real
+2 2
+2 1 5
+1 -1 1
+
+输出
+UNIQUE
+2.0000000000 1.0000000000
+```
+
+补充自测 1：
+
+```text
+输入
+mod
+2 2 1000000007
+2 1 5
+1 -1 1
+
+输出
+UNIQUE
+2 1
+```
+
+补充自测 2：
+
+```text
+输入
+congruence
+14 30 100
+
+输出
+45 50
+```
+
+补充自测 3：
+
+```text
+输入
+eval
 2
-1 1
-1 2
-```
-期望输出：
-```text
-YES
-NO
-```
-
-***
-### V06-CEX01 组合数查询
-
-- 归属卷：第 6 卷
-- 覆盖模块：快速幂、逆元、组合数
-- 考场用途：模数是质数时的 C(n,k)。
-- 参考题型来源：参考来源：洛谷组合数学题型。
-
-**题目描述：** 预处理阶乘，回答组合数。
-
-**输入格式：** 第一行 n q mod，之后 q 行 a b。
-
-**输出格式：** 输出 C(a,b) mod。
-
-**样例输入：**
-```text
-5 3 1000000007
-5 2
-4 0
-3 5
-```
-
-**样例输出：**
-```text
-10
-1
-0
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-
-long long modpow(long long a,long long b,long long mod){long long r=1%mod;for(a%=mod;b;b>>=1,a=a*a%mod)if(b&1)r=r*a%mod;return r;}
-int main(){ios::sync_with_stdio(false);cin.tie(nullptr);int n,q;long long mod;cin>>n>>q>>mod; vector<long long>fac(n+1),inv(n+1);fac[0]=1%mod;for(int i=1;i<=n;i++)fac[i]=fac[i-1]*i%mod;inv[n]=modpow(fac[n],mod-2,mod);for(int i=n;i>=1;i--)inv[i-1]=inv[i]*i%mod;while(q--){int a,b;cin>>a>>b;if(b<0||b>a)cout<<0<<"\n";else cout<<fac[a]*inv[b]%mod*inv[a-b]%mod<<"\n";}return 0;}
-```
-
-**测试设计：** 额外测试：构造最小规模、重复值、边界值各一组，和样例一起运行。
-
-***
-### V06-CEX02 筛法加哥德巴赫拆分
-
-- 归属卷：第 6 卷
-- 覆盖模块：欧拉筛、质数判定
-- 考场用途：筛完再做构造/查询。
-- 参考题型来源：参考来源：洛谷素数筛/数论基础题型。
-
-**题目描述：** 输出不超过 n 的质数个数，并找一组质数和为 n。
-
-**输入格式：** 输入偶数 n。
-
-**输出格式：** 输出质数个数和一组拆分。
-
-**样例输入：**
-```text
-20
-```
-
-**样例输出：**
-```text
-8
-3 17
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-
-int main(){ios::sync_with_stdio(false);cin.tie(nullptr);int n;cin>>n; vector<int>is(n+1,1),pr; if(n>=0)is[0]=0;if(n>=1)is[1]=0; for(int i=2;i<=n;i++){if(is[i])pr.push_back(i); for(int p:pr){if(1LL*i*p>n)break;is[i*p]=0;if(i%p==0)break;}} cout<<pr.size()<<"\n"; for(int p:pr) if(n-p>=2&&is[n-p]){cout<<p<<" "<<n-p<<"\n"; return 0;} cout<<"NONE\n";return 0;}
-```
-
-**测试设计：** 额外测试：构造最小规模、重复值、边界值各一组，和样例一起运行。
-
-***
-### V06-CEX03 KMP 统计出现次数
-
-- 归属卷：第 6 卷
-- 覆盖模块：KMP、前缀函数
-- 考场用途：匹配题直接套。
-- 参考题型来源：参考来源：洛谷 KMP 模板题型。
-
-**题目描述：** 统计模式串在文本中出现次数，允许重叠。
-
-**输入格式：** 第一行模式串，第二行文本。
-
-**输出格式：** 输出次数。
-
-**样例输入：**
-```text
-aba
-ababaaba
-```
-
-**样例输出：**
-```text
+1 -3 2
 3
+
+输出
+10.0000000000
 ```
 
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
+补充自测 4：
 
-
-vector<int> prefix_function(const string&s){int n=s.size();vector<int>pi(n);for(int i=1;i<n;i++){int j=pi[i-1];while(j&&s[i]!=s[j])j=pi[j-1];if(s[i]==s[j])j++;pi[i]=j;}return pi;}
-int main(){ios::sync_with_stdio(false);cin.tie(nullptr);string p,t;cin>>p>>t;string s=p+"#"+t;auto pi=prefix_function(s);int ans=0;for(int x:pi)if(x==(int)p.size())ans++;cout<<ans<<"\n";return 0;}
-```
-
-**测试设计：** 额外测试：构造最小规模、重复值、边界值各一组，和样例一起运行。
-
-***
-### V06-CEX04 Trie 前缀数量查询
-
-- 归属卷：第 6 卷
-- 覆盖模块：Trie、字符串前缀
-- 考场用途：前缀类题目比 map 枚举稳。
-- 参考题型来源：参考来源：洛谷 Trie 模板题型。
-
-**题目描述：** 插入单词，查询每个前缀是多少单词的前缀。
-
-**输入格式：** 第一行 n q，之后 n 个单词和 q 个前缀。
-
-**输出格式：** 输出数量。
-
-**样例输入：**
 ```text
-4 3
-apple app apt bat
-ap
-app
-b
-```
-
-**样例输出：**
-```text
-3
+输入
+bisect
 2
-1
+-2 0 1
+0 2
+
+输出示例
+1.4142135624 0.0000000000
 ```
 
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
+补充自测 5：
 
-
-struct Node{int nxt[26];int cnt;Node(){memset(nxt,0,sizeof(nxt));cnt=0;}};
-int main(){ios::sync_with_stdio(false);cin.tie(nullptr);int n,q;cin>>n>>q;vector<Node>tr(1); for(int i=1;i<=n;i++){string s;cin>>s;int u=0;for(char c:s){int x=c-'a';if(!tr[u].nxt[x]){tr[u].nxt[x]=tr.size();tr.push_back(Node());}u=tr[u].nxt[x];tr[u].cnt++;}} while(q--){string s;cin>>s;int u=0,ok=1;for(char c:s){int x=c-'a';if(!tr[u].nxt[x]){ok=0;break;}u=tr[u].nxt[x];}cout<<(ok?tr[u].cnt:0)<<"\n";}return 0;}
-```
-
-**测试设计：** 额外测试：构造最小规模、重复值、边界值各一组，和样例一起运行。
-
-***
-### V06-CEX05 Manacher 最长回文子串
-
-- 归属卷：第 6 卷
-- 覆盖模块：Manacher、回文
-- 考场用途：回文长度题的线性模板。
-- 参考题型来源：参考来源：洛谷回文字符串题型。
-
-**题目描述：** 输出字符串最长回文子串长度。
-
-**输入格式：** 输入字符串。
-
-**输出格式：** 输出长度。
-
-**样例输入：**
 ```text
-babad
+输入
+quad
+1 -3 2
+
+输出
+2
+1.0000000000
+2.0000000000
 ```
-
-**样例输出：**
-```text
-3
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-
-int main(){ios::sync_with_stdio(false);cin.tie(nullptr);string s;cin>>s;string t="@";for(char c:s){t+="#";t+=c;}t+="#$";int n=t.size();vector<int>p(n);int c=0,r=0,ans=0;for(int i=1;i<n-1;i++){int mir=2*c-i;if(i<r)p[i]=min(r-i,p[mir]);while(t[i+1+p[i]]==t[i-1-p[i]])p[i]++;if(i+p[i]>r){c=i;r=i+p[i];}ans=max(ans,p[i]);}cout<<ans<<"\n";return 0;}
-```
-
-**测试设计：** 额外测试：构造最小规模、重复值、边界值各一组，和样例一起运行。
-
-***
-
-<!-- V02_EXAMPLES_END -->
 
 
 
@@ -41650,1019 +31987,6 @@ TLE：
 升级版本：预处理 `fac/ifac`，每问 `O(1)`。
 
 最小验错：`k=0`；`k=n`；`k>n`；`n` 等于预处理上界。
-
-<!-- V02_EXAMPLES_START -->
-
-# v0.2 本卷例题训练区
-
-这一节是 0.2 新增的实战例题。每题都配完整可运行代码和样例；考试时优先看“覆盖模块”和“考场用途”，再复制对应代码骨架。
-
-### V07-EX01 多组图连通块清空
-
-- 归属卷：第 7 卷
-- 覆盖模块：TRAIN-00、TRAIN-01、GRAPH-01
-- 考场用途：训练多组数据时每组重新建图、清空 `visited` 和邻接表。
-
-**题目描述：** 给定 `T` 组无向图，分别输出每组图的连通块个数。
-
-**输入格式：** 第一行一个整数 `T`。每组第一行两个整数 `n m`，接下来 `m` 行每行一条无向边 `u v`。
-
-**输出格式：** 每组输出一行连通块个数。
-
-**样例输入：**
-```text
-2
-4 2
-1 2
-3 4
-3 0
-```
-
-**样例输出：**
-```text
-2
-3
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int T;
-    cin >> T;
-    while (T--) {
-        int n, m;
-        cin >> n >> m;
-        vector<vector<int>> graph(n + 1);
-        for (int i = 1; i <= m; i++) {
-            int u, v;
-            cin >> u >> v;
-            graph[u].push_back(v);
-            graph[v].push_back(u);
-        }
-        vector<int> visited(n + 1, 0);
-        int components = 0;
-        for (int start = 1; start <= n; start++) {
-            if (visited[start]) continue;
-            components++;
-            queue<int> q;
-            q.push(start);
-            visited[start] = 1;
-            while (!q.empty()) {
-                int u = q.front();
-                q.pop();
-                for (int v : graph[u]) {
-                    if (!visited[v]) {
-                        visited[v] = 1;
-                        q.push(v);
-                    }
-                }
-            }
-        }
-        cout << components << '\n';
-    }
-    return 0;
-}
-```
-
-**测试设计：**
-
-- 测试 1 输入：
-```text
-1
-1 0
-```
-期望输出：
-```text
-1
-```
-- 测试 2 输入：
-```text
-2
-3 2
-1 2
-2 3
-2 0
-```
-期望输出：
-```text
-1
-2
-```
-### V07-EX02 前缀和暴力核验
-
-- 归属卷：第 7 卷
-- 覆盖模块：TRAIN-00、TRAIN-02、DS-01
-- 考场用途：训练优化版写完后保留暴力版，对每个查询做小规模核验。
-
-**题目描述：** 给定数组和若干区间和询问。程序同时用前缀和与暴力循环计算答案；若发现不一致，输出 `CHECK_FAILED` 并结束，否则输出每次询问答案。
-
-**输入格式：** 第一行两个整数 `n q`。第二行 `n` 个整数。接下来 `q` 行，每行两个整数 `l r`。
-
-**输出格式：** 若核验通过，每个询问输出一行答案；否则输出 `CHECK_FAILED`。
-
-**样例输入：**
-```text
-4 3
-2 -1 5 3
-1 4
-2 3
-4 4
-```
-
-**样例输出：**
-```text
-9
-4
-3
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-using ll = long long;
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n, q;
-    cin >> n >> q;
-    vector<ll> a(n + 1), prefix(n + 1, 0);
-    for (int i = 1; i <= n; i++) {
-        cin >> a[i];
-        prefix[i] = prefix[i - 1] + a[i];
-    }
-    while (q--) {
-        int l, r;
-        cin >> l >> r;
-        ll fast = prefix[r] - prefix[l - 1];
-        ll slow = 0;
-        for (int i = l; i <= r; i++) slow += a[i];
-        if (fast != slow) {
-            cout << "CHECK_FAILED\n";
-            return 0;
-        }
-        cout << fast << '\n';
-    }
-    return 0;
-}
-```
-
-**测试设计：**
-
-- 测试 1 输入：
-```text
-1 1
--8
-1 1
-```
-期望输出：
-```text
--8
-```
-- 测试 2 输入：
-```text
-3 2
-10 20 30
-1 1
-1 3
-```
-期望输出：
-```text
-10
-60
-```
-### V07-EX03 背包循环顺序反例
-
-- 归属卷：第 7 卷
-- 覆盖模块：TRAIN-01、DP-06、BRUTE-15
-- 考场用途：训练用最小反例识别 0/1 背包容量正序导致重复选择的问题。
-
-**题目描述：** 给定 0/1 背包数据。程序输出正确答案，并判断“错误的容量正序写法”是否会得到不同结果。若不同，第二行输出 `LOOP_RISK`，否则输出 `SAME`。
-
-**输入格式：** 第一行两个整数 `n W`。接下来 `n` 行，每行 `w v`。
-
-**输出格式：** 第一行输出 0/1 背包正确最大价值。第二行输出 `LOOP_RISK` 或 `SAME`。
-
-**样例输入：**
-```text
-1 2
-1 1
-```
-
-**样例输出：**
-```text
-1
-LOOP_RISK
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-using ll = long long;
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n, W;
-    cin >> n >> W;
-    vector<int> w(n + 1);
-    vector<ll> v(n + 1);
-    for (int i = 1; i <= n; i++) cin >> w[i] >> v[i];
-
-    vector<ll> correct(W + 1, 0), forward_wrong(W + 1, 0);
-    for (int i = 1; i <= n; i++) {
-        for (int cap = W; cap >= w[i]; cap--) {
-            correct[cap] = max(correct[cap], correct[cap - w[i]] + v[i]);
-        }
-        for (int cap = w[i]; cap <= W; cap++) {
-            forward_wrong[cap] = max(forward_wrong[cap], forward_wrong[cap - w[i]] + v[i]);
-        }
-    }
-
-    cout << correct[W] << '\n';
-    cout << (correct[W] == forward_wrong[W] ? "SAME" : "LOOP_RISK") << '\n';
-    return 0;
-}
-```
-
-**测试设计：**
-
-- 测试 1 输入：
-```text
-2 3
-2 5
-3 7
-```
-期望输出：
-```text
-7
-SAME
-```
-- 测试 2 输入：
-```text
-1 3
-1 2
-```
-期望输出：
-```text
-2
-LOOP_RISK
-```
-### V07-EX04 最短路双算法核验
-
-- 归属卷：第 7 卷
-- 覆盖模块：TRAIN-00、GRAPH-03、GRAPH-04
-- 考场用途：训练用慢速 Bellman-Ford 核验 Dijkstra，抓旧堆状态、重边和不可达输出问题。
-
-**题目描述：** 给定无向非负权图和起点 `s`。程序分别用 Dijkstra 和 Bellman-Ford 求最短路；若结果不一致，输出 `CHECK_FAILED`，否则输出从 `s` 到每个点的最短距离，不可达输出 `-1`。
-
-**输入格式：** 第一行三个整数 `n m s`。接下来 `m` 行，每行 `u v w`。
-
-**输出格式：** 输出一行 `n` 个整数，表示到 `1..n` 的距离。
-
-**样例输入：**
-```text
-4 4 1
-1 2 10
-1 2 3
-2 3 4
-4 4 0
-```
-
-**样例输出：**
-```text
-0 3 7 -1
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-using ll = long long;
-const ll INF = 4'000'000'000'000'000'000LL;
-
-struct Edge {
-    int u;
-    int v;
-    ll w;
-};
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n, m, s;
-    cin >> n >> m >> s;
-    vector<vector<pair<int, ll>>> graph(n + 1);
-    vector<Edge> edges;
-    for (int i = 1; i <= m; i++) {
-        int u, v;
-        ll w;
-        cin >> u >> v >> w;
-        graph[u].push_back({v, w});
-        graph[v].push_back({u, w});
-        edges.push_back({u, v, w});
-        edges.push_back({v, u, w});
-    }
-
-    vector<ll> dijkstra(n + 1, INF);
-    priority_queue<pair<ll, int>, vector<pair<ll, int>>, greater<pair<ll, int>>> pq;
-    dijkstra[s] = 0;
-    pq.push({0, s});
-    while (!pq.empty()) {
-        auto [du, u] = pq.top();
-        pq.pop();
-        if (du != dijkstra[u]) continue;
-        for (auto [v, w] : graph[u]) {
-            if (dijkstra[v] > du + w) {
-                dijkstra[v] = du + w;
-                pq.push({dijkstra[v], v});
-            }
-        }
-    }
-
-    vector<ll> bellman(n + 1, INF);
-    bellman[s] = 0;
-    for (int round = 1; round <= n - 1; round++) {
-        bool changed = false;
-        for (const Edge &e : edges) {
-            if (bellman[e.u] == INF) continue;
-            if (bellman[e.v] > bellman[e.u] + e.w) {
-                bellman[e.v] = bellman[e.u] + e.w;
-                changed = true;
-            }
-        }
-        if (!changed) break;
-    }
-
-    for (int i = 1; i <= n; i++) {
-        if (dijkstra[i] != bellman[i]) {
-            cout << "CHECK_FAILED\n";
-            return 0;
-        }
-    }
-    for (int i = 1; i <= n; i++) {
-        if (i > 1) cout << ' ';
-        cout << (dijkstra[i] == INF ? -1 : dijkstra[i]);
-    }
-    cout << '\n';
-    return 0;
-}
-```
-
-**测试设计：**
-
-- 测试 1 输入：
-```text
-3 1 1
-1 2 5
-```
-期望输出：
-```text
-0 5 -1
-```
-- 测试 2 输入：
-```text
-3 3 1
-1 2 0
-2 3 2
-1 3 5
-```
-期望输出：
-```text
-0 0 2
-```
-### V07-EX05 KMP 与暴力重叠核验
-
-- 归属卷：第 7 卷
-- 覆盖模块：TRAIN-00、STR-02、CPP-011
-- 考场用途：训练字符串算法用暴力版核验，重点覆盖重叠匹配。
-
-**题目描述：** 给定文本串 `s` 和模式串 `p`。程序用 KMP 和暴力匹配分别统计出现次数；若不一致，输出 `CHECK_FAILED`，否则输出出现次数。
-
-**输入格式：** 第一行字符串 `s`。第二行字符串 `p`。
-
-**输出格式：** 输出核验后的出现次数，或 `CHECK_FAILED`。
-
-**样例输入：**
-```text
-aaaaa
-aa
-```
-
-**样例输出：**
-```text
-4
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    string s_raw, p_raw;
-    cin >> s_raw >> p_raw;
-    string s = " " + s_raw;
-    string p = " " + p_raw;
-    int n = (int)s_raw.size();
-    int m = (int)p_raw.size();
-
-    vector<int> pi(m + 1, 0);
-    for (int i = 2; i <= m; i++) {
-        int j = pi[i - 1];
-        while (j > 0 && p[i] != p[j + 1]) j = pi[j];
-        if (p[i] == p[j + 1]) j++;
-        pi[i] = j;
-    }
-
-    int kmp_count = 0;
-    int j = 0;
-    for (int i = 1; i <= n; i++) {
-        while (j > 0 && s[i] != p[j + 1]) j = pi[j];
-        if (s[i] == p[j + 1]) j++;
-        if (j == m) {
-            kmp_count++;
-            j = pi[j];
-        }
-    }
-
-    int brute_count = 0;
-    for (int i = 1; i + m - 1 <= n; i++) {
-        bool ok = true;
-        for (int t = 1; t <= m; t++) {
-            if (s[i + t - 1] != p[t]) ok = false;
-        }
-        if (ok) brute_count++;
-    }
-
-    if (kmp_count != brute_count) {
-        cout << "CHECK_FAILED\n";
-    } else {
-        cout << kmp_count << '\n';
-    }
-    return 0;
-}
-```
-
-**测试设计：**
-
-- 测试 1 输入：
-```text
-abababa
-aba
-```
-期望输出：
-```text
-3
-```
-- 测试 2 输入：
-```text
-abcde
-f
-```
-期望输出：
-```text
-0
-```
-### V07-EX06 空栈保护括号匹配
-
-- 归属卷：第 7 卷
-- 覆盖模块：TRAIN-00、CPP-004、CPP-009
-- 考场用途：训练访问 `top` 前先判空，避免空容器运行错误。
-
-**题目描述：** 给定 `T` 个只含括号字符的字符串，判断每个字符串是否合法。括号包含 `()[]{} ` 三种，必须正确嵌套。
-
-**输入格式：** 第一行一个整数 `T`。接下来 `T` 行，每行一个字符串。
-
-**输出格式：** 每个字符串输出 `YES` 或 `NO`。
-
-**样例输入：**
-```text
-3
-([])
-([)]
-)(
-```
-
-**样例输出：**
-```text
-YES
-NO
-NO
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-bool match(char left, char right) {
-    return (left == '(' && right == ')') ||
-           (left == '[' && right == ']') ||
-           (left == '{' && right == '}');
-}
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int T;
-    cin >> T;
-    while (T--) {
-        string s;
-        cin >> s;
-        stack<char> st;
-        bool ok = true;
-        for (char c : s) {
-            if (c == '(' || c == '[' || c == '{') {
-                st.push(c);
-            } else {
-                if (st.empty() || !match(st.top(), c)) {
-                    ok = false;
-                    break;
-                }
-                st.pop();
-            }
-        }
-        if (!st.empty()) ok = false;
-        cout << (ok ? "YES" : "NO") << '\n';
-    }
-    return 0;
-}
-```
-
-**测试设计：**
-
-- 测试 1 输入：
-```text
-2
-()
-(
-```
-期望输出：
-```text
-YES
-NO
-```
-- 测试 2 输入：
-```text
-2
-]
-{[]}
-```
-期望输出：
-```text
-NO
-YES
-```
-### V07-EX07 乘法溢出上限判断
-
-- 归属卷：第 7 卷
-- 覆盖模块：TRAIN-00、CPP-008、MATH-02
-- 考场用途：训练大数乘法比较时使用 `__int128`，避免 `long long` 中间乘法溢出。
-
-**题目描述：** 给定 `q` 个询问，每个询问包含非负整数 `a b limit`。判断 `a*b` 是否不超过 `limit`。
-
-**输入格式：** 第一行一个整数 `q`。接下来 `q` 行，每行三个整数 `a b limit`。
-
-**输出格式：** 每个询问输出 `YES` 或 `NO`。
-
-**样例输入：**
-```text
-3
-3 4 12
-3 5 14
-1000000000000 1000000000000 1000000000000000000
-```
-
-**样例输出：**
-```text
-YES
-NO
-NO
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-using ll = long long;
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int q;
-    cin >> q;
-    while (q--) {
-        ll a, b, limit;
-        cin >> a >> b >> limit;
-        __int128 product = (__int128)a * b;
-        cout << (product <= limit ? "YES" : "NO") << '\n';
-    }
-    return 0;
-}
-```
-
-**测试设计：**
-
-- 测试 1 输入：
-```text
-2
-0 999999999999999999 0
-1 999999999999999999 999999999999999999
-```
-期望输出：
-```text
-YES
-YES
-```
-- 测试 2 输入：
-```text
-1
-3037000500 3037000500 9223372036854775807
-```
-期望输出：
-```text
-NO
-```
-### V07-EX08 二分答案边界核验
-
-- 归属卷：第 7 卷
-- 覆盖模块：TRAIN-02、ROUTE-00、GREEDY-02
-- 考场用途：训练二分答案的左右边界、`check` 单调性和 `k=1`、`k=n` 反例。
-
-**题目描述：** 给定 `n` 个正整数任务量，按原顺序分成不超过 `k` 个连续段。最小化所有段和的最大值。
-
-**输入格式：** 第一行两个整数 `n k`。第二行 `n` 个正整数。
-
-**输出格式：** 输出最小可能的最大段和。
-
-**样例输入：**
-```text
-5 2
-7 2 5 10 8
-```
-
-**样例输出：**
-```text
-18
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-using ll = long long;
-
-bool can_split(const vector<ll> &a, int n, int k, ll limit) {
-    int groups = 1;
-    ll current = 0;
-    for (int i = 1; i <= n; i++) {
-        if (a[i] > limit) return false;
-        if (current + a[i] <= limit) {
-            current += a[i];
-        } else {
-            groups++;
-            current = a[i];
-        }
-    }
-    return groups <= k;
-}
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n, k;
-    cin >> n >> k;
-    vector<ll> a(n + 1);
-    ll left = 0, right = 0;
-    for (int i = 1; i <= n; i++) {
-        cin >> a[i];
-        left = max(left, a[i]);
-        right += a[i];
-    }
-    while (left < right) {
-        ll mid = left + (right - left) / 2;
-        if (can_split(a, n, k, mid)) right = mid;
-        else left = mid + 1;
-    }
-    cout << left << '\n';
-    return 0;
-}
-```
-
-**测试设计：**
-
-- 测试 1 输入：
-```text
-3 1
-1 2 3
-```
-期望输出：
-```text
-6
-```
-- 测试 2 输入：
-```text
-3 3
-1 2 3
-```
-期望输出：
-```text
-3
-```
-### V07-EX09 RMQ 暴力对拍
-
-- 归属卷：第 7 卷
-- 覆盖模块：TRAIN-00、DS-03、TRAIN-01
-- 考场用途：训练静态区间最小值用 Sparse Table，并用暴力循环核验边界。
-
-**题目描述：** 给定数组和若干区间最小值询问。程序用 Sparse Table 和暴力分别计算；若不一致输出 `CHECK_FAILED`，否则输出每个询问的最小值。
-
-**输入格式：** 第一行两个整数 `n q`。第二行 `n` 个整数。接下来 `q` 行，每行 `l r`。
-
-**输出格式：** 每个询问输出一行最小值，或输出 `CHECK_FAILED`。
-
-**样例输入：**
-```text
-5 3
-4 2 7 1 3
-1 5
-2 3
-4 4
-```
-
-**样例输出：**
-```text
-1
-2
-1
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n, q;
-    cin >> n >> q;
-    vector<int> a(n + 1);
-    for (int i = 1; i <= n; i++) cin >> a[i];
-
-    vector<int> lg(n + 1, 0);
-    for (int i = 2; i <= n; i++) lg[i] = lg[i / 2] + 1;
-    int K = lg[n] + 1;
-    vector<vector<int>> st(K, vector<int>(n + 1));
-    for (int i = 1; i <= n; i++) st[0][i] = a[i];
-    for (int k = 1; k < K; k++) {
-        for (int i = 1; i + (1 << k) - 1 <= n; i++) {
-            st[k][i] = min(st[k - 1][i], st[k - 1][i + (1 << (k - 1))]);
-        }
-    }
-
-    while (q--) {
-        int l, r;
-        cin >> l >> r;
-        int len = r - l + 1;
-        int k = lg[len];
-        int fast = min(st[k][l], st[k][r - (1 << k) + 1]);
-        int slow = a[l];
-        for (int i = l; i <= r; i++) slow = min(slow, a[i]);
-        if (fast != slow) {
-            cout << "CHECK_FAILED\n";
-            return 0;
-        }
-        cout << fast << '\n';
-    }
-    return 0;
-}
-```
-
-**测试设计：**
-
-- 测试 1 输入：
-```text
-1 1
--5
-1 1
-```
-期望输出：
-```text
--5
-```
-- 测试 2 输入：
-```text
-4 2
-8 8 8 8
-1 4
-2 2
-```
-期望输出：
-```text
-8
-8
-```
-### V07-CEX01 快慢算法核验逆序对
-
-- 归属卷：第 7 卷
-- 覆盖模块：对拍、暴力核验
-- 考场用途：写完高级算法先用慢算法对照小数据。
-- 参考题型来源：参考来源：竞赛对拍常规做法。
-
-**题目描述：** 同时用 O(n^2) 和树状数组算逆序对，输出是否一致。
-
-**输入格式：** 第一行 n，第二行数组。
-
-**输出格式：** 输出 OK/BAD 和答案。
-
-**样例输入：**
-```text
-5
-3 1 2 5 4
-```
-
-**样例输出：**
-```text
-OK 3
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-
-long long slow(vector<int>a){long long ans=0;for(int i=0;i<(int)a.size();i++)for(int j=i+1;j<(int)a.size();j++)if(a[i]>a[j])ans++;return ans;}
-long long fast(vector<int>a){int n=a.size();vector<int>xs=a;sort(xs.begin(),xs.end());xs.erase(unique(xs.begin(),xs.end()),xs.end());vector<int>bit(xs.size()+2);auto add=[&](int x){for(;x<(int)bit.size();x+=x&-x)bit[x]++;};auto sum=[&](int x){int r=0;for(;x>0;x-=x&-x)r+=bit[x];return r;};long long ans=0;for(int i=n-1;i>=0;i--){int id=lower_bound(xs.begin(),xs.end(),a[i])-xs.begin()+1;ans+=sum(id-1);add(id);}return ans;}
-int main(){ios::sync_with_stdio(false);cin.tie(nullptr);int n;cin>>n;vector<int>a(n);for(int&i:a)cin>>i;cout<<(slow(a)==fast(a)?"OK":"BAD")<<" "<<fast(a)<<"\n";return 0;}
-```
-
-**测试设计：** 额外测试：构造最小规模、重复值、边界值各一组，和样例一起运行。
-
-***
-### V07-CEX02 输入范围守卫
-
-- 归属卷：第 7 卷
-- 覆盖模块：边界检查、调试
-- 考场用途：本地调试时先检查数据是否满足题面。
-- 参考题型来源：参考来源：调试训练经验。
-
-**题目描述：** 检查数组元素是否都在 [-1e9,1e9]。
-
-**输入格式：** 第一行 n，第二行数组。
-
-**输出格式：** 输出检查结果。
-
-**样例输入：**
-```text
-3
-1 -2 1000000001
-```
-
-**样例输出：**
-```text
-INPUT_OUT_OF_RANGE
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-
-int main(){ios::sync_with_stdio(false);cin.tie(nullptr);int n;cin>>n;vector<long long>a(n+1);for(int i=1;i<=n;i++)cin>>a[i];bool ok=true;for(int i=1;i<=n;i++){if(a[i]<-1000000000LL||a[i]>1000000000LL)ok=false;}cout<<(ok?"INPUT_OK":"INPUT_OUT_OF_RANGE")<<"\n";return 0;}
-```
-
-**测试设计：** 额外测试：构造最小规模、重复值、边界值各一组，和样例一起运行。
-
-***
-### V07-CEX03 二分边界可视化
-
-- 归属卷：第 7 卷
-- 覆盖模块：二分答案、边界
-- 考场用途：用最小满足模型避免死循环。
-- 参考题型来源：参考来源：二分答案常见错误清单。
-
-**题目描述：** 求最小 x，使 x^2 >= target，范围 1..100。
-
-**输入格式：** 输入 target。
-
-**输出格式：** 输出 x。
-
-**样例输入：**
-```text
-50
-```
-
-**样例输出：**
-```text
-8
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-
-int main(){ios::sync_with_stdio(false);cin.tie(nullptr);long long l=1,r=100,ans=-1,target;cin>>target;while(l<=r){long long mid=(l+r)/2;if(mid*mid>=target){ans=mid;r=mid-1;}else l=mid+1;}cout<<ans<<"\n";return 0;}
-```
-
-**测试设计：** 额外测试：构造最小规模、重复值、边界值各一组，和样例一起运行。
-
-***
-### V07-CEX04 乘法溢出探针
-
-- 归属卷：第 7 卷
-- 覆盖模块：__int128、防溢出
-- 考场用途：判断乘积时不要先溢出。
-- 参考题型来源：参考来源：数值边界调试经验。
-
-**题目描述：** 判断 a*b 是否超过 limit。
-
-**输入格式：** 输入 a b limit。
-
-**输出格式：** 输出 OK 或 OVER。
-
-**样例输入：**
-```text
-1000000000000 1000000000000 1000000000000000000
-```
-
-**样例输出：**
-```text
-OVER
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-
-int main(){ios::sync_with_stdio(false);cin.tie(nullptr);long long a,b,limit;cin>>a>>b>>limit;__int128 prod=(__int128)a*b;cout<<(prod>limit?"OVER":"OK")<<"\n";return 0;}
-```
-
-**测试设计：** 额外测试：构造最小规模、重复值、边界值各一组，和样例一起运行。
-
-***
-### V07-CEX05 空容器访问保护
-
-- 归属卷：第 7 卷
-- 覆盖模块：stack、RE 防御
-- 考场用途：top/pop 前先判空。
-- 参考题型来源：参考来源：括号匹配调试题型。
-
-**题目描述：** 判断只含括号的字符串是否合法。
-
-**输入格式：** 输入字符串。
-
-**输出格式：** 输出 YES/NO。
-
-**样例输入：**
-```text
-([]())
-```
-
-**样例输出：**
-```text
-YES
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-
-int main(){ios::sync_with_stdio(false);cin.tie(nullptr);string s;cin>>s;vector<char>st;for(char c:s){if(c=='('||c=='[')st.push_back(c);else{if(st.empty()){cout<<"NO\n";return 0;}char t=st.back();st.pop_back();if((c==')'&&t!='(')||(c==']'&&t!='[')){cout<<"NO\n";return 0;}}}cout<<(st.empty()?"YES":"NO")<<"\n";return 0;}
-```
-
-**测试设计：** 额外测试：构造最小规模、重复值、边界值各一组，和样例一起运行。
-
-***
-
-<!-- V02_EXAMPLES_END -->
 
 
 
@@ -44972,1120 +34296,6 @@ x - y = 1
 最大异或：3
 ```
 
-<!-- V02_EXAMPLES_START -->
-
-# v0.2 本卷例题训练区
-
-这一节是 0.2 新增的实战例题。每题都配完整可运行代码和样例；考试时优先看“覆盖模块”和“考场用途”，再复制对应代码骨架。
-
-### V08-EX01 扩展 gcd 解线性方程
-
-- 归属卷：第 8 卷
-- 覆盖模块：MATHREF-02 exgcd
-- 考场用途：判断并构造 `ax+by=c` 的整数解。
-
-**题目描述：** 给定 `a b c`，求整数 `x y` 使 `a*x+b*y=c`。若无解输出 `NO`，否则输出 `YES` 和一组解。
-
-**输入格式：** 一行三个整数 `a b c`。
-
-**输出格式：** 无解输出 `NO`。有解输出两行：第一行 `YES`，第二行 `x y`。
-
-**样例输入：**
-```text
-30 18 12
-```
-
-**样例输出：**
-```text
-YES
--2 4
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-using ll = long long;
-
-ll exgcd(ll a, ll b, ll &x, ll &y) {
-    if (b == 0) {
-        x = (a >= 0 ? 1 : -1);
-        y = 0;
-        return a >= 0 ? a : -a;
-    }
-    ll x1, y1;
-    ll g = exgcd(b, a % b, x1, y1);
-    x = y1;
-    y = x1 - a / b * y1;
-    return g;
-}
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    ll a, b, c, x, y;
-    cin >> a >> b >> c;
-    ll g = exgcd(a, b, x, y);
-    if (c % g != 0) {
-        cout << "NO\n";
-    } else {
-        x *= c / g;
-        y *= c / g;
-        cout << "YES\n" << x << ' ' << y << '\n';
-    }
-    return 0;
-}
-```
-
-**测试设计：**
-
-1. 输入：
-```text
-30 18 7
-```
-期望输出：
-```text
-NO
-```
-
-2. 输入：
-```text
--3 6 9
-```
-期望输出：
-```text
-YES
--3 0
-```
-
-***
-### V08-EX02 扩展 CRT 合并同余
-
-- 归属卷：第 8 卷
-- 覆盖模块：MATHREF-02 CRT/exCRT
-- 考场用途：处理模数不互质的同余方程组。
-
-**题目描述：** 给定 `k` 个同余方程 `x ≡ r_i (mod m_i)`，模数不保证互质。求最小非负解；若无解输出 `NO`。
-
-**输入格式：** 第一行整数 `k`。接下来 `k` 行，每行 `r_i m_i`。
-
-**输出格式：** 有解输出最小非负解，否则输出 `NO`。
-
-**样例输入：**
-```text
-2
-2 3
-3 5
-```
-
-**样例输出：**
-```text
-8
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-using ll = long long;
-
-ll exgcd(ll a, ll b, ll &x, ll &y) {
-    if (b == 0) {
-        x = (a >= 0 ? 1 : -1);
-        y = 0;
-        return a >= 0 ? a : -a;
-    }
-    ll x1, y1;
-    ll g = exgcd(b, a % b, x1, y1);
-    x = y1;
-    y = x1 - a / b * y1;
-    return g;
-}
-
-ll norm(ll x, ll mod) {
-    x %= mod;
-    if (x < 0) x += mod;
-    return x;
-}
-
-bool merge_crt(ll &r, ll &m, ll r2, ll m2) {
-    ll x, y;
-    ll g = exgcd(m, m2, x, y);
-    __int128 diff = (__int128)r2 - r;
-    if (diff % g != 0) return false;
-    ll mod2 = m2 / g;
-    ll k = (ll)((diff / g * x) % mod2);
-    k = norm(k, mod2);
-    __int128 nr = (__int128)r + (__int128)m * k;
-    __int128 nm = (__int128)m / g * m2;
-    if (nm > LLONG_MAX) return false;
-    m = (ll)nm;
-    r = (ll)(nr % nm);
-    if (r < 0) r += m;
-    return true;
-}
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int k;
-    cin >> k;
-    ll r, m;
-    cin >> r >> m;
-    r = norm(r, m);
-    for (int i = 2; i <= k; i++) {
-        ll r2, m2;
-        cin >> r2 >> m2;
-        if (!merge_crt(r, m, norm(r2, m2), m2)) {
-            cout << "NO\n";
-            return 0;
-        }
-    }
-    cout << r << '\n';
-    return 0;
-}
-```
-
-**测试设计：**
-
-1. 输入：
-```text
-2
-2 6
-8 10
-```
-期望输出：
-```text
-8
-```
-
-2. 输入：
-```text
-2
-1 4
-2 6
-```
-期望输出：
-```text
-NO
-```
-
-***
-### V08-EX03 矩阵快速幂求 Fibonacci
-
-- 归属卷：第 8 卷
-- 覆盖模块：MATH-05 矩阵快速幂
-- 考场用途：把线性递推转为矩阵幂。
-
-**题目描述：** 定义 `F(0)=0,F(1)=1,F(n)=F(n-1)+F(n-2)`。给定 `n` 和 `mod`，输出 `F(n) mod mod`。
-
-**输入格式：** 一行 `n mod`。
-
-**输出格式：** 输出答案。
-
-**样例输入：**
-```text
-10 1000000007
-```
-
-**样例输出：**
-```text
-55
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-using ll = long long;
-
-struct Mat {
-    ll a[2][2]{};
-};
-
-Mat mul(const Mat &A, const Mat &B, ll mod) {
-    Mat C;
-    for (int i = 0; i < 2; i++) {
-        for (int k = 0; k < 2; k++) {
-            for (int j = 0; j < 2; j++) {
-                C.a[i][j] = (C.a[i][j] + (__int128)A.a[i][k] * B.a[k][j]) % mod;
-            }
-        }
-    }
-    return C;
-}
-
-Mat mpow(Mat A, long long e, ll mod) {
-    Mat R;
-    R.a[0][0] = R.a[1][1] = 1 % mod;
-    while (e > 0) {
-        if (e & 1) R = mul(R, A, mod);
-        A = mul(A, A, mod);
-        e >>= 1;
-    }
-    return R;
-}
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    long long n;
-    ll mod;
-    cin >> n >> mod;
-    if (n == 0) {
-        cout << 0 << '\n';
-        return 0;
-    }
-    Mat T;
-    T.a[0][0] = 1 % mod;
-    T.a[0][1] = 1 % mod;
-    T.a[1][0] = 1 % mod;
-    Mat P = mpow(T, n - 1, mod);
-    cout << P.a[0][0] % mod << '\n';
-    return 0;
-}
-```
-
-**测试设计：**
-
-1. 输入：
-```text
-0 100
-```
-期望输出：
-```text
-0
-```
-
-2. 输入：
-```text
-50 1000
-```
-期望输出：
-```text
-25
-```
-
-***
-### V08-EX04 倍数容斥计数
-
-- 归属卷：第 8 卷
-- 覆盖模块：MATH-06 容斥
-- 考场用途：统计至少满足一个整除条件的数量。
-
-**题目描述：** 给定 `n` 和 `m` 个正整数 `d_i`，求 `1..n` 中至少能被一个 `d_i` 整除的数有多少个。
-
-**输入格式：** 第一行 `n m`。第二行 `m` 个整数 `d_i`。
-
-**输出格式：** 输出答案。
-
-**样例输入：**
-```text
-10 2
-2 3
-```
-
-**样例输出：**
-```text
-7
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-using ll = long long;
-
-ll gcd_ll(ll a, ll b) {
-    while (b) {
-        ll t = a % b;
-        a = b;
-        b = t;
-    }
-    return a >= 0 ? a : -a;
-}
-
-ll lcm_limit(ll a, ll b, ll limit) {
-    ll g = gcd_ll(a, b);
-    __int128 aa = a / g;
-    __int128 bb = b;
-    if (aa > (__int128)limit / bb) return limit + 1;
-    return (ll)(aa * bb);
-}
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    ll n;
-    int m;
-    cin >> n >> m;
-    vector<ll> d(m + 1);
-    for (int i = 1; i <= m; i++) cin >> d[i];
-    __int128 ans = 0;
-    for (int mask = 1; mask < (1 << m); mask++) {
-        ll l = 1;
-        int bits = 0;
-        bool over = false;
-        for (int i = 1; i <= m; i++) {
-            if (mask >> (i - 1) & 1) {
-                bits++;
-                l = lcm_limit(l, d[i], n);
-                if (l > n) {
-                    over = true;
-                    break;
-                }
-            }
-        }
-        if (over) continue;
-        if (bits & 1) ans += n / l;
-        else ans -= n / l;
-    }
-    cout << (long long)ans << '\n';
-    return 0;
-}
-```
-
-**测试设计：**
-
-1. 输入：
-```text
-20 2
-2 4
-```
-期望输出：
-```text
-10
-```
-
-2. 输入：
-```text
-30 2
-5 7
-```
-期望输出：
-```text
-10
-```
-
-***
-### V08-EX05 骰子到终点的期望步数
-
-- 归属卷：第 8 卷
-- 覆盖模块：MATHREF-05 概率期望
-- 考场用途：倒推期望 DP。
-
-**题目描述：** 棋子从位置 `0` 出发，每步掷一个六面骰子并前进 `1..6` 格。位置大于等于 `n` 时停止，求从 `0` 到停止的期望步数。
-
-**输入格式：** 一个整数 `n`。
-
-**输出格式：** 输出期望步数，保留 6 位小数。
-
-**样例输入：**
-```text
-1
-```
-
-**样例输出：**
-```text
-1.000000
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n;
-    cin >> n;
-    vector<double> dp(n + 7, 0.0);
-    for (int i = n - 1; i >= 0; i--) {
-        dp[i] = 1.0;
-        for (int d = 1; d <= 6; d++) dp[i] += dp[i + d] / 6.0;
-    }
-    cout << fixed << setprecision(6) << dp[0] << '\n';
-    return 0;
-}
-```
-
-**测试设计：**
-
-1. 输入：
-```text
-2
-```
-期望输出：
-```text
-1.166667
-```
-
-2. 输入：
-```text
-3
-```
-期望输出：
-```text
-1.361111
-```
-
-***
-### V08-EX06 取石子 SG 判胜
-
-- 归属卷：第 8 卷
-- 覆盖模块：MATHREF-05 SG 函数
-- 考场用途：公平组合游戏胜负判断。
-
-**题目描述：** 有一堆 `N` 个石子。每次可以取走 `moves` 中任意一种正数个石子，不能操作者输。判断先手必胜还是必败。
-
-**输入格式：** 第一行 `N m`。第二行 `m` 个可取数量。
-
-**输出格式：** 先手必胜输出 `WIN`，否则输出 `LOSE`。
-
-**样例输入：**
-```text
-7 2
-1 3
-```
-
-**样例输出：**
-```text
-WIN
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int mex_value(const vector<int> &v) {
-    vector<int> seen(v.size() + 5, 0);
-    for (int x : v) if (0 <= x && x < (int)seen.size()) seen[x] = 1;
-    for (int i = 0; ; i++) if (!seen[i]) return i;
-}
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int N, m;
-    cin >> N >> m;
-    vector<int> moves(m + 1);
-    for (int i = 1; i <= m; i++) cin >> moves[i];
-    vector<int> sg(N + 1, 0);
-    for (int x = 1; x <= N; x++) {
-        vector<int> next_values;
-        for (int i = 1; i <= m; i++) {
-            if (moves[i] > 0 && x >= moves[i]) next_values.push_back(sg[x - moves[i]]);
-        }
-        sg[x] = mex_value(next_values);
-    }
-    cout << (sg[N] ? "WIN\n" : "LOSE\n");
-    return 0;
-}
-```
-
-**测试设计：**
-
-1. 输入：
-```text
-1 1
-2
-```
-期望输出：
-```text
-LOSE
-```
-
-2. 输入：
-```text
-0 2
-1 3
-```
-期望输出：
-```text
-LOSE
-```
-
-***
-### V08-EX07 点在线段上与多边形面积
-
-- 归属卷：第 8 卷
-- 覆盖模块：MATHREF-06 几何叉积
-- 考场用途：判断共线和计算多边形面积。
-
-**题目描述：** 给定一个多边形，输出其面积的两倍。再给定线段 `AB` 和点 `P`，判断 `P` 是否在线段 `AB` 上。
-
-**输入格式：** 第一行整数 `n`。接下来 `n` 行为多边形顶点。最后三行分别为点 `A`、`B`、`P`。
-
-**输出格式：** 第一行输出多边形面积的两倍。第二行若 `P` 在线段上输出 `YES`，否则输出 `NO`。
-
-**样例输入：**
-```text
-4
-0 0
-2 0
-2 1
-0 1
-0 0
-2 0
-1 0
-```
-
-**样例输出：**
-```text
-4
-YES
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-using ll = long long;
-
-struct Point {
-    ll x, y;
-};
-
-Point operator-(Point a, Point b) {
-    return {a.x - b.x, a.y - b.y};
-}
-
-__int128 cross(Point a, Point b) {
-    return (__int128)a.x * b.y - (__int128)a.y * b.x;
-}
-
-__int128 cross(Point a, Point b, Point c) {
-    return cross(b - a, c - a);
-}
-
-bool on_segment(Point a, Point b, Point p) {
-    return cross(a, b, p) == 0 &&
-           min(a.x, b.x) <= p.x && p.x <= max(a.x, b.x) &&
-           min(a.y, b.y) <= p.y && p.y <= max(a.y, b.y);
-}
-
-void print_i128(__int128 x) {
-    if (x == 0) {
-        cout << 0;
-        return;
-    }
-    if (x < 0) {
-        cout << '-';
-        x = -x;
-    }
-    string s;
-    while (x > 0) {
-        s.push_back(char('0' + x % 10));
-        x /= 10;
-    }
-    reverse(s.begin(), s.end());
-    cout << s;
-}
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n;
-    cin >> n;
-    vector<Point> p(n + 1);
-    for (int i = 1; i <= n; i++) cin >> p[i].x >> p[i].y;
-    Point A, B, P;
-    cin >> A.x >> A.y >> B.x >> B.y >> P.x >> P.y;
-    __int128 area2 = 0;
-    for (int i = 1; i <= n; i++) area2 += cross(p[i], p[i == n ? 1 : i + 1]);
-    if (area2 < 0) area2 = -area2;
-    print_i128(area2);
-    cout << '\n' << (on_segment(A, B, P) ? "YES\n" : "NO\n");
-    return 0;
-}
-```
-
-**测试设计：**
-
-1. 输入：
-```text
-3
-0 0
-1 0
-0 1
-0 0
-1 1
-1 0
-```
-期望输出：
-```text
-1
-NO
-```
-
-2. 输入：
-```text
-3
-0 0
-2 0
-0 2
-0 0
-2 2
-1 1
-```
-期望输出：
-```text
-4
-YES
-```
-
-***
-### V08-EX08 日期相差天数
-
-- 归属卷：第 8 卷
-- 覆盖模块：SIM-06 日期/日历
-- 考场用途：处理公历闰年和日期差。
-
-**题目描述：** 给定两个合法公历日期，输出第二个日期距离第一个日期的天数。使用公历，不考虑历史切历。
-
-**输入格式：** 一行 `y1 m1 d1 y2 m2 d2`。
-
-**输出格式：** 输出天数差，可为负数。
-
-**样例输入：**
-```text
-2024 2 28 2024 3 1
-```
-
-**样例输出：**
-```text
-2
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-using ll = long long;
-
-ll floor_div(ll a, ll b) {
-    ll q = a / b, r = a % b;
-    if (r != 0 && ((r > 0) != (b > 0))) q--;
-    return q;
-}
-
-ll days_from_civil(ll y, int m, int d) {
-    y -= m <= 2;
-    ll era = floor_div(y, 400);
-    unsigned yoe = (unsigned)(y - era * 400);
-    unsigned mp = (unsigned)(m + (m > 2 ? -3 : 9));
-    unsigned doy = (153 * mp + 2) / 5 + (unsigned)d - 1;
-    unsigned doe = yoe * 365 + yoe / 4 - yoe / 100 + doy;
-    return era * 146097 + (ll)doe - 719468;
-}
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    ll y1, y2;
-    int m1, d1, m2, d2;
-    cin >> y1 >> m1 >> d1 >> y2 >> m2 >> d2;
-    cout << days_from_civil(y2, m2, d2) - days_from_civil(y1, m1, d1) << '\n';
-    return 0;
-}
-```
-
-**测试设计：**
-
-1. 输入：
-```text
-2023 2 28 2023 3 1
-```
-期望输出：
-```text
-1
-```
-
-2. 输入：
-```text
-2024 3 1 2024 2 28
-```
-期望输出：
-```text
--2
-```
-
-***
-### V08-EX09 地板除与天花板除
-
-- 归属卷：第 8 卷
-- 覆盖模块：MATHREF-06 整数取整
-- 考场用途：避免负数除法边界错误。
-
-**题目描述：** 给定 `q` 次询问，每次给出整数 `a b`，输出 `floor(a/b)` 与 `ceil(a/b)`。保证 `b!=0`。
-
-**输入格式：** 第一行整数 `q`。接下来 `q` 行，每行 `a b`。
-
-**输出格式：** 每行输出两个整数。
-
-**样例输入：**
-```text
-3
-7 3
--7 3
-7 -3
-```
-
-**样例输出：**
-```text
-2 3
--3 -2
--3 -2
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-using ll = long long;
-
-ll floor_div(ll a, ll b) {
-    __int128 aa = a, bb = b;
-    __int128 q = aa / bb, r = aa % bb;
-    if (r != 0 && ((r > 0) != (bb > 0))) q--;
-    return (ll)q;
-}
-
-ll ceil_div(ll a, ll b) {
-    __int128 aa = a, bb = b;
-    __int128 q = aa / bb, r = aa % bb;
-    if (r != 0 && ((r > 0) == (bb > 0))) q++;
-    return (ll)q;
-}
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int q;
-    cin >> q;
-    while (q--) {
-        ll a, b;
-        cin >> a >> b;
-        cout << floor_div(a, b) << ' ' << ceil_div(a, b) << '\n';
-    }
-    return 0;
-}
-```
-
-**测试设计：**
-
-1. 输入：
-```text
-2
--6 3
-6 -3
-```
-期望输出：
-```text
--2 -2
--2 -2
-```
-
-2. 输入：
-```text
-2
-1 2
--1 2
-```
-期望输出：
-```text
-0 1
--1 0
-```
-
-***
-### V08-EX10 互质对数量
-
-- 归属卷：第 8 卷
-- 覆盖模块：MATHREF-03 Mobius
-- 考场用途：用莫比乌斯函数统计有序互质对。
-
-**题目描述：** 给定 `A B`，求有序数对 `(x,y)` 的数量，使 `1<=x<=A,1<=y<=B` 且 `gcd(x,y)=1`。
-
-**输入格式：** 一行两个整数 `A B`。
-
-**输出格式：** 输出答案。
-
-**样例输入：**
-```text
-3 3
-```
-
-**样例输出：**
-```text
-7
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-vector<int> mobius(int n) {
-    vector<int> mu(n + 1), primes, is_comp(n + 1);
-    if (n >= 1) mu[1] = 1;
-    for (int i = 2; i <= n; i++) {
-        if (!is_comp[i]) {
-            primes.push_back(i);
-            mu[i] = -1;
-        }
-        for (int p : primes) {
-            if (1LL * i * p > n) break;
-            is_comp[i * p] = 1;
-            if (i % p == 0) {
-                mu[i * p] = 0;
-                break;
-            }
-            mu[i * p] = -mu[i];
-        }
-    }
-    return mu;
-}
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int A, B;
-    cin >> A >> B;
-    int n = min(A, B);
-    vector<int> mu = mobius(n);
-    long long ans = 0;
-    for (int d = 1; d <= n; d++) ans += 1LL * mu[d] * (A / d) * (B / d);
-    cout << ans << '\n';
-    return 0;
-}
-```
-
-**测试设计：**
-
-1. 输入：
-```text
-1 5
-```
-期望输出：
-```text
-5
-```
-
-2. 输入：
-```text
-2 2
-```
-期望输出：
-```text
-3
-```
-
-***
-### V08-CEX01 线性丢番图方程
-
-- 归属卷：第 8 卷
-- 覆盖模块：exgcd、整数方程
-- 考场用途：同余和方程都从 exgcd 来。
-- 参考题型来源：参考来源：OI Wiki exgcd、洛谷扩欧题型。
-
-**题目描述：** 求 `ax+by=c` 的一组整数解。
-
-**输入格式：** 输入 a b c。
-
-**输出格式：** 输出 x y 或 NO。
-
-**样例输入：**
-```text
-6 9 3
-```
-
-**样例输出：**
-```text
--1 1
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-
-long long exgcd(long long a,long long b,long long&x,long long&y){if(!b){x=1;y=0;return a;}long long x1,y1,g=exgcd(b,a%b,x1,y1);x=y1;y=x1-a/b*y1;return g;}
-int main(){ios::sync_with_stdio(false);cin.tie(nullptr);long long a,b,c;cin>>a>>b>>c;long long x,y,g=exgcd(abs(a),abs(b),x,y);if(c%g){cout<<"NO\n";return 0;}x*=c/g;y*=c/g;if(a<0)x=-x;if(b<0)y=-y;cout<<x<<" "<<y<<"\n";return 0;}
-```
-
-**测试设计：** 额外测试：构造最小规模、重复值、边界值各一组，和样例一起运行。
-
-***
-### V08-CEX02 矩阵快速幂 Fibonacci
-
-- 归属卷：第 8 卷
-- 覆盖模块：矩阵快速幂、线性递推
-- 考场用途：递推项 n 很大时用矩阵。
-- 参考题型来源：参考来源：OI Wiki 矩阵快速幂。
-
-**题目描述：** 求第 n 个 Fibonacci 数 mod m，F1=1,F2=1。
-
-**输入格式：** 输入 n mod。
-
-**输出格式：** 输出答案。
-
-**样例输入：**
-```text
-10 1000
-```
-
-**样例输出：**
-```text
-55
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-
-struct Mat{long long a[2][2];};
-Mat mul(Mat x,Mat y,long long mod){Mat z{{{0,0},{0,0}}};for(int i=0;i<2;i++)for(int k=0;k<2;k++)for(int j=0;j<2;j++)z.a[i][j]=(z.a[i][j]+x.a[i][k]*y.a[k][j])%mod;return z;}
-int main(){ios::sync_with_stdio(false);cin.tie(nullptr);long long n,mod;cin>>n>>mod;if(n==0){cout<<0<<"\n";return 0;}Mat r{{{1,0},{0,1}}},b{{{1,1},{1,0}}};long long e=n-1;while(e){if(e&1)r=mul(r,b,mod);b=mul(b,b,mod);e>>=1;}cout<<r.a[0][0]%mod<<"\n";return 0;}
-```
-
-**测试设计：** 额外测试：构造最小规模、重复值、边界值各一组，和样例一起运行。
-
-***
-### V08-CEX03 容斥统计倍数
-
-- 归属卷：第 8 卷
-- 覆盖模块：容斥、lcm、防溢出
-- 考场用途：多条件“至少一个满足”常用容斥。
-- 参考题型来源：参考来源：组合数学容斥题型。
-
-**题目描述：** 统计 `1..n` 中能被给定任一数整除的个数。
-
-**输入格式：** 第一行 n k，第二行 k 个数。
-
-**输出格式：** 输出个数。
-
-**样例输入：**
-```text
-20 2
-2 3
-```
-
-**样例输出：**
-```text
-13
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-
-int main(){ios::sync_with_stdio(false);cin.tie(nullptr);long long n;int k;cin>>n>>k;vector<long long>a(k+1);for(int i=1;i<=k;i++)cin>>a[i];long long ans=0;for(int mask=1;mask<(1<<k);mask++){__int128 l=1;int bits=0;for(int i=1;i<=k;i++)if(mask>>(i-1)&1){bits++;l=l/std::gcd((long long)l,a[i])*a[i];if(l>n)break;}if(l>n)continue;long long cnt=n/(long long)l;if(bits&1)ans+=cnt;else ans-=cnt;}cout<<ans<<"\n";return 0;}
-```
-
-**测试设计：** 额外测试：构造最小规模、重复值、边界值各一组，和样例一起运行。
-
-***
-### V08-CEX04 日期差天数
-
-- 归属卷：第 8 卷
-- 覆盖模块：日期、闰年、模拟
-- 考场用途：日历题先统一转绝对天数。
-- 参考题型来源：参考来源：洛谷日期模拟题型。
-
-**题目描述：** 给两个公历日期，求相差天数。
-
-**输入格式：** 输入两个日期 `y m d`。
-
-**输出格式：** 输出天数差绝对值。
-
-**样例输入：**
-```text
-2024 2 28
-2024 3 1
-```
-
-**样例输出：**
-```text
-2
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-
-bool leap(int y){return y%400==0||(y%4==0&&y%100!=0);}
-int mdays(int y,int m){int d[]={0,31,28,31,30,31,30,31,31,30,31,30,31};return m==2?d[m]+leap(y):d[m];}
-long long days(int y,int m,int d){long long ans=0;for(int yy=1;yy<y;yy++)ans+=365+leap(yy);for(int mm=1;mm<m;mm++)ans+=mdays(y,mm);return ans+d;}
-int main(){ios::sync_with_stdio(false);cin.tie(nullptr);int y1,m1,d1,y2,m2,d2;cin>>y1>>m1>>d1>>y2>>m2>>d2;cout<<llabs(days(y2,m2,d2)-days(y1,m1,d1))<<"\n";return 0;}
-```
-
-**测试设计：** 额外测试：构造最小规模、重复值、边界值各一组，和样例一起运行。
-
-***
-### V08-CEX05 多边形面积
-
-- 归属卷：第 8 卷
-- 覆盖模块：计算几何、叉积
-- 考场用途：几何题先准备基本叉积。
-- 参考题型来源：参考来源：OI Wiki 计算几何基础。
-
-**题目描述：** 按顺序给多边形顶点，输出面积。
-
-**输入格式：** 第一行 n，之后 n 个点。
-
-**输出格式：** 输出一位小数面积。
-
-**样例输入：**
-```text
-4
-0 0
-2 0
-2 2
-0 2
-```
-
-**样例输出：**
-```text
-4.0
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-
-struct P{double x,y;};
-double cross(P a,P b,P c){return (b.x-a.x)*(c.y-a.y)-(b.y-a.y)*(c.x-a.x);}
-int main(){ios::sync_with_stdio(false);cin.tie(nullptr);int n;cin>>n;vector<P>p(n+1);for(int i=1;i<=n;i++)cin>>p[i].x>>p[i].y;double area=0;for(int i=1;i<=n;i++){int j=i==n?1:i+1;area+=p[i].x*p[j].y-p[i].y*p[j].x;}cout<<fixed<<setprecision(1)<<fabs(area)/2<<"\n";return 0;}
-```
-
-**测试设计：** 额外测试：构造最小规模、重复值、边界值各一组，和样例一起运行。
-
-***
-
-<!-- V02_EXAMPLES_END -->
-
 
 
 ---
@@ -47786,970 +35996,6 @@ print(mod_trunc(-7, 3))
 输出
 6
 ```
-
-<!-- V02_EXAMPLES_START -->
-
-# v0.2 本卷例题训练区
-
-这一节是 0.2 新增的实战例题。每题都配完整可运行代码和样例；考试时优先看“覆盖模块”和“考场用途”，再复制对应代码骨架。
-
-### V09-EX01 大整数 Fibonacci
-
-- 归属卷：第 9 卷
-- 覆盖模块：PY-00 Python 使用路由、PY-01 输入输出、PY-05 大整数优势
-- 考场用途：当答案位数很长而算法本身只是简单递推时，Python `int` 明显省掉 C++ 高精度实现。
-
-**题目描述：** 给定整数 `n`，输出 Fibonacci 数列第 `n` 项。定义 `F(0)=0`，`F(1)=1`。
-
-**输入格式：** 一行一个整数 `n`。
-
-**输出格式：** 输出 `F(n)`。
-
-**样例输入：**
-```text
-100
-```
-
-**样例输出：**
-```text
-354224848179261915075
-```
-
-**完整代码：**
-```python
-import sys
-
-def main():
-    data = sys.stdin.buffer.read().split()
-    if not data:
-        return
-    n = int(data[0])
-    a, b = 0, 1
-    for _ in range(n):
-        a, b = b, a + b
-    print(a)
-
-if __name__ == "__main__":
-    main()
-```
-
-**测试设计：**
-
-1. 输入：
-```text
-0
-```
-期望输出：
-```text
-0
-```
-
-2. 输入：
-```text
-50
-```
-期望输出：
-```text
-12586269025
-```
-### V09-EX02 EOF 词频 TopK
-
-- 归属卷：第 9 卷
-- 覆盖模块：PY-01 EOF 输入、PY-02 Counter/dict、PY-05 Python 适用边界
-- 考场用途：当题目是文本统计、哈希计数和排序时，Python `Counter` 能明显减少样板代码；若数据极大且卡常，再切回 C++。
-
-**题目描述：** 第一项输入为整数 `k`，后面直到 EOF 都是单词。统计每个单词出现次数，输出出现次数最多的前 `k` 个单词。次数相同按单词字典序升序。
-
-**输入格式：** 输入包含若干空白分隔的 token，第一个 token 为 `k`，其余 token 为单词。
-
-**输出格式：** 输出最多 `k` 行，每行一个单词和次数。
-
-**样例输入：**
-```text
-3
-apple banana apple
-pear banana apple
-orange pear
-```
-
-**样例输出：**
-```text
-apple 3
-banana 2
-pear 2
-```
-
-**完整代码：**
-```python
-import sys
-from collections import Counter
-
-def main():
-    tokens = sys.stdin.buffer.read().decode().split()
-    if not tokens:
-        return
-    k = int(tokens[0])
-    words = tokens[1:]
-    cnt = Counter(words)
-    order = sorted(cnt.items(), key=lambda item: (-item[1], item[0]))
-    for word, times in order[:k]:
-        print(word, times)
-
-if __name__ == "__main__":
-    main()
-```
-
-**测试设计：**
-
-1. 输入：
-```text
-2
-b a b c a a
-```
-期望输出：
-```text
-a 3
-b 2
-```
-
-2. 输入：
-```text
-5
-solo
-```
-期望输出：
-```text
-solo 1
-```
-### V09-EX03 坐标点判重
-
-- 归属卷：第 9 卷
-- 覆盖模块：PY-01 tuple、PY-02 set、PY-00 Python 适用场景
-- 考场用途：当状态天然是二元组或字符串时，Python `set` 可直接判重，省掉 C++ 自定义哈希。
-
-**题目描述：** 给定 `n` 个平面整数坐标点，输出不同点的个数，并按 `x` 升序、`y` 升序输出所有不同点。
-
-**输入格式：** 第一行一个整数 `n`。接下来 `n` 行，每行两个整数 `x y`。
-
-**输出格式：** 第一行输出不同点个数。接下来按顺序输出所有不同点。
-
-**样例输入：**
-```text
-6
-1 2
-1 2
-2 1
-3 3
-2 1
--1 0
-```
-
-**样例输出：**
-```text
-4
--1 0
-1 2
-2 1
-3 3
-```
-
-**完整代码：**
-```python
-import sys
-
-def main():
-    data = sys.stdin.buffer.read().split()
-    if not data:
-        return
-    it = iter(data)
-    n = int(next(it))
-    points = set()
-    for _ in range(n):
-        x = int(next(it))
-        y = int(next(it))
-        points.add((x, y))
-
-    ans = sorted(points)
-    print(len(ans))
-    for x, y in ans:
-        print(x, y)
-
-if __name__ == "__main__":
-    main()
-```
-
-**测试设计：**
-
-1. 输入：
-```text
-3
-0 0
-0 0
-0 1
-```
-期望输出：
-```text
-2
-0 0
-0 1
-```
-
-2. 输入：
-```text
-4
-2 2
-1 3
-2 1
-1 3
-```
-期望输出：
-```text
-3
-1 3
-2 1
-2 2
-```
-### V09-EX04 合并石子最小代价
-
-- 归属卷：第 9 卷
-- 覆盖模块：PY-02 heapq、PY-04 常用算法模板、PY-05 标准库限制
-- 考场用途：当只需要标准最小堆且没有删除任意元素、修改 key 等需求时，Python `heapq` 写法短；若需要复杂堆操作，仍优先 C++。
-
-**题目描述：** 有 `n` 堆石子，每次选择两堆合并，代价为两堆石子数量之和。输出把所有石子合成一堆的最小总代价。
-
-**输入格式：** 第一行一个整数 `n`。第二行 `n` 个整数表示每堆石子的数量。
-
-**输出格式：** 输出最小总代价。
-
-**样例输入：**
-```text
-4
-1 2 3 4
-```
-
-**样例输出：**
-```text
-19
-```
-
-**完整代码：**
-```python
-import sys
-import heapq
-
-def main():
-    data = sys.stdin.buffer.read().split()
-    if not data:
-        return
-    n = int(data[0])
-    heap = [int(x) for x in data[1:1 + n]]
-    heapq.heapify(heap)
-
-    total = 0
-    while len(heap) > 1:
-        a = heapq.heappop(heap)
-        b = heapq.heappop(heap)
-        s = a + b
-        total += s
-        heapq.heappush(heap, s)
-    print(total)
-
-if __name__ == "__main__":
-    main()
-```
-
-**测试设计：**
-
-1. 输入：
-```text
-1
-7
-```
-期望输出：
-```text
-0
-```
-
-2. 输入：
-```text
-4
-5 5 5 5
-```
-期望输出：
-```text
-40
-```
-### V09-EX05 迷宫最短路
-
-- 归属卷：第 9 卷
-- 覆盖模块：PY-02 deque、PY-04 BFS、PY-05 Python 适用边界
-- 考场用途：中小规模网格 BFS 用 Python `deque` 很省代码；若网格巨大、时间限制紧或图边很多，优先 C++。
-
-**题目描述：** 给定 `n` 行 `m` 列迷宫，`.` 表示空地，`#` 表示墙，`S` 表示起点，`T` 表示终点。每步可上下左右移动一格，求从 `S` 到 `T` 的最短步数，不可达输出 `-1`。
-
-**输入格式：** 第一行两个整数 `n m`。接下来 `n` 行，每行长度为 `m` 的字符串。
-
-**输出格式：** 输出最短步数，若不可达输出 `-1`。
-
-**样例输入：**
-```text
-3 4
-S...
-.##.
-...T
-```
-
-**样例输出：**
-```text
-5
-```
-
-**完整代码：**
-```python
-import sys
-from collections import deque
-
-def main():
-    lines = sys.stdin.read().splitlines()
-    if not lines:
-        return
-    n, m = map(int, lines[0].split())
-    grid = lines[1:1 + n]
-
-    start = target = None
-    for i in range(n):
-        for j in range(m):
-            if grid[i][j] == "S":
-                start = (i, j)
-            elif grid[i][j] == "T":
-                target = (i, j)
-
-    dist = [[-1] * m for _ in range(n)]
-    q = deque()
-    si, sj = start
-    dist[si][sj] = 0
-    q.append((si, sj))
-
-    directions = [(1, 0), (-1, 0), (0, 1), (0, -1)]
-    while q:
-        x, y = q.popleft()
-        for dx, dy in directions:
-            nx = x + dx
-            ny = y + dy
-            if 0 <= nx < n and 0 <= ny < m:
-                if grid[nx][ny] != "#" and dist[nx][ny] == -1:
-                    dist[nx][ny] = dist[x][y] + 1
-                    q.append((nx, ny))
-
-    ti, tj = target
-    print(dist[ti][tj])
-
-if __name__ == "__main__":
-    main()
-```
-
-**测试设计：**
-
-1. 输入：
-```text
-2 2
-ST
-..
-```
-期望输出：
-```text
-1
-```
-
-2. 输入：
-```text
-2 3
-S#T
-###
-```
-期望输出：
-```text
--1
-```
-### V09-EX06 小集合相邻差排列计数
-
-- 归属卷：第 9 卷
-- 覆盖模块：PY-02 itertools、PY-00 Python 作为部分分工具、PY-05 枚举规模限制
-- 考场用途：`n` 很小且需要快速枚举排列时，Python `itertools.permutations` 明显省事；`n > 10` 的全排列不要硬用。
-
-**题目描述：** 给定 `n` 个互不相同的整数和整数 `k`。统计有多少个排列满足任意相邻两个数的绝对差都不超过 `k`。
-
-**输入格式：** 第一行两个整数 `n k`。第二行 `n` 个互不相同的整数。
-
-**输出格式：** 输出满足条件的排列数量。
-
-**样例输入：**
-```text
-3 1
-1 2 3
-```
-
-**样例输出：**
-```text
-2
-```
-
-**完整代码：**
-```python
-import sys
-from itertools import permutations
-
-def main():
-    data = sys.stdin.buffer.read().split()
-    if not data:
-        return
-    n = int(data[0])
-    k = int(data[1])
-    a = [int(x) for x in data[2:2 + n]]
-
-    ans = 0
-    for p in permutations(a):
-        ok = True
-        for i in range(1, n):
-            if abs(p[i] - p[i - 1]) > k:
-                ok = False
-                break
-        if ok:
-            ans += 1
-    print(ans)
-
-if __name__ == "__main__":
-    main()
-```
-
-**测试设计：**
-
-1. 输入：
-```text
-4 1
-1 2 3 4
-```
-期望输出：
-```text
-2
-```
-
-2. 输入：
-```text
-3 100
-10 20 30
-```
-期望输出：
-```text
-6
-```
-### V09-EX07 EOF 每行求和
-
-- 归属卷：第 9 卷
-- 覆盖模块：PY-01 EOF 输入、PY-06 基础语法、PY-05 IO 检查
-- 考场用途：当行边界有意义时，不要用全局 `split()` 抹掉换行；Python 按行处理 EOF 很直接。
-
-**题目描述：** 输入若干行整数。对每一行，输出该行所有整数之和。空行的和为 `0`。
-
-**输入格式：** 若干行，每行包含零个或多个整数，直到 EOF。
-
-**输出格式：** 对每一行输出一个整数，表示该行的和。
-
-**样例输入：**
-```text
-1 2 3
-10 -5
-7
-```
-
-**样例输出：**
-```text
-6
-5
-7
-```
-
-**完整代码：**
-```python
-import sys
-
-def main():
-    out = []
-    for line in sys.stdin.buffer:
-        nums = [int(x) for x in line.split()]
-        out.append(str(sum(nums)))
-    sys.stdout.write("\n".join(out))
-    if out:
-        sys.stdout.write("\n")
-
-if __name__ == "__main__":
-    main()
-```
-
-**测试设计：**
-
-1. 输入：
-```text
-5
-1 1 1 1
-```
-期望输出：
-```text
-5
-4
-```
-
-2. 输入：
-```text
-
-2 -2 3
-```
-期望输出：
-```text
-0
-3
-```
-### V09-EX08 树的子树大小
-
-- 归属卷：第 9 卷
-- 覆盖模块：PY-03 递归 DFS、PY-05 递归限制、PY-06 sys.setrecursionlimit
-- 考场用途：递归深度不大或只是中小数据时，Python DFS 写法短；若树可能是一条 `2e5` 长链，深递归仍建议改迭代或切回 C++。
-
-**题目描述：** 给定一棵 `n` 个节点的无根树，以 1 号点为根，输出每个点的子树大小。
-
-**输入格式：** 第一行一个整数 `n`。接下来 `n-1` 行，每行两个整数 `u v` 表示一条边。
-
-**输出格式：** 输出一行 `n` 个整数，第 `i` 个整数表示节点 `i` 的子树大小。
-
-**样例输入：**
-```text
-5
-1 2
-1 3
-3 4
-3 5
-```
-
-**样例输出：**
-```text
-5 1 3 1 1
-```
-
-**完整代码：**
-```python
-import sys
-
-def main():
-    data = sys.stdin.buffer.read().split()
-    if not data:
-        return
-    it = iter(data)
-    n = int(next(it))
-    graph = [[] for _ in range(n + 1)]
-    for _ in range(n - 1):
-        u = int(next(it))
-        v = int(next(it))
-        graph[u].append(v)
-        graph[v].append(u)
-
-    sys.setrecursionlimit(max(1000000, n * 2 + 10))
-    size = [0] * (n + 1)
-
-    def dfs(u, parent):
-        size[u] = 1
-        for v in graph[u]:
-            if v == parent:
-                continue
-            dfs(v, u)
-            size[u] += size[v]
-
-    dfs(1, 0)
-    print(" ".join(str(size[i]) for i in range(1, n + 1)))
-
-if __name__ == "__main__":
-    main()
-```
-
-**测试设计：**
-
-1. 输入：
-```text
-3
-1 2
-2 3
-```
-期望输出：
-```text
-3 2 1
-```
-
-2. 输入：
-```text
-4
-1 2
-1 3
-1 4
-```
-期望输出：
-```text
-4 1 1 1
-```
-### V09-EX09 障碍网格路径数
-
-- 归属卷：第 9 卷
-- 覆盖模块：PY-03 lru_cache 记忆化、PY-01 字符串输入、PY-05 Python 大整数与递归风险
-- 考场用途：状态转移清楚但手写 DP 容易走错边界时，Python 记忆化能快速得到可靠版本；大网格满数据时仍应考虑表格 DP 或 C++。
-
-**题目描述：** 给定 `n` 行 `m` 列网格，`.` 表示可走，`#` 表示障碍。从左上角走到右下角，每步只能向下或向右，求路径条数。若起点或终点为障碍，答案为 0。
-
-**输入格式：** 第一行两个整数 `n m`。接下来 `n` 行，每行一个长度为 `m` 的字符串。
-
-**输出格式：** 输出路径条数。
-
-**样例输入：**
-```text
-3 3
-...
-.#.
-...
-```
-
-**样例输出：**
-```text
-2
-```
-
-**完整代码：**
-```python
-import sys
-from functools import lru_cache
-
-def main():
-    lines = sys.stdin.read().splitlines()
-    if not lines:
-        return
-    n, m = map(int, lines[0].split())
-    grid = lines[1:1 + n]
-    sys.setrecursionlimit(max(1000000, n + m + 10))
-
-    @lru_cache(None)
-    def dfs(i, j):
-        if i >= n or j >= m:
-            return 0
-        if grid[i][j] == "#":
-            return 0
-        if i == n - 1 and j == m - 1:
-            return 1
-        return dfs(i + 1, j) + dfs(i, j + 1)
-
-    print(dfs(0, 0))
-
-if __name__ == "__main__":
-    main()
-```
-
-**测试设计：**
-
-1. 输入：
-```text
-2 2
-..
-..
-```
-期望输出：
-```text
-2
-```
-
-2. 输入：
-```text
-2 2
-#.
-..
-```
-期望输出：
-```text
-0
-```
-### V09-EX10 滑动窗口最大值
-
-- 归属卷：第 9 卷
-- 覆盖模块：PY-02 deque、PY-04 常用算法模板、PY-05 list/deque 复杂度区别
-- 考场用途：固定窗口最值用 `deque` 是标准线性做法；不要用 `pop(0)` 或每个窗口排序。
-
-**题目描述：** 给定长度为 `n` 的整数序列和窗口长度 `k`，输出每个连续长度为 `k` 的窗口中的最大值。
-
-**输入格式：** 第一行两个整数 `n k`。第二行 `n` 个整数。
-
-**输出格式：** 输出 `n-k+1` 个整数，表示每个窗口最大值，用空格分隔。
-
-**样例输入：**
-```text
-8 3
-1 3 -1 -3 5 3 6 7
-```
-
-**样例输出：**
-```text
-3 3 5 5 6 7
-```
-
-**完整代码：**
-```python
-import sys
-from collections import deque
-
-def main():
-    data = sys.stdin.buffer.read().split()
-    if not data:
-        return
-    n = int(data[0])
-    k = int(data[1])
-    a = [0] + [int(x) for x in data[2:2 + n]]
-
-    q = deque()
-    ans = []
-    for i in range(1, n + 1):
-        while q and q[0] <= i - k:
-            q.popleft()
-        while q and a[q[-1]] <= a[i]:
-            q.pop()
-        q.append(i)
-        if i >= k:
-            ans.append(str(a[q[0]]))
-
-    print(" ".join(ans))
-
-if __name__ == "__main__":
-    main()
-```
-
-**测试设计：**
-
-1. 输入：
-```text
-5 1
-4 3 2 1 0
-```
-期望输出：
-```text
-4 3 2 1 0
-```
-
-2. 输入：
-```text
-5 5
-2 9 1 8 3
-```
-期望输出：
-```text
-9
-```
-### V09-CEX01 Python 大组合数
-
-- 归属卷：第 9 卷
-- 覆盖模块：math.comb、大整数
-- 考场用途：C++ 要写高精度时 Python 明显省事。
-- 参考题型来源：参考来源：Python 标准库文档、组合数学题型。
-
-**题目描述：** 输出 C(n,k) 的精确值。
-
-**输入格式：** 输入 n k。
-
-**输出格式：** 输出组合数。
-
-**样例输入：**
-```text
-50 6
-```
-
-**样例输出：**
-```text
-15890700
-```
-
-**完整代码：**
-```python
-import sys
-from math import comb
-n, k = map(int, sys.stdin.readline().split())
-print(comb(n, k))
-```
-
-**测试设计：** 额外测试：构造最小规模、重复值、边界值各一组，和样例一起运行。
-
-***
-### V09-CEX02 Python 双堆中位数
-
-- 归属卷：第 9 卷
-- 覆盖模块：heapq、在线维护
-- 考场用途：heapq 写起来短，适合模拟。
-- 参考题型来源：参考来源：经典在线中位数题型。
-
-**题目描述：** 依次插入数，输出每次插入后的较小中位数。
-
-**输入格式：** 第一行 n，第二行 n 个数。
-
-**输出格式：** 输出 n 个中位数。
-
-**样例输入：**
-```text
-5
-5 2 7 1 3
-```
-
-**样例输出：**
-```text
-5 2 5 2 3
-```
-
-**完整代码：**
-```python
-import sys, heapq
-n = int(sys.stdin.readline())
-small = []
-large = []
-ans = []
-for x in map(int, sys.stdin.readline().split()):
-    heapq.heappush(small, -x)
-    heapq.heappush(large, -heapq.heappop(small))
-    if len(large) > len(small):
-        heapq.heappush(small, -heapq.heappop(large))
-    ans.append(str(-small[0]))
-print(" ".join(ans))
-```
-
-**测试设计：** 额外测试：构造最小规模、重复值、边界值各一组，和样例一起运行。
-
-***
-### V09-CEX03 Python deque BFS
-
-- 归属卷：第 9 卷
-- 覆盖模块：deque、图 BFS
-- 考场用途：小中规模无权图可用 Python 快速写。
-- 参考题型来源：参考来源：洛谷 BFS 基础题型。
-
-**题目描述：** 无向无权图求 1 到 n 最短路。
-
-**输入格式：** 第一行 n m，之后边。
-
-**输出格式：** 输出距离。
-
-**样例输入：**
-```text
-4 3
-1 2
-2 3
-3 4
-```
-
-**样例输出：**
-```text
-3
-```
-
-**完整代码：**
-```python
-import sys
-from collections import deque
-n, m = map(int, sys.stdin.readline().split())
-g = [[] for _ in range(n + 1)]
-for _ in range(m):
-    u, v = map(int, sys.stdin.readline().split())
-    g[u].append(v)
-    g[v].append(u)
-dist = [-1] * (n + 1)
-q = deque([1])
-dist[1] = 0
-while q:
-    u = q.popleft()
-    for v in g[u]:
-        if dist[v] == -1:
-            dist[v] = dist[u] + 1
-            q.append(v)
-print(dist[n])
-```
-
-**测试设计：** 额外测试：构造最小规模、重复值、边界值各一组，和样例一起运行。
-
-***
-### V09-CEX04 itertools 组合枚举
-
-- 归属卷：第 9 卷
-- 覆盖模块：itertools.combinations
-- 考场用途：小规模组合题 Python 写法非常短。
-- 参考题型来源：参考来源：搜索枚举题型。
-
-**题目描述：** 从 n 个数选 k 个，统计和为 target 的方案数。
-
-**输入格式：** 第一行 n k target，第二行数组。
-
-**输出格式：** 输出方案数。
-
-**样例输入：**
-```text
-5 2 5
-1 2 3 4 5
-```
-
-**样例输出：**
-```text
-2
-```
-
-**完整代码：**
-```python
-import sys
-from itertools import combinations
-n, k, target = map(int, sys.stdin.readline().split())
-a = list(map(int, sys.stdin.readline().split()))
-cnt = 0
-for combi in combinations(a, k):
-    if sum(combi) == target:
-        cnt += 1
-print(cnt)
-```
-
-**测试设计：** 额外测试：构造最小规模、重复值、边界值各一组，和样例一起运行。
-
-***
-### V09-CEX05 Fraction 精确分数
-
-- 归属卷：第 9 卷
-- 覆盖模块：fractions.Fraction
-- 考场用途：需要精确有理数时 Python 标准库很省事。
-- 参考题型来源：参考来源：Python 标准库 fractions。
-
-**题目描述：** 计算 a/b + c/d 的最简分数。
-
-**输入格式：** 输入 a b c d。
-
-**输出格式：** 输出 numerator/denominator。
-
-**样例输入：**
-```text
-1 6 1 3
-```
-
-**样例输出：**
-```text
-1/2
-```
-
-**完整代码：**
-```python
-import sys
-from fractions import Fraction
-a, b, c, d = map(int, sys.stdin.readline().split())
-x = Fraction(a, b) + Fraction(c, d)
-print(f"{x.numerator}/{x.denominator}")
-```
-
-**测试设计：** 额外测试：构造最小规模、重复值、边界值各一组，和样例一起运行。
-
-***
-
-<!-- V02_EXAMPLES_END -->
 
 
 
@@ -51840,51 +39086,1764 @@ add 3 4
 2.583853 2.000000
 ```
 
-<!-- V02_EXAMPLES_START -->
 
-# v0.2 本卷例题训练区
 
-这一节是 0.2 新增的实战例题。每题都配完整可运行代码和样例；考试时优先看“覆盖模块”和“考场用途”，再复制对应代码骨架。
+---
 
-### V10-EX01 kNN 分类器
 
-- 归属卷：第 10 卷
-- 覆盖模块：AI-02 kNN
-- 考场用途：把训练集、特征、标签转成距离排序和投票。
+# 第 11 卷：签到题百科
 
-**题目描述：** 给定训练样本和查询样本，使用 `k` 近邻分类。距离使用欧氏距离平方，投票数多的标签胜出；票数相同标签小者胜出。
+> 自动由 SIGN 模块重建。定位是常用数学、计算机常识、微积分、线性代数、概率统计、机器学习和生活模拟签到题。
 
-**输入格式：** 第一行 `n q d k`。接下来 `n` 行，每行 `d` 个特征和一个标签。接下来 `q` 行，每行 `d` 个特征。
+## 签到题百科使用原则
 
-**输出格式：** 每个查询输出预测标签。
+| 题面信号 | 先翻模块 |
+|---|---|
+| 初赛/CSP 概念、读程序、稳定排序、数据结构概念 | `SIGN-NOIP-01` |
+| 读程序、流程图、递归栈、伪代码、运算符优先级 | `SIGN-NOIP-02` |
+| CPU、Cache、内存层次、性能估算 | `SIGN-ARCH-01` |
+| 进制、补码、浮点、字节序、内存和对齐 | `SIGN-ARCH-02` |
+| 复杂度、内存限制、数量级估算 | `SIGN-COMP-01` |
+| 三角形、面积、折扣、等差等比、单位换算 | `SIGN-MATH-01` |
+| 导数、积分、梯度、数值近似 | `SIGN-CALC-01` |
+| 向量、矩阵、距离、投影、Markov | `SIGN-LA-01` |
+| Markov 性质、转移矩阵、平稳分布、HMM/MDP | `SIGN-MARKOV-01` |
+| 命题逻辑、集合关系、自动机、正则常识 | `SIGN-LOGIC-01` |
+| 均值、方差、概率、Bayes、相关系数 | `SIGN-PROB-01` |
+| AI 原理、监督/无监督/强化学习、神经网络概念 | `SIGN-AI-02` |
+| Token、Embedding、Attention、Transformer、RAG | `SIGN-AI-03` |
+| 混淆矩阵、F1、kNN、k-means、softmax | `SIGN-ML-01` |
+| bit/byte、BMP、音频视频、IP、编码 | `SIGN-CS-01` |
+| 图片、音频、视频、颜色、压缩率 | `SIGN-MEDIA-02` |
+| 操作系统、网络、数据库、Web、SQL | `SIGN-OSNET-01` |
+| 安全、哈希、校验、压缩、信息熵 | `SIGN-SEC-01` |
+| BMI、排名、Excel 列号、日期差、括号 | `SIGN-SIM-01` |
 
-**样例输入：**
+这卷的使用方式：先查公式和单位，再写小函数；不要为了签到题临场推导。复杂算法仍回到前面对应卷。
+
+
+
+---
+
+
+<!-- source: 03_modules/SIGN-00-routing.md -->
+# SIGN-00 签到题百科总路由
+
+模块编号：SIGN-00
+
+模块名称：签到题百科总路由：常用数学、计算机常识和生活模拟
+
+标签：签到题、常识题、公式题、模拟、数学、计算机基础、C++17、速查
+
+一句话用途：遇到看起来不像经典算法模板、而是考公式、单位、格式、常识或按规则计算的题时，先用本模块把题面关键词路由到第 11 卷对应页。
+
+题面触发词：
+
+- 图片大小、BMP、RGB、DPI、音频采样、码率、下载时间。
+- 三角形面积、角度弧度、速度时间路程、折扣、税率、复利。
+- 导数、积分、梯度、矩阵、概率、方差、混淆矩阵、F1。
+- bit、byte、ASCII、UTF-8、补码、IP、CIDR、Base64、URL 编码。
+- BMI、GPA、排名、Excel 列号、日期差、星期、时区。
+
+什么时候用：
+
+- 题目数据范围很小，核心是套公式或按规则模拟。
+- 题面含现实对象、文件格式、统计指标、机器学习指标、单位换算。
+- 你感觉“应该很简单”，但公式、边界或单位可能记不准。
+
+不要什么时候用：
+
+- 已经明显是图论、DP、数据结构、字符串匹配等算法题，应回到对应卷。
+- 题目要求完整 JSON/表达式/解释器，优先 `SIM-03/04/05`。
+- 方程求解、数值求根和多项式计算，优先 `SIM-07`。
+
+复杂度：
+
+- 本卷多数公式题是 `O(1)`。
+- 统计、转换、扫描类通常是 `O(n)`。
+- 小矩阵、小数据机器学习模拟通常是 `O(n*d)` 或 `O(n*d*k)`。
+
+依赖的标准容器：
+
+- `string`：格式、编码、进制、列号。
+- `vector<double>` / 静态数组：统计、向量、矩阵、小规模机器学习。
+- `map` / `unordered_map`：频次统计、类别映射。
+- `queue` / `stack`：括号、自动机、简单状态模拟。
+
+输入如何整理：
+
 ```text
-3 2 2 1
-0 0 1
-10 10 2
-1 0 1
-0 1
-9 9
+1. 先判断是公式题、格式题、统计题还是现实模拟题。
+2. 圈单位：bit/byte、秒/分钟、度/弧度、KB/KiB、bps/B/s。
+3. 圈输出：整数、保留小数、百分比、四舍五入、向下取整。
+4. 圈边界：0、负数、闰年、前导零、空字符串、同分排名。
 ```
 
-**样例输出：**
+接口：
+
 ```text
-1
-2
+SIGN-00 先路由。
+SIGN-MATH-01 查初等数学和单位。
+SIGN-CALC-01 查微积分和数值方法。
+SIGN-LA-01 查向量、矩阵、线性代数。
+SIGN-PROB-01 查概率统计。
+SIGN-ML-01 查机器学习指标和小模型模拟。
+SIGN-CS-01 查计算机常识、编码、文件和网络。
+SIGN-SIM-01 查生活化模拟题短模板。
 ```
 
-**完整代码：**
+常见坑：
+
+- `KB` 可能是 1000 byte，`KiB` 才是 1024 byte，题面不明时按题面样例。
+- 网络带宽常用 `bps`，文件大小常用 `B`，下载时间要除以 8。
+- BMP 每行通常 4 字节对齐，24 位图每像素 3 字节，不是简单 `w*h*3`。
+- 角度三角函数要先转弧度。
+- 保留小数是输出格式，不等于内部先四舍五入。
+- 百分点和百分比不同：从 20% 到 30% 是增加 10 个百分点，也是相对增长 50%。
+
+暴力/部分分替代：
+
+- 公式忘了但数据小：直接模拟或枚举。
+- 日期公式忘了：从较早日期一天一天加，拿小范围分。
+- 统计指标忘了：先输出准确率、计数矩阵等基础量。
+- 几何公式忘了：坐标题可用叉积，三边题可枚举或套海伦公式。
+
+## 1. 题面关键词路由表
+
+| 题面信号 | 先翻模块 | 关键提醒 |
+|---|---|---|
+| 三角形三边、面积、合法性 | `SIGN-MATH-01` | 先判 `a+b>c`，海伦公式用 `double` |
+| 速度、路程、工作效率、折扣、税率 | `SIGN-MATH-01` | 单位统一后再算 |
+| 向上取整、四舍五入、保留小数 | `SIGN-MATH-01` | 整数向上取整用 `(a+b-1)/b` |
+| 导数、梯度、牛顿法、积分近似 | `SIGN-CALC-01` | 迭代要设次数和 `EPS` |
+| 矩阵乘、点积、叉积、投影 | `SIGN-LA-01` | 坐标题优先用向量公式 |
+| 均值、中位数、方差、分位数 | `SIGN-PROB-01` | 样本方差分母是 `n-1` |
+| Bayes、条件概率、期望、Markov | `SIGN-PROB-01` | 概率相乘前确认独立 |
+| accuracy、precision、recall、F1 | `SIGN-ML-01` | 分母为 0 时按题意，常见输出 0 |
+| kNN、k-means、softmax、交叉熵 | `SIGN-ML-01` | 数据小，按公式模拟 |
+| bit/byte、补码、ASCII、UTF-8 | `SIGN-CS-01` | 注意 signed/unsigned |
+| BMP、音频、视频、带宽、IP | `SIGN-CS-01` | 注意行对齐、bps 和 B/s |
+| BMI、GPA、排名、Excel 列号 | `SIGN-SIM-01` | 多数是分支和字符串转换 |
+| 日期差、星期、时区 | `SIGN-SIM-01` / `SIM-06` | 简单题翻 SIGN，复杂历法翻 SIM-06 |
+
+## 2. 超过 160 条覆盖清单
+
+| 编号段 | 内容 | 必须配代码的高频点 |
+|---|---|---|
+| 001-010 | 常数、角度、log、取整、百分比、像素、科学计数法 | 角度弧度、取整、公式代入 |
+| 011-020 | 等差等比、阶乘、极限、泰勒、级数、收敛 | 迭代到收敛 |
+| 021-030 | 导数、偏导、梯度、Hessian、凸性、牛顿法、梯度下降 | 牛顿法、有限差分 |
+| 031-040 | 积分、梯形、Simpson、Euler 法、函数平均值 | 数值积分、ODE Euler |
+| 041-050 | 向量、点积、叉积、范数、投影、旋转、齐次坐标 | 距离、叉积、旋转 |
+| 051-060 | 矩阵乘、行列式、逆、秩、特征值、Markov、最小二乘 | 小矩阵乘、2x2 逆 |
+| 061-070 | 条件概率、Bayes、独立、期望、方差、二项、Poisson | Bayes、二项概率 |
+| 071-080 | z-score、Monte Carlo、Markov 链、分位数、协方差、相关系数 | 相关系数、分位数 |
+| 081-090 | 均值、中位数、众数、方差、IQR、直方图、A/B 测试 | 描述统计 |
+| 091-100 | 特征、归一化、标准化、one-hot、混淆矩阵、F1、AUC | 指标计算 |
+| 101-110 | kNN、距离、朴素贝叶斯、回归、sigmoid、SVM、Gini、k-means | kNN、k-means |
+| 111-120 | ReLU、softmax、交叉熵、全连接、反传、Q-learning | stable softmax |
+| 121-130 | bit、byte、进制、补码、浮点、ASCII、UTF-8、位掩码、checksum | 进制、ASCII、校验 |
+| 131-140 | 文件路径、MIME、CSV、线程、栈堆、缓存、IPv4、CIDR、HTTP、SQL | IPv4/CIDR |
+| 141-150 | 闰年、日期差、时区、Base64、URL 编码、HTML entity、RGB/HSV、图片大小 | BMP/媒体大小 |
+| 151-160 | BMI、单位换算、折扣、GPA、排名、Excel 列号、括号、自动机 | 生活模拟 |
+
+## 3. 考场优先级
+
+1. 先翻 `SIGN-00` 路由。
+2. 如果题面是“真实世界对象”，先查单位和格式。
+3. 如果有公式，先写小函数，不要把公式散落在 `solve()` 里。
+4. 如果输出保留小数，统一 `fixed << setprecision(k)`。
+5. 如果答案可能溢出，先用 `long long`，乘法用 `__int128` 或 `long double`。
+
+
+---
+
+
+<!-- source: 03_modules/SIGN-AI-02-ai-principles-overview.md -->
+# SIGN-AI-02 AI 原理基础百科
+
+模块编号：SIGN-AI-02
+
+模块名称：AI 原理基础：搜索、监督学习、无监督学习、神经网络、强化学习和评估
+
+标签：签到题、AI原理、人工智能、机器学习、神经网络、强化学习、搜索、C++17
+
+一句话用途：AI 专项招生可能把 AI 基础概念出成判断、填空或简单公式模拟，本模块提供从概念到考场实现的最小知识图谱。
+
+题面触发词：人工智能、机器学习、深度学习、监督学习、无监督学习、强化学习、搜索、启发式、模型、训练、推理、评估。
+
+什么时候用：
+
+- 题目问 AI 概念之间的关系。
+- 题目给小模型公式，要求算一次预测或更新。
+- 题目是 AI 背景但实际是搜索、统计、排序、DP 或模拟。
+
+不要什么时候用：
+
+- 需要完整 AI 模板代码时，翻第 10 卷。
+- 需要机器学习指标短代码时，翻 `SIGN-ML-01`。
+- 不要使用任何第三方库或联网模型。
+
+复杂度：
+
+- 概念判断 `O(1)`。
+- 小模型前向 `O(层数 * 矩阵大小)`。
+- 搜索类按状态数和边数。
+
+依赖的标准容器：`vector<double>`、`queue`、`priority_queue`、`map`。
+
+输入如何整理：
+
+```text
+AI 题先拆壳：
+搜索/规划 -> 图搜索。
+分类/回归 -> 公式和统计。
+聚类 -> 距离和迭代。
+神经网络 -> 矩阵乘和激活函数。
+强化学习 -> 状态、动作、奖励、转移。
+```
+
+接口：
+
+```text
+AI 关键词 -> 算法本质 -> 对应模块。
+概念题 -> 查关系表。
+公式题 -> 按题面逐步模拟。
+```
+
+常见坑：
+
+- AI 题不等于要写神经网络，大量题只是搜索、图论、统计。
+- 训练是更新参数，推理是用已有参数预测。
+- 监督学习有标签，无监督学习无标签，强化学习有奖励。
+- 深度学习是机器学习的一类，机器学习是 AI 的一类。
+
+暴力/部分分替代：
+
+- 分类不会写复杂模型时，用最近邻或多数类。
+- 强化学习不会最优策略时，按给定策略模拟。
+- 搜索不会 A* 时，用 BFS/Dijkstra 拿部分分。
+
+## 1. 概念层级
+
+```text
+人工智能 AI
+  -> 搜索与规划
+  -> 机器学习 ML
+       -> 监督学习
+       -> 无监督学习
+       -> 强化学习
+       -> 深度学习 DL
+```
+
+| 概念 | 一句话 |
+|---|---|
+| AI | 让机器表现出智能行为 |
+| ML | 从数据中学习规律 |
+| DL | 多层神经网络为主的 ML |
+| 训练 | 用数据更新参数 |
+| 推理 | 用模型给新输入输出结果 |
+| 泛化 | 对没见过的数据表现好 |
+| 过拟合 | 训练集好、测试集差 |
+| 欠拟合 | 模型太弱，训练也差 |
+
+## 2. 学习范式
+
+| 类型 | 输入 | 输出/目标 | 例子 |
+|---|---|---|---|
+| 监督学习 | `x,y` | 学 `x->y` | 分类、回归 |
+| 无监督学习 | 只有 `x` | 找结构 | 聚类、降维 |
+| 强化学习 | 状态、动作、奖励 | 学策略 | 游戏、路径决策 |
+| 半监督 | 少量标签+大量无标签 | 利用无标签数据 | 文本分类 |
+| 自监督 | 从数据自己构造标签 | 表征学习 | 预测被遮住词 |
+
+## 3. 搜索和规划
+
+| 名称 | 本质 |
+|---|---|
+| BFS | 无权最短路 |
+| Dijkstra | 非负权最短路 |
+| A* | `f=g+h` 的启发式搜索 |
+| Minimax | 对手也最优的博弈搜索 |
+| Alpha-Beta | Minimax 剪枝 |
+| MDP | 马尔可夫决策过程 |
+
+A* 提醒：
+
+- `g` 是已走代价。
+- `h` 是估计剩余代价。
+- 若 `h` 不超过真实剩余代价，A* 更容易保证最优。
+
+## 4. 常见模型
+
+| 模型 | 考场公式 |
+|---|---|
+| kNN | 距离最近的 k 个投票 |
+| 朴素贝叶斯 | `argmax_y P(y)*prod P(x_i|y)` |
+| 线性回归 | `y=w dot x+b` |
+| Logistic | `p=sigmoid(w dot x+b)` |
+| SVM | 最大间隔，hinge loss |
+| 决策树 | 按特征划分，降低不纯度 |
+| k-means | 最近中心分配，重算中心 |
+| 神经网络 | 层层矩阵乘 + 激活 |
+| HMM | 隐状态 + 观测，Viterbi |
+| Q-learning | 基于奖励更新动作价值 |
+
+## 5. 神经网络最小概念
+
+| 概念 | 说明 |
+|---|---|
+| neuron | 加权求和再激活 |
+| weight | 权重参数 |
+| bias | 偏置 |
+| activation | ReLU/sigmoid/tanh |
+| loss | 预测和真实的差距 |
+| gradient | 参数改变对 loss 的影响 |
+| backprop | 链式法则从后往前传梯度 |
+| epoch | 全数据训练一轮 |
+| batch | 一小批样本 |
+| learning rate | 每次更新步长 |
+
+## 6. AI 题型路由
+
+| 题面 | 实际模块 |
+|---|---|
+| 机器人走路、智能体规划 | 图 BFS/Dijkstra/A* |
+| 棋类决策 | 搜索、博弈 DP |
+| 文档相似 | 字符串、词频、向量 |
+| 分类指标 | `SIGN-ML-01` |
+| 小神经网络前向 | 第 10 卷 AI 前向传播 |
+| 反向传播/自动求导 | 第 10 卷 AI-14/15 |
+| SPJ 得分函数 | baseline + 指标模拟 |
+
+
+---
+
+
+<!-- source: 03_modules/SIGN-AI-03-modern-ai-terms.md -->
+# SIGN-AI-03 现代 AI 术语、向量检索与 Transformer 常识
+
+模块编号：SIGN-AI-03
+
+模块名称：现代 AI 术语速查：Token、Embedding、Attention、Transformer、RAG、向量相似度和训练评估
+
+标签：签到题、AI原理、现代AI、Token、Embedding、Attention、Transformer、RAG、向量检索、C++17
+
+一句话用途：题面出现大模型、向量检索、注意力机制、RAG、嵌入向量、训练/推理等现代 AI 词汇时，用本模块把概念翻译成可计算的字符串、向量、矩阵、排序和统计问题。
+
+题面触发词：
+
+- token、词元、分词、词表、embedding、词向量、向量相似度。
+- attention、self-attention、query/key/value、Transformer。
+- RAG、检索增强生成、向量数据库、Top-K 相似文档。
+- 训练集、验证集、测试集、数据泄漏、泛化、过拟合。
+- 参数、超参数、batch、epoch、learning rate、optimizer。
+- 大语言模型、prompt、上下文窗口、幻觉、temperature。
+
+什么时候用：
+
+- 题目要求判断 AI 术语关系，或者给小向量/小矩阵要求算一次结果。
+- 题目给多个文本或向量，要求按相似度排序或选 Top-K。
+- 题目描述 RAG/推荐系统/检索系统，但实质是字符串处理、词频统计、余弦相似度和排序。
+- 题目要求模拟 attention 的一小步计算。
+
+不要什么时候用：
+
+- 如果题面只是普通分类指标，优先翻 `SIGN-ML-01`。
+- 如果题面给完整神经网络和梯度，优先翻第 10 卷的前向传播、反向传播和自动求导。
+- 不要现场实现真实深度学习训练框架；上机题通常只会考小规模公式模拟。
+- 不要使用第三方库、联网模型或在线 API。
+
+复杂度：
+
+- 文本分词和计数：`O(总字符数)` 或 `O(总词数)`。
+- 向量余弦相似度：每对 `O(d)`。
+- Top-K 检索：排序 `O(n log n)`，堆 `O(n log k)`。
+- 简化 attention：`O(n^2*d)`，其中 `n` 是 token 数，`d` 是向量维度。
+
+依赖的标准容器：
+
+- `string`：文本和 token。
+- `map<string,int>` 或 `unordered_map<string,int>`：词频、词表编号。
+- `vector<double>`：向量。
+- `priority_queue`：Top-K。
+- 静态数组：小矩阵计算时更容易 1-index。
+
+输入如何整理：
+
+```text
+1. 文本题：先决定分隔方式，是按空格、字符、还是题面给定规则分词。
+2. 向量题：把每个样本编号为 1..n，每个维度编号为 1..d。
+3. 检索题：对每个候选算 score，再排序或用堆取 Top-K。
+4. Transformer/attention 题：按题面公式逐步算 Q、K、V、score、softmax、加权和。
+```
+
+接口：
+
+```text
+cosine(a,b,d) -> 两个向量余弦相似度。
+softmax(x,n) -> 把分数转成概率。
+top_k_by_score(items,k) -> 取分数最大的 k 项。
+attention_one_query(q,K,V,n,d) -> 单个 query 对 n 个 key/value 做注意力。
+```
+
+常见坑：
+
+- embedding 不是一个词本身，而是词/文本对应的数值向量。
+- 余弦相似度要除以两个向量长度；零向量要特判。
+- softmax 要减去最大值防止 `exp` 溢出。
+- 训练集用于学习参数，验证集用于调超参数，测试集用于最终评估。
+- 数据泄漏是把测试信息提前用于训练或调参，会导致虚高分。
+- temperature 越大输出越随机，越小越确定；但竞赛题一般只要求按题面公式模拟。
+- RAG 本身不神秘：先检索相关资料，再把资料放入生成模型上下文。
+
+暴力/部分分替代：
+
+- 不会复杂 embedding 时，用词频向量、0/1 出现向量或 Jaccard 相似度。
+- Top-K 不会堆时，直接排序。
+- attention 不会矩阵化时，按三层循环逐项算。
+- 题面数据很小，直接用 `map<string,int>` 和 `vector<double>`，常数足够。
+
+## 1. 现代 AI 术语翻译表
+
+| 术语 | 考场理解 |
+|---|---|
+| token | 模型处理的最小单位，可能是字、词、子词或符号 |
+| tokenizer | 把文本切成 token 的规则或算法 |
+| vocabulary | token 到编号的映射表 |
+| embedding | token/文本/图片映射成向量 |
+| context window | 一次能放进模型的 token 上限 |
+| prompt | 输入给模型的指令和上下文 |
+| inference | 用训练好的模型预测 |
+| pretraining | 大规模预训练 |
+| fine-tuning | 在特定数据上继续训练 |
+| alignment | 让模型行为更符合人类偏好 |
+| hallucination | 生成看似合理但不真实的内容 |
+| RAG | 检索资料 + 生成回答 |
+| vector database | 存向量并做相似度搜索 |
+| multimodal | 文本、图像、音频等多模态 |
+
+## 2. 训练、验证、测试
+
+| 集合 | 用途 | 能否调参 |
+|---|---|---|
+| 训练集 | 更新模型参数 | 可以 |
+| 验证集 | 选模型、调超参数、早停 | 可以间接用 |
+| 测试集 | 最终报告性能 | 不应参与调参 |
+
+常见问法：
+
+```text
+模型在训练集 99%，测试集 60% -> 过拟合。
+训练集和测试集都很低 -> 欠拟合或特征不足。
+用测试集挑模型 -> 数据泄漏。
+```
+
+参数和超参数：
+
+| 名称 | 例子 | 谁决定 |
+|---|---|---|
+| 参数 | 权重 `w`、偏置 `b` | 训练学出来 |
+| 超参数 | 学习率、层数、kNN 的 k、正则强度 | 人或搜索过程指定 |
+
+## 3. 向量相似度
+
+常用公式：
+
+```text
+dot(a,b) = sum a[i]*b[i]
+cos(a,b) = dot(a,b) / (sqrt(sum a[i]^2) * sqrt(sum b[i]^2))
+euclidean(a,b) = sqrt(sum (a[i]-b[i])^2)
+manhattan(a,b) = sum abs(a[i]-b[i])
+```
+
+什么时候用：
+
+| 题面 | 常见距离 |
+|---|---|
+| 文本向量相似 | cosine |
+| 几何坐标最近 | Euclidean |
+| 网格/街区距离 | Manhattan |
+| 集合相似 | Jaccard |
+
+余弦相似度模板：
+
+```cpp
+double cosine(double a[], double b[], int d) {
+    double dot = 0, na = 0, nb = 0;
+    for (int i = 1; i <= d; i++) {
+        dot += a[i] * b[i];
+        na += a[i] * a[i];
+        nb += b[i] * b[i];
+    }
+    if (na == 0 || nb == 0) return 0;
+    return dot / sqrt(na) / sqrt(nb);
+}
+```
+
+## 4. Top-K 检索完整代码
+
+输入 `n d k`，再输入查询向量和 `n` 个候选向量，输出余弦相似度最高的 `k` 个编号。
+
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
 
-struct Sample {
-    vector<double> x;
-    int label;
-};
+const int MAXN = 1005;
+const int MAXD = 105;
 
-double dist2(const vector<double> &a, const vector<double> &b, int d) {
+int n, d, k;
+double qv[MAXD], vec[MAXN][MAXD];
+
+double cosine_one(int id) {
+    double dot = 0, nq = 0, nv = 0;
+    for (int j = 1; j <= d; j++) {
+        dot += qv[j] * vec[id][j];
+        nq += qv[j] * qv[j];
+        nv += vec[id][j] * vec[id][j];
+    }
+    if (nq == 0 || nv == 0) return 0;
+    return dot / sqrt(nq) / sqrt(nv);
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    cin >> n >> d >> k;
+    for (int j = 1; j <= d; j++) cin >> qv[j];
+    for (int i = 1; i <= n; i++) {
+        for (int j = 1; j <= d; j++) cin >> vec[i][j];
+    }
+
+    vector<pair<double,int>> score;
+    for (int i = 1; i <= n; i++) score.push_back({cosine_one(i), i});
+    sort(score.begin(), score.end(), [](const pair<double,int> &a, const pair<double,int> &b) {
+        if (fabs(a.first - b.first) > 1e-12) return a.first > b.first;
+        return a.second < b.second;
+    });
+
+    for (int i = 0; i < k && i < (int)score.size(); i++) {
+        cout << score[i].second << (i + 1 == k || i + 1 == (int)score.size() ? '\n' : ' ');
+    }
+    return 0;
+}
+```
+
+最小测试：
+
+```text
+输入：
+3 2 2
+1 0
+1 0
+0 1
+1 1
+
+输出：
+1 3
+```
+
+## 5. Softmax
+
+用途：
+
+- 把一组分数转成概率。
+- 多分类最后一层常用。
+- attention 中把相似度分数转成权重。
+
+稳定写法：
+
+```cpp
+void softmax(double x[], double p[], int n) {
+    double mx = x[1];
+    for (int i = 2; i <= n; i++) mx = max(mx, x[i]);
+    double sum = 0;
+    for (int i = 1; i <= n; i++) {
+        p[i] = exp(x[i] - mx);
+        sum += p[i];
+    }
+    for (int i = 1; i <= n; i++) p[i] /= sum;
+}
+```
+
+为什么减最大值：
+
+```text
+exp(1000) 会溢出。
+softmax(x) 与 softmax(x - max(x)) 结果相同。
+```
+
+## 6. Attention 最小模型
+
+给一个 query `q`，多个 key `K[i]` 和 value `V[i]`：
+
+```text
+score[i] = dot(q, K[i]) / sqrt(d)
+weight = softmax(score)
+out = sum_i weight[i] * V[i]
+```
+
+口令：
+
+```text
+Q 问“我要找什么”，K 表示“我有什么标签”，V 表示“真正取走的信息”。
+```
+
+简化模板：
+
+```cpp
+const int MAXN = 105;
+const int MAXD = 105;
+double q[MAXD], key[MAXN][MAXD], val[MAXN][MAXD];
+double score[MAXN], w[MAXN], out[MAXD];
+
+void attention_one_query(int n, int d) {
+    for (int i = 1; i <= n; i++) {
+        score[i] = 0;
+        for (int j = 1; j <= d; j++) score[i] += q[j] * key[i][j];
+        score[i] /= sqrt((double)d);
+    }
+    softmax(score, w, n);
+    for (int j = 1; j <= d; j++) out[j] = 0;
+    for (int i = 1; i <= n; i++) {
+        for (int j = 1; j <= d; j++) out[j] += w[i] * val[i][j];
+    }
+}
+```
+
+## 7. Transformer 常识
+
+| 部件 | 作用 |
+|---|---|
+| token embedding | 把 token 编号变成向量 |
+| positional encoding | 给序列位置信息 |
+| self-attention | 每个 token 看其他 token |
+| multi-head | 多组 attention 并行关注不同关系 |
+| feed-forward | 每个位置独立的小网络 |
+| residual | 残差连接，缓解训练困难 |
+| layer norm | 层归一化，稳定训练 |
+
+考场判断：
+
+```text
+Transformer 的核心不是 RNN，而是 self-attention。
+自注意力可以并行处理序列，但标准注意力有 O(n^2) 序列长度开销。
+```
+
+## 8. RAG 题型拆解
+
+RAG 流程：
+
+```text
+query -> 编码成向量 -> 检索 Top-K 文档 -> 拼接上下文 -> 生成答案
+```
+
+可能考法：
+
+| 考法 | 实际操作 |
+|---|---|
+| 给查询和文档向量，选最相关文档 | 余弦相似度排序 |
+| 给词频，算相似度 | TF/TF-IDF + cosine |
+| 给多个候选答案和证据分 | 按加权得分排序 |
+| 判断 RAG 优点 | 可引入外部资料、缓解知识过期 |
+| 判断 RAG 风险 | 检索错、上下文太长、仍可能幻觉 |
+
+## 9. 生成模型参数常识
+
+| 参数 | 含义 |
+|---|---|
+| temperature | 随机性，越高越发散 |
+| top-k | 只在概率最高的 k 个 token 中采样 |
+| top-p | 只在累计概率达到 p 的候选中采样 |
+| max tokens | 最大生成长度 |
+
+竞赛题如果给出这些参数，通常会把概率表也给出，让你按规则采样或选最大概率。若题目要求确定输出，一般会规定取概率最大或给随机数序列。
+
+## 10. 与 Markov 性质的关系
+
+现代 AI 中经常出现“只看当前状态”的简化：
+
+| 场景 | Markov 化方式 |
+|---|---|
+| 强化学习 | 状态必须包含决策所需信息 |
+| 文本生成 | 下一个 token 由当前上下文决定 |
+| HMM | 隐状态按 Markov 链转移 |
+| 递归/DP | 状态包含未来所需的全部历史摘要 |
+
+如果题目说“下一步还依赖上一步动作/前两个字符/上一轮输出”，就把这些历史并入状态，和 `SIGN-MARKOV-01` 的升维思想一致。
+
+
+---
+
+
+<!-- source: 03_modules/SIGN-ARCH-01-computer-architecture.md -->
+# SIGN-ARCH-01 计算机体系结构基础
+
+模块编号：SIGN-ARCH-01
+
+模块名称：计算机体系结构：CPU、内存层次、缓存、指令、性能和字节序
+
+标签：签到题、计算机体系结构、CPU、内存、缓存、指令、字节序、性能估算、C++17
+
+一句话用途：当题目考 CPU、内存、缓存、字节序、性能单位或程序运行成本时，用本模块建立正确直觉。
+
+题面触发词：CPU、主频、寄存器、Cache、内存、磁盘、流水线、指令、字节序、局部性、寻址、吞吐量。
+
+什么时候用：
+
+- 题目要求判断计算机组成、内存层级或性能瓶颈。
+- 题目问数组行优先、缓存命中、访问模式。
+- 题目涉及大小端、二进制表示、对齐、栈堆。
+
+不要什么时候用：
+
+- 题目要求操作系统调度细节，翻 `SIGN-OSNET-01`。
+- 题目要求 C++ 具体语法，翻第 1 卷。
+- 题目要求硬件电路深入设计，本卷只提供信息学考试层面常识。
+
+复杂度：
+
+- 概念题 `O(1)`。
+- 缓存/访问次数估算按循环次数和数据大小计算。
+
+依赖的标准容器：无固定依赖；代码题通常用数组和 `vector`。
+
+输入如何整理：
+
+```text
+先统一单位：
+Hz = cycles/second。
+1 ns = 1e-9 s。
+1 GB/s 是字节带宽还是 bit 带宽要看题面。
+```
+
+接口：
+
+```text
+性能估算：time = operations / operations_per_second。
+传输估算：time = bytes / bytes_per_second。
+缓存估算：按 cache line 大小和访问连续性判断。
+```
+
+常见坑：
+
+- 主频高不一定程序快，内存访问和算法复杂度也重要。
+- 顺序访问数组通常比随机访问快。
+- 二维数组 C/C++ 按行优先存储，`a[i][j]` 中 `j` 连续变化更友好。
+- 大端/小端影响多字节整数在内存里的字节顺序，不影响数值本身。
+
+暴力/部分分替代：
+
+- 复杂性能题不会精算时，先按数量级比较。
+- 缓存题不会算行数时，先判断顺序访问优于跳跃访问。
+
+## 1. 五大部件和层次结构
+
+| 层次 | 速度 | 容量 | 特点 |
+|---|---|---|---|
+| 寄存器 | 最快 | 最小 | CPU 内部 |
+| L1/L2/L3 Cache | 很快 | 小 | 利用局部性 |
+| RAM | 中等 | 较大 | 断电丢失 |
+| SSD/HDD | 慢 | 很大 | 持久存储 |
+| 网络/外设 | 更慢 | 远端 | 延迟大 |
+
+冯诺依曼结构：
+
+```text
+输入设备 -> 存储器 -> 运算器/控制器 -> 输出设备
+程序和数据都存在存储器中。
+```
+
+## 2. CPU 执行模型
+
+| 名称 | 含义 |
+|---|---|
+| 取指 | 从内存取下一条指令 |
+| 译码 | 判断指令类型和操作数 |
+| 执行 | ALU 运算、访存或跳转 |
+| 寄存器 | CPU 内部高速小存储 |
+| ALU | 算术逻辑单元 |
+| PC | 程序计数器，指向下一条指令 |
+| 指令集 | CPU 能理解的机器指令集合 |
+| 流水线 | 多条指令不同阶段重叠执行 |
+| 分支预测 | 猜测 if/跳转方向减少停顿 |
+
+## 3. 局部性和缓存
+
+| 局部性 | 例子 |
+|---|---|
+| 时间局部性 | 一个变量刚访问过，很快又访问 |
+| 空间局部性 | 访问 `a[i]` 后很可能访问 `a[i+1]` |
+
+二维数组访问：
+
+```cpp
+int a[1000][1000];
+
+// 更符合 C++ 行优先，通常更快。
+for (int i = 0; i < 1000; i++) {
+    for (int j = 0; j < 1000; j++) {
+        a[i][j]++;
+    }
+}
+
+// 跳列访问，缓存不友好。
+for (int j = 0; j < 1000; j++) {
+    for (int i = 0; i < 1000; i++) {
+        a[i][j]++;
+    }
+}
+```
+
+## 4. 字节序
+
+以 `0x12345678` 为例：
+
+| 字节序 | 低地址到高地址 |
+|---|---|
+| 大端 | `12 34 56 78` |
+| 小端 | `78 56 34 12` |
+
+考试提醒：
+
+- 网络字节序通常是大端。
+- x86 常见小端。
+- 普通 C++ 数值运算不需要关心字节序，只有按字节读写二进制时才关心。
+
+## 5. 性能估算
+
+| 单位 | 含义 |
+|---|---|
+| Hz | 每秒周期数 |
+| GHz | `1e9 Hz` |
+| FLOPS | 每秒浮点运算次数 |
+| IOPS | 每秒 I/O 操作次数 |
+| latency | 单次延迟 |
+| throughput | 吞吐量 |
+
+估算口令：
+
+```text
+如果 1 秒约 1e8 简单操作：
+O(n^2), n=1e5 -> 1e10，危险。
+O(n log n), n=1e6 -> 约 2e7，通常可试。
+```
+
+
+---
+
+
+<!-- source: 03_modules/SIGN-ARCH-02-number-memory-representation.md -->
+# SIGN-ARCH-02 数值表示、补码、浮点、字节序与内存
+
+模块编号：SIGN-ARCH-02
+
+模块名称：计算机数值与内存表示：进制、补码、移位、浮点、字节序、内存区和对齐
+
+标签：签到题、计算机组成、数值表示、补码、浮点数、字节序、内存、C++17
+
+一句话用途：当题目要求二进制/十六进制转换、补码范围、移位、浮点误差、大小端、内存大小或 C++ 对象存储常识时，用本模块快速判断。
+
+题面触发词：
+
+- 二进制、八进制、十六进制、原码、反码、补码。
+- 有符号整数范围、溢出、左移、右移、位运算。
+- 浮点数、精度误差、有效数字、IEEE 754。
+- 大端、小端、字节序、内存地址。
+- 栈、堆、全局区、静态区、Cache、对齐。
+
+什么时候用：
+
+- 题目像计算机组成/体系结构常识题。
+- 模拟题中出现二进制协议、文件头、字节解析。
+- 签到题要求估算数组占用、图片/音频/内存大小。
+- 代码阅读题涉及溢出、移位、整数除法、浮点比较。
+
+不要什么时候用：
+
+- 需要严格解析真实 IEEE 754 位字段时，按题面给出的格式处理。
+- 不要依赖 C++ 有符号整数溢出的结果；这是未定义行为。
+- 不要用指针强转读浮点二进制，可能违反别名规则；用 `memcpy`。
+- 需要操作系统 API 时，不要按本模块硬猜，按题面规则。
+
+复杂度：
+
+- 进制转换：`O(位数)`。
+- 位运算判断：`O(1)`。
+- 内存估算：`O(1)` 乘法。
+- 模拟二进制协议：`O(字节数)`。
+
+依赖的标准容器：
+
+- `string`：进制表示。
+- `unsigned int`、`unsigned long long`：位运算更安全。
+- `memcpy`：安全查看浮点/整数字节。
+- `iomanip`：十六进制输出。
+
+输入如何整理：
+
+```text
+1. 先确认单位：bit 还是 byte，KB 是 1024 还是题面指定 1000。
+2. 进制题先把每 4 个二进制位映射成 1 个十六进制位。
+3. 补码题先确认位数，例如 8 bit、16 bit、32 bit。
+4. 内存题统一换算成 byte，再除以 1024 得 KiB/MiB。
+```
+
+接口：
+
+```text
+range_signed(bits) -> 有符号补码范围。
+range_unsigned(bits) -> 无符号范围。
+hex_to_binary / binary_to_hex -> 进制互转。
+safe_float_bits(x) -> 用 memcpy 查看浮点底层字节。
+memory_bytes(count, sizeof_type) -> 数组占用估算。
+```
+
+常见坑：
+
+- `1 KB` 在计算机存储题通常是 `1024 B`，网络速率题常用十进制，要看题面。
+- `1 byte = 8 bit`。
+- 8 bit 有符号补码范围是 `[-128,127]`，不是 `[-127,127]`。
+- `char` 是否有符号与实现有关，竞赛中不要依赖。
+- 有符号整数溢出是未定义行为，无符号整数按模 `2^bits` 回绕。
+- 浮点数不能用 `==` 判断一般小数结果。
+- 小端机器低地址存低字节，大端机器低地址存高字节。
+
+暴力/部分分替代：
+
+- 不确定复杂位运算时，把小位数列出真值表。
+- 进制转换怕错时，先转十进制再转目标进制。
+- 浮点输出不确定时，按题面精度用 `fixed << setprecision(k)`。
+- 二进制协议题先写逐字节解析，别急着用结构体强转。
+
+## 1. 进制速查
+
+| 进制 | 前缀习惯 | 基数 |
+|---|---|---:|
+| 二进制 | `0b` | 2 |
+| 八进制 | `0` | 8 |
+| 十进制 | 无 | 10 |
+| 十六进制 | `0x` | 16 |
+
+四位二进制到十六进制：
+
+| 二进制 | 十六进制 | 二进制 | 十六进制 |
+|---|---|---|---|
+| 0000 | 0 | 1000 | 8 |
+| 0001 | 1 | 1001 | 9 |
+| 0010 | 2 | 1010 | A |
+| 0011 | 3 | 1011 | B |
+| 0100 | 4 | 1100 | C |
+| 0101 | 5 | 1101 | D |
+| 0110 | 6 | 1110 | E |
+| 0111 | 7 | 1111 | F |
+
+口令：
+
+```text
+二进制转十六进制：从右往左每 4 位一组，不足左补 0。
+十六进制转二进制：每个十六进制位展开成 4 位。
+```
+
+## 2. 补码范围
+
+`b` 位整数：
+
+| 类型 | 范围 |
+|---|---|
+| 无符号 | `0 .. 2^b - 1` |
+| 有符号补码 | `-2^(b-1) .. 2^(b-1)-1` |
+
+常见范围：
+
+| 位数 | 无符号 | 有符号补码 |
+|---:|---:|---:|
+| 8 | `0..255` | `-128..127` |
+| 16 | `0..65535` | `-32768..32767` |
+| 32 | `0..4294967295` | `-2147483648..2147483647` |
+| 64 | `0..2^64-1` | `-2^63..2^63-1` |
+
+负数补码口令：
+
+```text
+求 -x 的 b 位补码：x 的二进制按位取反，再加 1。
+```
+
+例子：8 bit 中 `-5`：
+
+```text
+5        = 00000101
+取反     = 11111010
+加 1     = 11111011
+```
+
+## 3. 位运算常识
+
+| 表达式 | 用途 |
+|---|---|
+| `x & 1` | 判断奇偶 |
+| `x >> 1` | 无符号时相当于除以 2 向下取整 |
+| `x << k` | 无符号时乘 `2^k`，注意溢出 |
+| `x & (x-1)` | 去掉最低位的 1 |
+| `x & -x` | 取最低位的 1 对应权值，树状数组常用 |
+| `x | (1<<i)` | 把第 i 位设 1 |
+| `x & ~(1<<i)` | 把第 i 位清 0 |
+| `x ^ (1<<i)` | 翻转第 i 位 |
+
+建议：
+
+```cpp
+unsigned int mask = 1u << i;
+unsigned long long big_mask = 1ull << i;
+```
+
+不要写：
+
+```cpp
+int mask = 1 << 31; // 可能触发符号位问题
+```
+
+## 4. 整数溢出
+
+竞赛结论：
+
+| 类型 | 溢出规则 |
+|---|---|
+| `unsigned int` | 按模 `2^32` 回绕 |
+| `unsigned long long` | 按模 `2^64` 回绕 |
+| `int/long long` | 有符号溢出是未定义行为 |
+
+安全乘法判断：
+
+```cpp
+long long a, b;
+__int128 t = (__int128)a * b;
+```
+
+如果只需要取模：
+
+```cpp
+long long mul_mod(long long a, long long b, long long mod) {
+    return (long long)((__int128)a * b % mod);
+}
+```
+
+## 5. 浮点数常识
+
+| 类型 | 常见大小 | 有效十进制位 |
+|---|---:|---:|
+| `float` | 4 byte | 约 6-7 位 |
+| `double` | 8 byte | 约 15-16 位 |
+| `long double` | 依环境 | 通常更高 |
+
+口令：
+
+```text
+0.1、0.2 这类十进制小数通常不能被二进制浮点精确表示。
+比较浮点用 abs(a-b) < EPS。
+```
+
+```cpp
+const double EPS = 1e-9;
+bool equal_double(double a, double b) {
+    return fabs(a - b) < EPS;
+}
+```
+
+输出：
+
+```cpp
+cout << fixed << setprecision(6) << ans << "\n";
+```
+
+## 6. 字节序
+
+假设整数 `0x12345678` 占 4 字节：
+
+| 字节序 | 低地址到高地址 |
+|---|---|
+| 大端 big-endian | `12 34 56 78` |
+| 小端 little-endian | `78 56 34 12` |
+
+安全查看本机字节序：
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    unsigned int x = 0x12345678u;
+    unsigned char b[4];
+    memcpy(b, &x, 4);
+    for (int i = 0; i < 4; i++) {
+        cout << hex << setw(2) << setfill('0') << (int)b[i] << (i == 3 ? '\n' : ' ');
+    }
+    return 0;
+}
+```
+
+注意：这段代码只是查看本机结果。正式题目若指定大端/小端，要按题面解析，不要依赖本机。
+
+## 7. 内存区常识
+
+| 区域 | 常见内容 |
+|---|---|
+| 栈 stack | 局部变量、函数调用信息 |
+| 堆 heap | `new`、动态分配 |
+| 全局/静态区 | 全局变量、`static` 变量 |
+| 常量区 | 字符串字面量等 |
+
+竞赛建议：
+
+```text
+大数组尽量开全局静态数组，避免栈爆。
+递归太深可能栈爆，图 DFS 深度可能到 2e5 时考虑迭代写法。
+```
+
+例子：
+
+```cpp
+const int MAXN = 200000 + 5;
+int a[MAXN]; // 全局数组，通常比函数内大数组更稳
+```
+
+## 8. 常见类型大小
+
+实际大小由环境决定，但 ACM/C++17 常见为：
+
+| 类型 | 常见大小 |
+|---|---:|
+| `char` | 1 byte |
+| `short` | 2 byte |
+| `int` | 4 byte |
+| `long long` | 8 byte |
+| `float` | 4 byte |
+| `double` | 8 byte |
+| 指针 | 64 位环境 8 byte |
+
+考场安全做法：
+
+```cpp
+cout << sizeof(int) << "\n";
+```
+
+但实际竞赛题通常按标准常见大小给条件，不要求现场探测。
+
+## 9. 内存估算
+
+公式：
+
+```text
+数组字节数 = 元素个数 * 每个元素字节数
+MiB = byte / 1024 / 1024
+```
+
+常见：
+
+| 数组 | 大约内存 |
+|---|---:|
+| `int a[1000000]` | 4 MB |
+| `long long a[1000000]` | 8 MB |
+| `double a[1000000]` | 8 MB |
+| `int dp[5000][5000]` | 约 100 MB |
+| `long long dp[5000][5000]` | 约 200 MB |
+
+## 10. 对齐和结构体大小
+
+结构体可能因为对齐产生填充字节：
+
+```cpp
+struct A {
+    char c;
+    int x;
+};
+```
+
+常见情况下不是 5 byte，而可能是 8 byte，因为 `int` 需要按 4 字节对齐。
+
+优化顺序：
+
+```cpp
+struct B {
+    int x;
+    char c;
+};
+```
+
+但结构体最终大小仍可能向最大对齐倍数补齐。
+
+竞赛口令：
+
+```text
+大规模结构体数组，要关注字段顺序和 sizeof。
+普通算法题不为了省几个字节过度折腾。
+```
+
+## 11. 字符编码长度
+
+| 编码 | 特点 |
+|---|---|
+| ASCII | 0..127，英文字符常见 1 byte |
+| UTF-8 | 英文 1 byte，中文通常 3 byte |
+| UTF-16 | 常见字符 2 byte，部分字符 4 byte |
+
+C++ `string::size()` 返回字节数，不是中文字符数。若题面有中文字符串长度，通常会明确处理规则；没明确时，不要擅自按 UTF-8 字符切。
+
+## 12. BCD 和固定小数
+
+BCD：每个十进制数字用 4 bit 表示。
+
+```text
+十进制 59 的 BCD：0101 1001
+普通二进制 59：00111011
+```
+
+固定小数：
+
+```text
+把金额扩大 100 倍存整数，例如 12.34 元 -> 1234 分。
+```
+
+适用：
+
+- 钱、积分、百分比等需要避免浮点误差的题。
+- 题面给保留两位小数且只做加减乘整数时。
+
+
+---
+
+
+<!-- source: 03_modules/SIGN-CALC-01-calculus-numerical.md -->
+# SIGN-CALC-01 高等数学、微积分与数值方法
+
+模块编号：SIGN-CALC-01
+
+模块名称：微积分、导数积分、梯度和数值近似速查
+
+标签：签到题、高等数学、微积分、导数、积分、梯度、牛顿法、数值积分、C++17
+
+一句话用途：当题目把微积分概念包装成公式模拟题时，用本模块查导数、积分、梯度、数值近似和迭代规则。
+
+题面触发词：导数、偏导、梯度、极值、凸函数、积分、面积、牛顿迭代、梯度下降、差分近似。
+
+什么时候用：
+
+- 题目给出明确函数和公式，要求按若干步迭代。
+- 题目要求用导数判断单调、极值或用数值积分近似面积。
+- 机器学习题里出现损失函数、梯度、学习率。
+
+不要什么时候用：
+
+- 方程求根已经给出一般一元函数，优先 `SIM-07` 的二分/牛顿模板。
+- 题目要求严格符号推导，本卷只提供常见公式和数值模拟。
+- 多变量优化规模大，不要自己写复杂优化器，按题面规则模拟。
+
+复杂度：
+
+- 单点导数公式：`O(1)`。
+- 数值积分：`O(n)`。
+- 迭代法：`O(iter * eval)`。
+
+依赖的标准容器：`vector<double>`、`cmath`、`iomanip`。
+
+输入如何整理：
+
+```text
+把函数参数和迭代次数读清楚。
+若题目给学习率 lr，每次更新通常是 x -= lr * grad。
+若题目给误差 eps，循环要有最大迭代次数防死循环。
+```
+
+接口：
+
+```text
+finite_diff(f,x) -> 中心差分近似导数。
+trapezoid(f,l,r,n) -> 梯形积分。
+simpson(f,l,r,n_even) -> Simpson 积分。
+gradient_descent_step(x,grad,lr) -> 一步梯度下降。
+```
+
+常见坑：
+
+- 三角函数 `sin/cos/tan` 参数是弧度。
+- 数值积分的 `n` 越大越准，但太大可能超时。
+- 牛顿法遇到导数接近 0 要停止或切换二分。
+- 梯度下降是减梯度，梯度上升才是加梯度。
+
+暴力/部分分替代：
+
+- 不会解析求导时，用中心差分近似。
+- 不会积分公式时，用梯形积分。
+- 不会最优解闭式公式时，按题面迭代固定次数。
+
+## 1. 常见导数表
+
+| 函数 | 导数 |
+|---|---|
+| `C` | `0` |
+| `x^n` | `n*x^(n-1)` |
+| `1/x` | `-1/x^2` |
+| `sqrt(x)` | `1/(2*sqrt(x))` |
+| `e^x` | `e^x` |
+| `a^x` | `a^x ln a` |
+| `ln x` | `1/x` |
+| `log_a x` | `1/(x ln a)` |
+| `sin x` | `cos x` |
+| `cos x` | `-sin x` |
+| `tan x` | `1/cos^2 x` |
+| `sigmoid(x)` | `s*(1-s)` |
+
+## 2. 求导规则
+
+```text
+(f+g)' = f' + g'
+(f*g)' = f'g + fg'
+(f/g)' = (f'g - fg') / g^2
+f(g(x))' = f'(g(x)) * g'(x)
+```
+
+偏导和梯度：
+
+```text
+f(x,y)=x^2+3xy+y
+df/dx = 2x+3y
+df/dy = 3x+1
+gradient = (df/dx, df/dy)
+```
+
+## 3. 数值方法短代码
+
+```cpp
+double finite_diff(double (*f)(double), double x) {
+    const double h = 1e-6;
+    return (f(x + h) - f(x - h)) / (2.0 * h);
+}
+
+double trapezoid(double (*f)(double), double l, double r, int n) {
+    double h = (r - l) / n;
+    double ans = (f(l) + f(r)) * 0.5;
+    for (int i = 1; i < n; i++) ans += f(l + h * i);
+    return ans * h;
+}
+
+double simpson(double (*f)(double), double l, double r, int n) {
+    if (n % 2) n++;
+    double h = (r - l) / n;
+    double ans = f(l) + f(r);
+    for (int i = 1; i < n; i++) {
+        ans += f(l + h * i) * (i % 2 ? 4.0 : 2.0);
+    }
+    return ans * h / 3.0;
+}
+```
+
+## 4. 常见原函数和积分
+
+| 函数 | 一个原函数 |
+|---|---|
+| `x^n` | `x^(n+1)/(n+1)`，`n!=-1` |
+| `1/x` | `ln|x|` |
+| `e^x` | `e^x` |
+| `sin x` | `-cos x` |
+| `cos x` | `sin x` |
+| `1/(1+x^2)` | `atan x` |
+
+## 5. 优化和机器学习常见式
+
+| 场景 | 公式 |
+|---|---|
+| 平方损失 | `L=(pred-y)^2` |
+| MSE | `sum((pred-y)^2)/n` |
+| 一维梯度下降 | `x = x - lr * grad(x)` |
+| 线性回归预测 | `pred = w*x + b` |
+| logistic | `sigmoid(z)=1/(1+exp(-z))` |
+| 二分类交叉熵 | `-y ln p - (1-y) ln(1-p)` |
+
+
+---
+
+
+<!-- source: 03_modules/SIGN-COMP-01-complexity-engineering-estimates.md -->
+# SIGN-COMP-01 复杂度、数据规模与工程估算
+
+模块编号：SIGN-COMP-01
+
+模块名称：复杂度、数据规模、内存和工程数量级估算
+
+标签：签到题、复杂度、内存估算、数量级、工程估算、C++17
+
+一句话用途：把数据范围快速翻译成可用复杂度、内存占用和实现风险，防止签到题和简单算法题因为估算错误丢分。
+
+题面触发词：数据范围、内存限制、时间限制、操作次数、数组大小、矩阵大小、提交限制、复杂度。
+
+什么时候用：
+
+- 读题后要判断暴力能不能过。
+- 题目问某算法复杂度或内存占用。
+- 需要估算 `int` 数组、`long long` 数组、二维矩阵占用。
+
+不要什么时候用：
+
+- 精确性能受平台影响，本卷只做数量级判断。
+- 卡常极限题要结合实际编译器和数据分布。
+
+复杂度：估算本身 `O(1)`。
+
+依赖的标准容器：无固定依赖；常见估算对象是数组、vector、图邻接表。
+
+输入如何整理：
+
+```text
+圈 n, m, q, T。
+看是否给多测总和。
+估算状态数 * 每状态转移。
+估算数组元素个数 * 单元素字节。
+```
+
+接口：
+
+```text
+ops <= 1e8 一般可试。
+memory_bytes = count * sizeof(type)。
+graph memory ~ edges * edge_record_size。
+```
+
+常见坑：
+
+- 多测试没有总和时，不能只看单测。
+- `vector<vector<int>>` 有额外开销，静态数组更容易估算。
+- `bool` 数组通常 1 byte，`bitset` 才压位。
+- 递归深度大可能栈爆。
+
+暴力/部分分替代：
+
+- 正解不会时，根据数据范围分档：小数据暴力，大数据合法兜底。
+- 内存不够时改滚动数组、压位、邻接表。
+
+## 1. 时间预算表
+
+| 最大操作量 | 直觉 |
+|---|---|
+| `1e6` | 很安全 |
+| `1e7` | 安全 |
+| `1e8` | C++ 可试 |
+| `1e9` | 通常危险 |
+| `1e10` | 基本不行 |
+
+数据范围：
+
+| 范围 | 可用复杂度 |
+|---|---|
+| `n<=10` | `n!` |
+| `n<=20` | `2^n * n` |
+| `n<=40` | 折半 `2^(n/2)` |
+| `n<=300` | `n^3` |
+| `n<=3000` | `n^2` |
+| `n<=2e5` | `n log n` |
+| `n<=1e6` | `n` 或较小常数 `n log n` |
+
+## 2. 内存估算
+
+| 类型 | 常见字节 |
+|---|---:|
+| `char` | 1 |
+| `bool` | 1 |
+| `int` | 4 |
+| `long long` | 8 |
+| `double` | 8 |
+| `pair<int,int>` | 通常 8 |
+| `pair<long long,int>` | 可能 16 |
+
+估算例子：
+
+```text
+int a[1000000] -> 约 4 MB
+long long dp[5000][5000] -> 5000*5000*8 = 200 MB，危险
+int dist[1000][1000] -> 4 MB
+```
+
+## 3. 图存储估算
+
+邻接表边：
+
+```cpp
+struct Edge {
+    int to;
+    int w;
+    int next;
+}; // 通常 12 byte
+```
+
+无向图要存两条边。
+
+```text
+m=2e5 无向边 -> 4e5 条 Edge -> 约 4.8 MB
+```
+
+## 4. 常见优化方向
+
+| 超时来源 | 优化方向 |
+|---|---|
+| 三重循环 | 前缀和、排序、DP 优化 |
+| 枚举所有对 | 排序 + 双指针 / 哈希 |
+| 重复 DFS | 记忆化 |
+| 区间反复求和 | 前缀和 / 树状数组 / 线段树 |
+| 全源最短路太大 | 多次 Dijkstra 或只求需要点 |
+| 二维 DP 内存大 | 滚动数组 |
+| 字符串反复截取 | 指针/下标，避免复制 |
+
+
+---
+
+
+<!-- source: 03_modules/SIGN-CS-01-computer-common-sense.md -->
+# SIGN-CS-01 计算机常识、编码、文件和网络
+
+模块编号：SIGN-CS-01
+
+模块名称：计算机基础常识：存储单位、编码、文件大小、网络和格式
+
+标签：签到题、计算机常识、bit、byte、ASCII、UTF-8、BMP、音频、视频、网络、C++17
+
+一句话用途：遇到文件大小、图片音视频、进制编码、IP、带宽、ASCII/UTF-8 等题时，用本模块先统一单位再计算。
+
+题面触发词：bit、byte、KB、KiB、BMP、RGB、RGBA、采样率、码率、ASCII、UTF-8、IPv4、CIDR、Base64、URL 编码。
+
+什么时候用：
+
+- 题目问内存、文件大小、传输时间、编码转换。
+- 输入是图片/音频/视频参数，要求估算容量。
+- 题目考二进制、十六进制、补码、校验和。
+
+不要什么时候用：
+
+- 复杂文件格式解析，优先 `SIM-04`。
+- 真正图像算法如卷积、滤波，优先按矩阵/模拟题处理。
+- 网络协议细节题若题面另给规则，以题面为准。
+
+复杂度：
+
+- 单个换算 `O(1)`。
+- 字符串编码扫描 `O(len)`。
+- IP/CIDR 解析 `O(len)`。
+
+依赖的标准容器：`string`、`vector<int>`、`sstream`、`iomanip`。
+
+输入如何整理：
+
+```text
+先看单位：bit 还是 byte，KB 还是 KiB，bps 还是 B/s。
+图片先看每像素位数和行对齐。
+网络传输先把带宽转成 byte/s。
+```
+
+接口：
+
+```text
+bmp_size(width,height,bits) -> BMP 像素数据字节数，按 4 字节行对齐。
+ipv4_to_int(s) -> IPv4 转 32 位整数。
+base_convert(s,base) -> 小范围进制转十进制。
+```
+
+常见坑：
+
+- 1 byte = 8 bit。
+- `Mbps` 是百万 bit/s，不是 MB/s。
+- BMP 24 位图每像素 3 byte，但每行要补到 4 的倍数。
+- UTF-8 中文通常占 3 byte，不等于字符个数。
+- 十六进制字符 `A-F` 可大小写。
+
+暴力/部分分替代：
+
+- 编码规则复杂时，先处理 ASCII 和题面出现的字符。
+- BMP 若忘记行对齐，先交 `w*h*bytes` 可能拿部分分。
+- IP/CIDR 不熟时，小范围直接字符串分段比较。
+
+## 1. 单位表
+
+| 单位 | 含义 |
+|---|---|
+| bit | 位 |
+| byte / B | 字节，`1B=8bit` |
+| KB | 常见十进制 `1000B`，看题面 |
+| KiB | `1024B` |
+| MB | `1000^2B`，看题面 |
+| MiB | `1024^2B` |
+| bps | bit per second |
+| B/s | byte per second |
+
+下载时间：
+
+```text
+seconds = file_bytes * 8 / bandwidth_bps
+```
+
+## 2. BMP 和媒体大小
+
+```cpp
+long long bmp_pixel_bytes(long long width, long long height, int bits_per_pixel) {
+    long long row_bits = width * bits_per_pixel;
+    long long row_bytes = ((row_bits + 31) / 32) * 4; // BMP 行 4 字节对齐
+    return row_bytes * height;
+}
+
+long long audio_bytes(long long seconds, long long sample_rate, int bits_per_sample, int channels) {
+    return seconds * sample_rate * bits_per_sample / 8 * channels;
+}
+
+long long video_bytes_by_bitrate(long long seconds, long long bitrate_bps) {
+    return seconds * bitrate_bps / 8;
+}
+```
+
+常见图像：
+
+| 格式 | 每像素 |
+|---|---|
+| 灰度 8 bit | 1 byte |
+| RGB 24 bit | 3 byte |
+| RGBA 32 bit | 4 byte |
+| BMP 24 bit | 3 byte + 行对齐 |
+
+## 3. 编码和进制
+
+```cpp
+int hex_value(char c) {
+    if ('0' <= c && c <= '9') return c - '0';
+    if ('a' <= c && c <= 'f') return c - 'a' + 10;
+    if ('A' <= c && c <= 'F') return c - 'A' + 10;
+    return -1;
+}
+
+long long to_decimal(const string &s, int base) {
+    long long ans = 0;
+    for (char c : s) ans = ans * base + hex_value(c);
+    return ans;
+}
+
+int utf8_byte_count(unsigned char c) {
+    if ((c & 0x80) == 0) return 1;
+    if ((c & 0xE0) == 0xC0) return 2;
+    if ((c & 0xF0) == 0xE0) return 3;
+    if ((c & 0xF8) == 0xF0) return 4;
+    return 1;
+}
+```
+
+## 4. IPv4 / CIDR
+
+```cpp
+unsigned int ipv4_to_uint(const string &s) {
+    unsigned int ans = 0, cur = 0;
+    for (char c : s) {
+        if (c == '.') {
+            ans = (ans << 8) | cur;
+            cur = 0;
+        } else {
+            cur = cur * 10 + (c - '0');
+        }
+    }
+    return (ans << 8) | cur;
+}
+
+bool same_cidr(const string &a, const string &b, int prefix) {
+    unsigned int x = ipv4_to_uint(a), y = ipv4_to_uint(b);
+    if (prefix == 0) return true;
+    unsigned int mask = 0xffffffffu << (32 - prefix);
+    return (x & mask) == (y & mask);
+}
+```
+
+
+---
+
+
+<!-- source: 03_modules/SIGN-LA-01-linear-algebra.md -->
+# SIGN-LA-01 线性代数、向量与小矩阵
+
+模块编号：SIGN-LA-01
+
+模块名称：线性代数常识：向量、矩阵、距离、投影和小规模变换
+
+标签：签到题、线性代数、向量、矩阵、距离、点积、叉积、Markov、C++17
+
+一句话用途：遇到向量、矩阵、坐标变换、小规模线性代数或机器学习特征计算时，用本模块快速查公式。
+
+题面触发词：向量、矩阵、点积、叉积、距离、投影、旋转、转移矩阵、特征、线性组合。
+
+什么时候用：
+
+- 坐标、几何、机器学习特征题需要向量计算。
+- 题目给小矩阵，要求乘法、转置、行列式、逆矩阵或转移若干步。
+- 题目出现 Markov 转移、状态概率、二维旋转。
+
+不要什么时候用：
+
+- 大规模线性方程组求解，优先 `SIM-07` 高斯消元。
+- 复杂矩阵快速幂，优先 `MATH-05`。
+- 高阶线代证明题，本卷只服务计算和模拟。
+
+复杂度：
+
+- 向量距离/点积：`O(d)`。
+- 矩阵乘法：`O(n*m*k)`。
+- 2x2 行列式/逆：`O(1)`。
+
+依赖的标准容器：`vector<double>`、静态二维数组、`cmath`、`iomanip`。
+
+输入如何整理：
+
+```text
+矩阵 A 的尺寸是 rows x cols。
+A*B 能乘的条件：A.cols == B.rows。
+向量维度必须一致。
+```
+
+接口：
+
+```text
+dot(a,b,d) -> 点积。
+norm2(a,d) -> 平方范数。
+dist2(a,b,d) -> 平方欧氏距离。
+cross2(ax,ay,bx,by) -> 二维叉积。
+mat_mul(A,B) -> 小矩阵乘法。
+```
+
+常见坑：
+
+- 矩阵乘法不满足交换律，`A*B` 和 `B*A` 通常不同。
+- 欧氏距离比较大小时可比较平方距离，少开根。
+- cosine 相似度分母为 0 要特判。
+- 旋转角必须是弧度。
+
+暴力/部分分替代：
+
+- 小矩阵直接三重循环。
+- 多步转移次数很小直接重复乘；次数很大再用矩阵快速幂。
+- 维度很低时直接展开公式。
+
+## 1. 向量公式
+
+| 名称 | 公式 |
+|---|---|
+| 点积 | `a dot b = sum ai*bi` |
+| 范数 | `||a|| = sqrt(a dot a)` |
+| 欧氏距离 | `sqrt(sum((ai-bi)^2))` |
+| 曼哈顿距离 | `sum(abs(ai-bi))` |
+| cosine 相似度 | `(a dot b)/(||a||*||b||)` |
+| 二维叉积 | `ax*by - ay*bx` |
+| 三角形有向面积 | `cross(B-A, C-A)/2` |
+| 投影长度 | `(a dot b)/||b||` |
+
+```cpp
+double dot_product(const double a[], const double b[], int d) {
+    double s = 0;
+    for (int i = 1; i <= d; i++) s += a[i] * b[i];
+    return s;
+}
+
+double dist2(const double a[], const double b[], int d) {
     double s = 0;
     for (int i = 1; i <= d; i++) {
         double t = a[i] - b[i];
@@ -51893,1228 +40852,2231 @@ double dist2(const vector<double> &a, const vector<double> &b, int d) {
     return s;
 }
 
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
+double cross2(double ax, double ay, double bx, double by) {
+    return ax * by - ay * bx;
+}
+```
 
-    int n, q, d, k;
-    cin >> n >> q >> d >> k;
-    vector<Sample> train(n + 1);
+## 2. 小矩阵公式
+
+| 名称 | 公式 |
+|---|---|
+| 2x2 行列式 | `ad-bc` |
+| 2x2 逆矩阵 | `1/det * [[d,-b],[-c,a]]` |
+| trace | 主对角线和 |
+| 对称矩阵 | `A[i][j] == A[j][i]` |
+| 单位矩阵 | 对角线 1，其余 0 |
+| 转置 | `B[j][i]=A[i][j]` |
+
+```cpp
+const int MAXD = 55;
+double A[MAXD][MAXD], B[MAXD][MAXD], C[MAXD][MAXD];
+
+void mat_mul(int n, int m, int k) {
     for (int i = 1; i <= n; i++) {
-        train[i].x.assign(d + 1, 0);
-        for (int j = 1; j <= d; j++) cin >> train[i].x[j];
-        cin >> train[i].label;
-    }
-    while (q--) {
-        vector<double> x(d + 1);
-        for (int j = 1; j <= d; j++) cin >> x[j];
-        vector<pair<double, int>> near;
-        for (int i = 1; i <= n; i++) near.push_back({dist2(train[i].x, x, d), train[i].label});
-        sort(near.begin(), near.end());
-        map<int, int> vote;
-        for (int i = 0; i < min(k, (int)near.size()); i++) vote[near[i].second]++;
-        int best_label = -1, best_cnt = -1;
-        for (auto [lab, cnt] : vote) {
-            if (cnt > best_cnt || (cnt == best_cnt && lab < best_label)) {
-                best_cnt = cnt;
-                best_label = lab;
+        for (int j = 1; j <= k; j++) {
+            C[i][j] = 0;
+            for (int t = 1; t <= m; t++) {
+                C[i][j] += A[i][t] * B[t][j];
             }
         }
-        cout << best_label << '\n';
     }
-    return 0;
 }
 ```
 
-**测试设计：**
+## 3. 机器学习里常见线代
 
-1. 输入：
+| 场景 | 计算 |
+|---|---|
+| 线性模型打分 | `score = w dot x + b` |
+| 全连接层 | `y[j] = b[j] + sum_i x[i]*W[i][j]` |
+| kNN 距离 | 常用欧氏距离或曼哈顿距离 |
+| 文本相似度 | cosine 或 Jaccard |
+| Markov 一步转移 | `next = cur * P` |
+| PCA 低维投影 | `z = x dot direction` |
+
+
+---
+
+
+<!-- source: 03_modules/SIGN-LOGIC-01-discrete-logic-automata.md -->
+# SIGN-LOGIC-01 离散逻辑、布尔代数与自动机
+
+模块编号：SIGN-LOGIC-01
+
+模块名称：离散数学常识：逻辑、集合、关系、自动机和形式语言
+
+标签：签到题、离散数学、逻辑、集合、关系、自动机、正则、状态机、C++17
+
+一句话用途：遇到命题逻辑、集合关系、布尔表达式、状态机、自动机和形式语言概念题时，用本模块快速查规则。
+
+题面触发词：命题、真值表、与或非、蕴含、集合、关系、等价关系、偏序、DFA、NFA、正则表达式。
+
+什么时候用：
+
+- 题目要求判断逻辑表达式真假或等价。
+- 题目给状态转移表，要求模拟自动机。
+- 题目考集合、关系、函数、映射的基础定义。
+
+不要什么时候用：
+
+- 复杂图论题回到图论卷。
+- 正则匹配完整实现可用 DP/自动机，按题面规模选择。
+- 编译器/解释器题优先 `SIM-05`。
+
+复杂度：
+
+- 真值表 `k` 个变量是 `O(2^k)`。
+- DFA 模拟 `O(len)`。
+- 集合操作按排序/哈希实现通常 `O(n log n)` 或均摊 `O(n)`。
+
+依赖的标准容器：`vector`、`set`、`map`、`string`。
+
+输入如何整理：
+
 ```text
-4 1 1 3
-0 1
-2 2
-4 2
-6 1
-3
+逻辑题先列变量。
+自动机题先记录起始状态、接受状态和转移表。
+集合题先去重。
 ```
-期望输出：
+
+接口：
+
 ```text
-2
+truth table -> 枚举 mask。
+DFA simulate -> state = trans[state][char]。
+set relation -> 检查自反、对称、传递。
 ```
 
-2. 输入：
-```text
-2 1 1 2
-0 1
-2 2
-1
-```
-期望输出：
-```text
-1
-```
+常见坑：
 
-***
-### V10-EX02 TF-IDF 文档检索
+- `A -> B` 只有 A 真 B 假时为假。
+- 德摩根：`not(A and B)=not A or not B`。
+- 空集是任意集合的子集。
+- DFA 每个状态每个字符只有一个转移；NFA 可以有多个。
 
-- 归属卷：第 10 卷
-- 覆盖模块：AI-05 TF-IDF
-- 考场用途：文本切词、词频、余弦相似度综合模拟。
+暴力/部分分替代：
 
-**题目描述：** 给定 `n` 篇英文文档和一个查询，按小写字母数字连续段切词。使用 `idf(w)=log((n+1)/(df(w)+1))+1`，权重为 `tf*idf`。输出与查询余弦相似度最高的文档编号和分数，平分取编号小。
+- 变量少时真值表枚举最稳。
+- 自动机状态少时直接二维表模拟。
+- 关系性质不会抽象时，三重循环检查传递性。
 
-**输入格式：** 第一行整数 `n`。接下来 `n` 行为文档。最后一行为查询。
+## 1. 逻辑公式
 
-**输出格式：** 输出文档编号和相似度，保留 6 位。
+| 公式 | 等价 |
+|---|---|
+| `A -> B` | `!A or B` |
+| `A <-> B` | `(A and B) or (!A and !B)` |
+| `!(A and B)` | `!A or !B` |
+| `!(A or B)` | `!A and !B` |
+| 双重否定 | `!!A = A` |
+| 分配律 | `A and (B or C) = (A and B) or (A and C)` |
 
-**样例输入：**
-```text
-3
-Apple banana apple
-Orange banana
-car bus train
-apple banana
-```
+真值表口令：
 
-**样例输出：**
-```text
-1 0.959146
-```
-
-**完整代码：**
 ```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-vector<string> tokenize(const string &s) {
-    vector<string> words;
-    string cur;
-    for (unsigned char c : s) {
-        if (isalnum(c)) cur.push_back((char)tolower(c));
-        else if (!cur.empty()) {
-            words.push_back(cur);
-            cur.clear();
-        }
-    }
-    if (!cur.empty()) words.push_back(cur);
-    return words;
-}
-
-map<string, int> count_words(const vector<string> &v) {
-    map<string, int> c;
-    for (auto &w : v) c[w]++;
-    return c;
-}
-
-double cosine(const map<string, int> &a, const map<string, int> &b, const map<string, int> &df, int n) {
-    map<string, double> va, vb;
-    for (auto [w, c] : a) {
-        int dfi = df.count(w) ? df.at(w) : 0;
-        va[w] = c * (log((double)(n + 1) / (dfi + 1)) + 1.0);
-    }
-    for (auto [w, c] : b) {
-        int dfi = df.count(w) ? df.at(w) : 0;
-        vb[w] = c * (log((double)(n + 1) / (dfi + 1)) + 1.0);
-    }
-    double dot = 0, na = 0, nb = 0;
-    for (auto [w, x] : va) {
-        na += x * x;
-        if (vb.count(w)) dot += x * vb[w];
-    }
-    for (auto [w, y] : vb) nb += y * y;
-    if (na == 0 || nb == 0) return 0;
-    return dot / sqrt(na * nb);
-}
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n;
-    cin >> n;
-    string line;
-    getline(cin, line);
-    vector<map<string, int>> docs(n + 1);
-    map<string, int> df;
-    for (int i = 1; i <= n; i++) {
-        getline(cin, line);
-        docs[i] = count_words(tokenize(line));
-        for (auto [w, c] : docs[i]) df[w]++;
-    }
-    getline(cin, line);
-    auto query = count_words(tokenize(line));
-    int best = 1;
-    double score = -1;
-    for (int i = 1; i <= n; i++) {
-        double cur = cosine(docs[i], query, df, n);
-        if (cur > score + 1e-12) {
-            score = cur;
-            best = i;
-        }
-    }
-    cout << fixed << setprecision(6) << best << ' ' << score << '\n';
-    return 0;
+for (int mask = 0; mask < (1 << k); mask++) {
+    bool a = mask & 1;
+    bool b = mask & 2;
+    bool implication = (!a) || b;
 }
 ```
 
-**测试设计：**
+## 2. 集合和关系
 
-1. 输入：
+| 概念 | 定义 |
+|---|---|
+| 子集 | `A` 中每个元素都在 `B` 中 |
+| 真子集 | 子集且不相等 |
+| 交集 | 同时属于 |
+| 并集 | 至少属于一个 |
+| 差集 | 属于 A 不属于 B |
+| 自反 | 对所有 `a`，`aRa` |
+| 对称 | `aRb` 则 `bRa` |
+| 反对称 | `aRb` 且 `bRa` 则 `a=b` |
+| 传递 | `aRb` 且 `bRc` 则 `aRc` |
+| 等价关系 | 自反、对称、传递 |
+| 偏序 | 自反、反对称、传递 |
+
+## 3. 自动机
+
+DFA 五元组：
+
 ```text
-2
-hello
-world
-xyz
-```
-期望输出：
-```text
-1 0.000000
-```
-
-2. 输入：
-```text
-2
-cat dog
-cat cat
-cat dog
-```
-期望输出：
-```text
-1 1.000000
-```
-
-***
-### V10-EX03 k-means 一维聚类
-
-- 归属卷：第 10 卷
-- 覆盖模块：AI-06 k-means
-- 考场用途：按题意模拟聚类迭代和空簇处理。
-
-**题目描述：** 给定 `n` 个一维点、簇数 `k` 和迭代次数 `iter`。初始中心为前 `k` 个点。每轮先分配到最近中心，距离相同选编号小；再用簇内均值更新中心，空簇保持原中心。输出最终标签和中心。
-
-**输入格式：** 第一行 `n k iter`。第二行 `n` 个实数点。
-
-**输出格式：** 第一行输出 `n` 个簇编号。第二行输出 `k` 个中心，保留 6 位。
-
-**样例输入：**
-```text
-5 2 2
-0 1 2 10 11
+状态集合 Q
+字母表 Sigma
+转移函数 delta
+起始状态 start
+接受状态集合 F
 ```
 
-**样例输出：**
-```text
-1 1 1 2 2
-1.000000 10.500000
-```
+模拟：
 
-**完整代码：**
 ```cpp
-#include <bits/stdc++.h>
-using namespace std;
+int simulate_dfa(const vector<array<int, 26>> &go, int start, const string &s) {
+    int state = start;
+    for (char c : s) state = go[state][c - 'a'];
+    return state;
+}
+```
 
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
+## 4. 正则表达式常识
 
-    int n, k, iter;
-    cin >> n >> k >> iter;
-    vector<double> x(n + 1), center(k + 1);
-    for (int i = 1; i <= n; i++) cin >> x[i];
-    for (int i = 1; i <= k; i++) center[i] = x[i];
-    vector<int> label(n + 1, 1);
-    for (int it = 1; it <= iter; it++) {
+| 符号 | 含义 |
+|---|---|
+| `a` | 字符 a |
+| `.` | 任意一个字符，按题面 |
+| `*` | 重复 0 次或多次 |
+| `+` | 重复 1 次或多次 |
+| `?` | 0 次或 1 次 |
+| `|` | 或 |
+| `()` | 分组 |
+
+
+---
+
+
+<!-- source: 03_modules/SIGN-MARKOV-01-markov-property.md -->
+# SIGN-MARKOV-01 马尔可夫性质、Markov 链与状态转移
+
+模块编号：SIGN-MARKOV-01
+
+模块名称：马尔可夫性质：Markov 链、转移矩阵、平稳分布、吸收状态、HMM 和 MDP
+
+标签：签到题、概率、马尔可夫性质、Markov链、转移矩阵、平稳分布、吸收链、HMM、MDP、C++17
+
+一句话用途：当题目说“下一步只和当前状态有关”、给状态转移概率矩阵、要求若干步后的分布或长期比例时，用本模块按 Markov 链处理。
+
+题面触发词：
+
+- 马尔可夫性质、Markov property、无后效性、记忆无关。
+- 状态转移矩阵、一步转移概率、`P[i][j]`。
+- 给初始分布，求第 `k` 步在各状态的概率。
+- 长期稳定概率、平稳分布、steady state。
+- 吸收状态、最终到达某状态的概率。
+- HMM、Viterbi、MDP、强化学习。
+
+什么时候用：
+
+- 系统未来只由当前状态决定，不需要知道更早历史。
+- 题目给的是概率状态机，而不是确定性自动机。
+- 需要重复乘转移矩阵或迭代分布。
+- AI/RL 题中状态、动作、转移、奖励明确给出。
+
+不要什么时候用：
+
+- 下一步依赖最近两步或更长历史时，原状态不满足 Markov 性质；要把“上一状态/上一步动作”等历史信息并入状态。
+- 转移概率随时间改变时，不是齐次 Markov 链；要按每一步自己的矩阵乘。
+- 状态数很大且步数很大时，不能直接 `O(k*n^2)`，考虑矩阵快速幂或稀疏图。
+- 题目要求最短路/最优策略而非概率演化时，可能是图论或 DP。
+
+复杂度：
+
+- 分布迭代 `k` 步：`O(k*n^2)`。
+- 转移矩阵快速幂：`O(n^3 log k)`。
+- 稀疏转移每步：`O(k*m)`。
+- 平稳分布迭代：`O(iter*n^2)`。
+- 吸收概率可用方程组，或按迭代近似。
+
+数据范围参考：
+
+- `n <= 50` 且 `k` 很大：矩阵快速幂。
+- `n <= 1000` 但边很少：稀疏转移迭代。
+- 只问几十步：直接分布迭代最简单。
+- 要长期比例且链收敛：迭代到稳定或解线性方程。
+
+依赖的标准容器：
+
+- 静态数组 `double P[MAXN][MAXN]`：转移矩阵，1-index。
+- 静态数组 `double dist[MAXN]`：当前分布。
+- `vector<pair<int,double>> g[MAXN]`：稀疏转移。
+- `iomanip`：概率输出。
+
+输入如何整理：
+
+```text
+1. 状态编号统一 1..n。
+2. P[i][j] 表示从状态 i 到状态 j 的概率。
+3. 每行概率和通常为 1；若题面允许误差，用 EPS 检查。
+4. 初始分布 dist[i] 也应和为 1。
+```
+
+接口：
+
+```text
+iterate_distribution(n,k,dist,P) -> 直接做 k 步分布。
+matrix_power_distribution(n,k,dist,P) -> 矩阵快速幂做 k 步分布。
+stationary_iter(n,dist,P,iter) -> 迭代近似平稳分布。
+is_markov_state_enough() -> 若未来还依赖历史，升维状态。
+```
+
+常见坑：
+
+- 把 `P[i][j]` 当成 `P[j][i]`，行列方向反了。
+- 初始分布不是概率分布，和不为 1。
+- 每行转移概率和不为 1，却没有按题面解释成权重。
+- 题目实际依赖上一步动作或上一个状态，却只把当前位置当状态。
+- 矩阵快速幂中行向量/列向量约定混乱。
+- 平稳分布不一定存在唯一极限，周期链可能震荡。
+- 浮点输出不要用 `==` 比较概率。
+
+暴力/部分分替代：
+
+- `k` 小时直接一步一步模拟分布。
+- 状态数小但历史依赖时，把最近历史并入状态，例如 `(当前点, 上一步方向)`。
+- 不会平稳分布精确解时，迭代 1000 到 10000 轮拿近似分。
+- 吸收概率不会列方程时，迭代很多步近似最终分布。
+- HMM 不会 Viterbi 时，小规模枚举隐状态序列拿部分分。
+
+## 1. Markov 性质到底是什么
+
+核心公式：
+
+```text
+P(X_{t+1}=j | X_t=i, X_{t-1}, ..., X_0) = P(X_{t+1}=j | X_t=i)
+```
+
+中文口令：
+
+```text
+未来只看现在，不看过去。
+```
+
+这和 DP 的“无后效性”很像：
+
+| DP 语境 | Markov 语境 |
+|---|---|
+| 状态包含决定未来的全部信息 | 当前状态包含下一步概率所需全部信息 |
+| 历史不影响后续转移 | 更早历史不影响下一步概率 |
+| 有后效性就升维 | 不满足 Markov 就把关键历史并入状态 |
+
+例子：
+
+```text
+不能连续向下走两步：
+只用位置 (i,j) 不够，因为下一步能否向下取决于上一步方向。
+升维为 (i,j,last_dir) 后，就恢复 Markov/无后效性。
+```
+
+## 2. 转移矩阵
+
+若有 `n` 个状态，`P[i][j]` 表示从 `i` 到 `j` 的概率。
+
+```text
+dist_next[j] = sum_i dist[i] * P[i][j]
+```
+
+矩阵写法：
+
+```text
+dist_after_k = dist_initial * P^k
+```
+
+注意：
+
+- 本卷默认行向量分布，所以是 `dist * P`。
+- 有些教材用列向量，会写 `P * dist`，不要混淆。
+- 竞赛题通常直接给 `P[i][j]`，按题意。
+
+## 3. 直接迭代模板
+
+适合 `k` 不大，或者 `n` 较大但转移稀疏。
+
+```cpp
+const int MAXN = 105;
+double P[MAXN][MAXN], distv[MAXN], ndist[MAXN];
+
+void iterate_distribution(int n, long long k) {
+    for (long long step = 1; step <= k; step++) {
+        for (int j = 1; j <= n; j++) ndist[j] = 0;
         for (int i = 1; i <= n; i++) {
-            int best = 1;
-            double best_dist = fabs(x[i] - center[1]);
-            for (int c = 2; c <= k; c++) {
-                double cur = fabs(x[i] - center[c]);
-                if (cur < best_dist - 1e-12) {
-                    best_dist = cur;
-                    best = c;
-                }
+            for (int j = 1; j <= n; j++) {
+                ndist[j] += distv[i] * P[i][j];
             }
-            label[i] = best;
         }
-        vector<double> sum(k + 1, 0);
-        vector<int> cnt(k + 1, 0);
-        for (int i = 1; i <= n; i++) {
-            sum[label[i]] += x[i];
-            cnt[label[i]]++;
-        }
-        for (int c = 1; c <= k; c++) if (cnt[c]) center[c] = sum[c] / cnt[c];
+        for (int j = 1; j <= n; j++) distv[j] = ndist[j];
     }
-    for (int i = 1; i <= n; i++) {
-        if (i > 1) cout << ' ';
-        cout << label[i];
-    }
-    cout << '\n' << fixed << setprecision(6);
-    for (int c = 1; c <= k; c++) {
-        if (c > 1) cout << ' ';
-        cout << center[c];
-    }
-    cout << '\n';
-    return 0;
 }
 ```
 
-**测试设计：**
+## 4. 矩阵快速幂模板
 
-1. 输入：
-```text
-3 2 1
-0 10 20
-```
-期望输出：
-```text
-1 2 2
-0.000000 15.000000
-```
+适合 `k` 很大、`n` 不大。
 
-2. 输入：
-```text
-3 2 0
-1 2 3
-```
-期望输出：
-```text
-1 1 1
-1.000000 2.000000
-```
+```cpp
+const int MAXN = 105;
+int N;
+double A[MAXN][MAXN], R[MAXN][MAXN], T[MAXN][MAXN];
 
-***
-### V10-EX04 线性回归在线训练
+void mat_mul(double X[][MAXN], double Y[][MAXN], double Z[][MAXN]) {
+    static double C[MAXN][MAXN];
+    for (int i = 1; i <= N; i++) {
+        for (int j = 1; j <= N; j++) {
+            C[i][j] = 0;
+            for (int k = 1; k <= N; k++) C[i][j] += X[i][k] * Y[k][j];
+        }
+    }
+    for (int i = 1; i <= N; i++) {
+        for (int j = 1; j <= N; j++) Z[i][j] = C[i][j];
+    }
+}
 
-- 归属卷：第 10 卷
-- 覆盖模块：AI-13 线性回归梯度下降
-- 考场用途：按题面公式模拟参数更新。
-
-**题目描述：** 一维线性模型 `pred=w*x+b`，初始 `w=b=0`。给定训练集、轮数和学习率，按输入顺序做在线梯度下降：`err=pred-y`，`w-=lr*err*x`，`b-=lr*err`。训练后回答查询预测。
-
-**输入格式：** 第一行 `n epoch lr`。接下来 `n` 行 `x y`。然后一行 `q`。接下来 `q` 行每行一个 `x`。
-
-**输出格式：** 每个查询输出预测值，保留 6 位。
-
-**样例输入：**
-```text
-2 1 0.1
-1 2
-2 4
-2
-1
-3
+void mat_pow(long long e) {
+    for (int i = 1; i <= N; i++) {
+        for (int j = 1; j <= N; j++) R[i][j] = (i == j);
+    }
+    while (e > 0) {
+        if (e & 1) mat_mul(R, A, R);
+        mat_mul(A, A, A);
+        e >>= 1;
+    }
+}
 ```
 
-**样例输出：**
-```text
-1.420000
-3.180000
+得到 `P^k` 后：
+
+```cpp
+for (int j = 1; j <= n; j++) {
+    ans[j] = 0;
+    for (int i = 1; i <= n; i++) ans[j] += dist[i] * R[i][j];
+}
 ```
 
-**完整代码：**
+## 5. 平稳分布
+
+平稳分布 `pi` 满足：
+
+```text
+pi = pi * P
+sum pi[i] = 1
+```
+
+直觉：
+
+- 如果链满足一定连通/非周期条件，反复转移会趋向一个稳定分布。
+- 题目若只要求近似，直接迭代很多轮通常够用。
+
+```cpp
+void stationary_iter(int n, int iter) {
+    for (int i = 1; i <= n; i++) distv[i] = 1.0 / n;
+    for (int step = 1; step <= iter; step++) {
+        for (int j = 1; j <= n; j++) ndist[j] = 0;
+        for (int i = 1; i <= n; i++) {
+            for (int j = 1; j <= n; j++) ndist[j] += distv[i] * P[i][j];
+        }
+        for (int j = 1; j <= n; j++) distv[j] = ndist[j];
+    }
+}
+```
+
+## 6. 吸收状态
+
+吸收状态：
+
+```text
+P[x][x] = 1，且不会离开 x。
+```
+
+常见问题：
+
+- 最终被哪个吸收状态吸收的概率。
+- 到吸收状态的期望步数。
+
+处理方式：
+
+| 问题 | 方法 |
+|---|---|
+| 小数据近似 | 迭代很多步 |
+| 精确吸收概率 | 列线性方程组，用 `SIM-07` 高斯 |
+| 期望步数 | `E[u] = 1 + sum P[u][v]E[v]`，吸收态 `E=0` |
+
+## 7. HMM、MDP、强化学习的关系
+
+| 名称 | 核心 |
+|---|---|
+| Markov 链 | 只有状态转移 |
+| HMM | 隐状态 Markov，另有观测概率 |
+| MDP | 状态 + 动作 + 转移概率 + 奖励 |
+| Q-learning | 学 `Q[state][action]` |
+| Viterbi | HMM 中求最可能隐状态路径 |
+
+HMM 的两个概率：
+
+```text
+transition: P(hidden_t -> hidden_{t+1})
+emission: P(observation_t | hidden_t)
+```
+
+MDP 的 Markov 性质：
+
+```text
+下一状态和奖励只依赖当前状态与当前动作，不依赖更早历史。
+```
+
+## 8. 完整可运行模板
+
+支持三种模式：
+
+- `step`：直接迭代 `k` 步。
+- `power`：矩阵快速幂求 `k` 步。
+- `stationary`：迭代近似平稳分布。
+
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
 
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
+const int MAXN = 105;
+int N;
+double P[MAXN][MAXN], A[MAXN][MAXN], R[MAXN][MAXN];
+double distv[MAXN], ansv[MAXN], ndist[MAXN];
 
-    int n, epoch;
-    double lr;
-    cin >> n >> epoch >> lr;
-    vector<double> x(n + 1), y(n + 1);
-    for (int i = 1; i <= n; i++) cin >> x[i] >> y[i];
-    double w = 0, b = 0;
-    for (int ep = 1; ep <= epoch; ep++) {
-        for (int i = 1; i <= n; i++) {
-            double pred = w * x[i] + b;
-            double err = pred - y[i];
-            w -= lr * err * x[i];
-            b -= lr * err;
+void mat_mul(double X[][MAXN], double Y[][MAXN], double Z[][MAXN]) {
+    static double C[MAXN][MAXN];
+    for (int i = 1; i <= N; i++) {
+        for (int j = 1; j <= N; j++) {
+            C[i][j] = 0;
+            for (int k = 1; k <= N; k++) C[i][j] += X[i][k] * Y[k][j];
         }
     }
-    int q;
-    cin >> q;
+    for (int i = 1; i <= N; i++) {
+        for (int j = 1; j <= N; j++) Z[i][j] = C[i][j];
+    }
+}
+
+void mat_pow(long long e) {
+    for (int i = 1; i <= N; i++) {
+        for (int j = 1; j <= N; j++) R[i][j] = (i == j ? 1.0 : 0.0);
+    }
+    while (e > 0) {
+        if (e & 1) mat_mul(R, A, R);
+        mat_mul(A, A, A);
+        e >>= 1;
+    }
+}
+
+void print_dist(double d[]) {
     cout << fixed << setprecision(6);
-    while (q--) {
-        double t;
-        cin >> t;
-        cout << w * t + b << '\n';
-    }
-    return 0;
-}
-```
-
-**测试设计：**
-
-1. 输入：
-```text
-1 0 0.1
-5 10
-2
-1
-5
-```
-期望输出：
-```text
-0.000000
-0.000000
-```
-
-2. 输入：
-```text
-1 1 0.5
-2 4
-1
-2
-```
-期望输出：
-```text
-10.000000
-```
-
-***
-### V10-EX05 感知机二分类
-
-- 归属卷：第 10 卷
-- 覆盖模块：AI-02 感知机
-- 考场用途：二分类在线更新，标签为 `-1/+1`。
-
-**题目描述：** 给定二维样本和标签 `-1/+1`，初始 `w1=w2=b=0`。训练 `epoch` 轮。若 `y*(w·x+b)<=0`，执行 `w+=lr*y*x,b+=lr*y`。训练后预测查询点，分数 `>=0` 输出 `1`，否则输出 `-1`。
-
-**输入格式：** 第一行 `n epoch lr`。接下来 `n` 行 `x1 x2 y`。然后一行 `q`。接下来 `q` 行 `x1 x2`。
-
-**输出格式：** 每个查询输出预测标签。
-
-**样例输入：**
-```text
-4 2 1
-1 1 1
-2 1 1
--1 -1 -1
--2 -1 -1
-3
-3 2
--3 -2
-0 0
-```
-
-**样例输出：**
-```text
-1
--1
-1
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n, epoch;
-    double lr;
-    cin >> n >> epoch >> lr;
-    vector<double> x1(n + 1), x2(n + 1);
-    vector<int> y(n + 1);
-    for (int i = 1; i <= n; i++) cin >> x1[i] >> x2[i] >> y[i];
-    double w1 = 0, w2 = 0, b = 0;
-    for (int ep = 1; ep <= epoch; ep++) {
-        for (int i = 1; i <= n; i++) {
-            double score = w1 * x1[i] + w2 * x2[i] + b;
-            if (y[i] * score <= 0) {
-                w1 += lr * y[i] * x1[i];
-                w2 += lr * y[i] * x2[i];
-                b += lr * y[i];
-            }
-        }
-    }
-    int q;
-    cin >> q;
-    while (q--) {
-        double a, c;
-        cin >> a >> c;
-        double score = w1 * a + w2 * c + b;
-        cout << (score >= 0 ? 1 : -1) << '\n';
-    }
-    return 0;
-}
-```
-
-**测试设计：**
-
-1. 输入：
-```text
-1 1 1
-1 0 1
-2
--1 0
-0 0
-```
-期望输出：
-```text
-1
-1
-```
-
-2. 输入：
-```text
-1 0 1
-1 1 -1
-1
-5 5
-```
-期望输出：
-```text
-1
-```
-
-***
-### V10-EX06 简化 SVM 更新
-
-- 归属卷：第 10 卷
-- 覆盖模块：AI-11 线性 SVM
-- 考场用途：模拟 hinge loss 下的权重衰减和错边界更新。
-
-**题目描述：** 给定一维样本和标签 `-1/+1`，初始 `w=b=0`。每轮对每个样本计算 `margin=y*(w*x+b)`。先执行 `w-=lr*lambda*w`。若 `margin<1`，再执行 `w+=lr*y*x,b+=lr*y`。训练后输出查询预测。
-
-**输入格式：** 第一行 `n epoch lr lambda`。接下来 `n` 行 `x y`。然后一行 `q`。接下来 `q` 行每行一个 `x`。
-
-**输出格式：** 每个查询输出 `-1` 或 `1`。
-
-**样例输入：**
-```text
-2 1 1 0
--1 -1
-1 1
-3
--2
-0
-2
-```
-
-**样例输出：**
-```text
--1
-1
-1
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n, epoch;
-    double lr, lambda;
-    cin >> n >> epoch >> lr >> lambda;
-    vector<double> x(n + 1);
-    vector<int> y(n + 1);
-    for (int i = 1; i <= n; i++) cin >> x[i] >> y[i];
-    double w = 0, b = 0;
-    for (int ep = 1; ep <= epoch; ep++) {
-        for (int i = 1; i <= n; i++) {
-            double margin = y[i] * (w * x[i] + b);
-            w -= lr * lambda * w;
-            if (margin < 1.0) {
-                w += lr * y[i] * x[i];
-                b += lr * y[i];
-            }
-        }
-    }
-    int q;
-    cin >> q;
-    while (q--) {
-        double t;
-        cin >> t;
-        cout << (w * t + b >= 0 ? 1 : -1) << '\n';
-    }
-    return 0;
-}
-```
-
-**测试设计：**
-
-1. 输入：
-```text
-1 1 0.5 0
-2 1
-2
-2
--2
-```
-期望输出：
-```text
-1
--1
-```
-
-2. 输入：
-```text
-1 0 1 0
-5 -1
-1
-0
-```
-期望输出：
-```text
-1
-```
-
-***
-### V10-EX07 DNN 前向传播
-
-- 归属卷：第 10 卷
-- 覆盖模块：AI-12 多层前向传播
-- 考场用途：按层模拟全连接网络、ReLU 和 softmax。
-
-**题目描述：** 给定多层全连接网络，按层计算输出。每层输入格式为 `out_dim activation`，随后 `out_dim` 行，每行当前输入维度个权重和一个 bias。激活支持 `none/relu/softmax`。输出预测类别和最终向量。
-
-**输入格式：** 第一行 `L`。第二行输入维度 `d` 和 `d` 个输入值。随后按层给出参数。
-
-**输出格式：** 第一行输出预测类别，编号从 1 开始，平分选小。第二行输出最终向量，保留 6 位。
-
-**样例输入：**
-```text
-1
-2 1 2
-2 softmax
-1 0 0
-0 1 0
-```
-
-**样例输出：**
-```text
-2
-0.268941 0.731059
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-void activate(vector<double> &a, const string &act) {
-    int n = (int)a.size() - 1;
-    if (act == "relu") {
-        for (int i = 1; i <= n; i++) a[i] = max(0.0, a[i]);
-    } else if (act == "softmax") {
-        double mx = a[1];
-        for (int i = 2; i <= n; i++) mx = max(mx, a[i]);
-        double sum = 0;
-        for (int i = 1; i <= n; i++) {
-            a[i] = exp(a[i] - mx);
-            sum += a[i];
-        }
-        for (int i = 1; i <= n; i++) a[i] /= sum;
-    }
-}
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int L, d;
-    cin >> L >> d;
-    vector<double> cur(d + 1);
-    for (int i = 1; i <= d; i++) cin >> cur[i];
-    for (int layer = 1; layer <= L; layer++) {
-        int out;
-        string act;
-        cin >> out >> act;
-        vector<double> nxt(out + 1, 0);
-        for (int i = 1; i <= out; i++) {
-            for (int j = 1; j <= d; j++) {
-                double w;
-                cin >> w;
-                nxt[i] += w * cur[j];
-            }
-            double b;
-            cin >> b;
-            nxt[i] += b;
-        }
-        activate(nxt, act);
-        cur = nxt;
-        d = out;
-    }
-    int pred = 1;
-    for (int i = 2; i <= d; i++) if (cur[i] > cur[pred] + 1e-12) pred = i;
-    cout << pred << '\n' << fixed << setprecision(6);
-    for (int i = 1; i <= d; i++) {
+    for (int i = 1; i <= N; i++) {
         if (i > 1) cout << ' ';
-        cout << cur[i];
+        cout << d[i];
     }
-    cout << '\n';
-    return 0;
+    cout << "\n";
 }
-```
-
-**测试设计：**
-
-1. 输入：
-```text
-1
-2 1 -2
-2 relu
-1 0 0
-0 1 0
-```
-期望输出：
-```text
-1
-1.000000 0.000000
-```
-
-2. 输入：
-```text
-1
-1 3
-2 none
-1 0
--1 0
-```
-期望输出：
-```text
-1
-3.000000 -3.000000
-```
-
-***
-### V10-EX08 二层网络反向传播一轮
-
-- 归属卷：第 10 卷
-- 覆盖模块：AI-14 反向传播
-- 考场用途：手算链式法则并验证参数更新方向。
-
-**题目描述：** 二层网络只有一个隐藏神经元：`z1=w1*x+b1,a1=max(0,z1),z2=w2*a1+b2,yhat=z2`。损失为 `0.5*(yhat-y)^2`。给定一个样本和学习率，执行一轮梯度下降，输出更新后的四个参数。
-
-**输入格式：** 一行 `x y w1 b1 w2 b2 lr`。
-
-**输出格式：** 输出更新后的 `w1 b1 w2 b2`，保留 6 位。
-
-**样例输入：**
-```text
-2 5 1 0 1 0 0.1
-```
-
-**样例输出：**
-```text
-1.600000 0.300000 1.600000 0.300000
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
 
 int main() {
     ios::sync_with_stdio(false);
     cin.tie(nullptr);
 
-    double x, y, w1, b1, w2, b2, lr;
-    cin >> x >> y >> w1 >> b1 >> w2 >> b2 >> lr;
-    double z1 = w1 * x + b1;
-    double a1 = max(0.0, z1);
-    double yhat = w2 * a1 + b2;
-    double dz2 = yhat - y;
-    double dw2 = dz2 * a1;
-    double db2 = dz2;
-    double da1 = dz2 * w2;
-    double dz1 = z1 > 0 ? da1 : 0.0;
-    double dw1 = dz1 * x;
-    double db1 = dz1;
-    w1 -= lr * dw1;
-    b1 -= lr * db1;
-    w2 -= lr * dw2;
-    b2 -= lr * db2;
-    cout << fixed << setprecision(6) << w1 << ' ' << b1 << ' ' << w2 << ' ' << b2 << '\n';
+    string mode;
+    long long k;
+    cin >> mode >> N >> k;
+    for (int i = 1; i <= N; i++) cin >> distv[i];
+    for (int i = 1; i <= N; i++) {
+        for (int j = 1; j <= N; j++) {
+            cin >> P[i][j];
+            A[i][j] = P[i][j];
+        }
+    }
+
+    if (mode == "step") {
+        for (long long step = 1; step <= k; step++) {
+            for (int j = 1; j <= N; j++) ndist[j] = 0;
+            for (int i = 1; i <= N; i++) {
+                for (int j = 1; j <= N; j++) ndist[j] += distv[i] * P[i][j];
+            }
+            for (int j = 1; j <= N; j++) distv[j] = ndist[j];
+        }
+        print_dist(distv);
+    } else if (mode == "power") {
+        mat_pow(k);
+        for (int j = 1; j <= N; j++) {
+            ansv[j] = 0;
+            for (int i = 1; i <= N; i++) ansv[j] += distv[i] * R[i][j];
+        }
+        print_dist(ansv);
+    } else if (mode == "stationary") {
+        for (int i = 1; i <= N; i++) distv[i] = 1.0 / N;
+        for (long long step = 1; step <= k; step++) {
+            for (int j = 1; j <= N; j++) ndist[j] = 0;
+            for (int i = 1; i <= N; i++) {
+                for (int j = 1; j <= N; j++) ndist[j] += distv[i] * P[i][j];
+            }
+            for (int j = 1; j <= N; j++) distv[j] = ndist[j];
+        }
+        print_dist(distv);
+    }
     return 0;
 }
 ```
 
-**测试设计：**
+## 9. 最小测试样例
 
-1. 输入：
 ```text
-1 1 1 0 1 0 0.1
-```
-期望输出：
-```text
-1.000000 0.000000 1.000000 0.000000
-```
+step 2 2
+1 0
+0.5 0.5
+0.2 0.8
+=> 0.350000 0.650000
 
-2. 输入：
-```text
-1 2 -1 0 1 0 0.1
-```
-期望输出：
-```text
--1.000000 0.000000 1.000000 0.200000
-```
+power 2 10
+1 0
+0.5 0.5
+0.2 0.8
+=> 0.285735 0.714265
 
-***
-### V10-EX09 反向模式自动求导
-
-- 归属卷：第 10 卷
-- 覆盖模块：AI-15 自动求导
-- 考场用途：计算图按拓扑序前向、逆序累加梯度。
-
-**题目描述：** 给定拓扑序计算图，节点支持 `var value`、`const value`、`add a b`、`mul a b`、`sin a`。输出最后一个节点的值，以及所有变量节点按出现顺序的梯度。
-
-**输入格式：** 第一行整数 `n`。接下来 `n` 行描述节点。
-
-**输出格式：** 第一行输出节点 `n` 的值。第二行输出变量梯度，保留 6 位。
-
-**样例输入：**
-```text
-5
-var 2
-var 3
-mul 1 2
-sin 1
-add 3 4
+stationary 2 100
+0 0
+0.5 0.5
+0.2 0.8
+=> 0.285714 0.714286
 ```
 
-**样例输出：**
+## 10. 考场判断清单
+
+- 当前状态是否包含影响未来的全部信息？
+- 转移概率每行是否和为 1？
+- 分布是行向量还是列向量？
+- `k` 大不大？大则考虑矩阵快速幂。
+- 是否有吸收态？
+- 是否要求最优策略？若是 MDP/强化学习，不只是普通 Markov 链。
+
+
+---
+
+
+<!-- source: 03_modules/SIGN-MATH-01-elementary-formulas.md -->
+# SIGN-MATH-01 初等数学、单位与几何公式
+
+模块编号：SIGN-MATH-01
+
+模块名称：初等数学、单位换算、常见几何和公式签到题
+
+标签：签到题、初等数学、几何、单位换算、数列、取整、百分比、C++17
+
+一句话用途：把最容易出成签到题的数学公式集中放在一页，避免现场忘记三角形面积、取整、增长率、单位换算等细节。
+
+题面触发词：三角形面积、圆、扇形、速度、折扣、利润率、百分比、等差数列、等比数列、四舍五入、单位换算。
+
+什么时候用：
+
+- 题目核心是公式计算或简单分类讨论。
+- 数据范围很小，但单位和输出格式容易错。
+- 题目问面积、体积、增长率、折扣、利息、页码、植树、鸡兔同笼等。
+
+不要什么时候用：
+
+- 坐标几何有大量点线关系，优先 `MATHREF-06` 或几何模块。
+- 方程组、数值求根、矩阵解法，优先 `SIM-07`。
+- 组合计数很复杂，优先第 8 卷数学参考。
+
+复杂度：大多 `O(1)`；排序统计类 `O(n log n)`；逐项模拟类 `O(n)`。
+
+依赖的标准容器：`vector<double>`、`vector<long long>`、`string`、`algorithm`、`iomanip`。
+
+输入如何整理：
+
 ```text
-6.909297
-2.583853 2.000000
+先统一单位，再套公式。
+长度、面积、体积不要混用单位。
+百分数输入如果是 20，先确认是 20% 还是 20 倍。
 ```
 
-**完整代码：**
+接口：
+
+```text
+ceil_div(a,b) -> 正整数向上取整。
+triangle_area_heron(a,b,c) -> 三边三角形面积。
+deg_to_rad(x) / rad_to_deg(x) -> 角度弧度转换。
+arith_sum(a1,d,n) / geom_sum(a1,r,n) -> 数列求和。
+```
+
+常见坑：
+
+- `pow(10, k)` 返回浮点，不适合精确整数幂，整数幂自己循环或快速幂。
+- `round()` 返回最接近整数，但输出保留小数应用 `fixed << setprecision(k)`。
+- 海伦公式中 `s*(s-a)*(s-b)*(s-c)` 可能因误差略为负，开根前可 `max(0.0, x)`。
+- `a/b` 如果都是整数会整除，需要写 `1.0*a/b`。
+
+暴力/部分分替代：
+
+- 几何公式忘记时，坐标多边形面积可用三角剖分或叉积。
+- 数列公式忘记时，`n` 小可循环累加。
+- 复杂分段计费不会化简时，按题面逐段模拟。
+
+## 1. 常用公式清单
+
+| 题型 | 公式/规则 | 坑 |
+|---|---|---|
+| 正整数向上取整 | `(a+b-1)/b` | 只适用于 `a,b>0` |
+| 负数取模转非负 | `(x%mod+mod)%mod` | C++ 负数 `%` 仍可能负 |
+| 百分比增长 | `(new-old)/old*100%` | `old=0` 要特判 |
+| 利润率 | `profit / cost` | 题面可能用售价作分母 |
+| 折扣 | `price * discount / 10` 或 `price * rate` | 九折是 `0.9` |
+| 单利 | `P*(1+r*t)` | `r` 是每期利率 |
+| 复利 | `P*pow(1+r,t)` | 注意年/月单位 |
+| 等差求和 | `n*(a1+an)/2` | 乘法用 `long long` |
+| 等比求和 | `a1*(1-r^n)/(1-r)` | `r=1` 特判 |
+| 平方和 | `n(n+1)(2n+1)/6` | 防溢出 |
+| 立方和 | `[n(n+1)/2]^2` | 防溢出 |
+| 圆面积 | `pi*r*r` | 角度无关 |
+| 圆周长 | `2*pi*r` | 直径是 `2r` |
+| 扇形面积 | `theta/360*pi*r*r` | `theta` 若是弧度则 `0.5*r*r*theta` |
+| 弧长 | `theta/360*2*pi*r` | 弧度时 `r*theta` |
+| 三角形合法 | `a+b>c && a+c>b && b+c>a` | 先排序更简单 |
+| 海伦公式 | `sqrt(s(s-a)(s-b)(s-c))` | `s=(a+b+c)/2` |
+| 梯形面积 | `(上底+下底)*高/2` | 类型转 `double` |
+| 球体体积 | `4/3*pi*r^3` | 写 `4.0/3` |
+| 圆柱体积 | `pi*r*r*h` | 单位一致 |
+| 圆锥体积 | `pi*r*r*h/3` | 写 `/3.0` |
+
+## 2. 高频小函数
+
 ```cpp
-#include <bits/stdc++.h>
-using namespace std;
+using ll = long long;
+const double PI = acos(-1.0);
 
-struct Node {
-    string op;
-    int l = 0, r = 0;
-    double val = 0, grad = 0;
+ll ceil_div_pos(ll a, ll b) {
+    return (a + b - 1) / b;
+}
+
+double deg_to_rad(double deg) {
+    return deg * PI / 180.0;
+}
+
+double rad_to_deg(double rad) {
+    return rad * 180.0 / PI;
+}
+
+bool triangle_ok(double a, double b, double c) {
+    return a + b > c && a + c > b && b + c > a;
+}
+
+double triangle_area_heron(double a, double b, double c) {
+    if (!triangle_ok(a, b, c)) return -1.0;
+    double s = (a + b + c) / 2.0;
+    return sqrt(max(0.0, s * (s - a) * (s - b) * (s - c)));
+}
+
+ll arith_sum(ll a1, ll d, ll n) {
+    return n * (2 * a1 + (n - 1) * d) / 2;
+}
+```
+
+## 3. 签到题模型补充
+
+| 模型 | 规则 |
+|---|---|
+| 植树问题 | 不成环：棵数 = 段数 + 1；成环：棵数 = 段数 |
+| 页码数字统计 | 小数据直接从 `1` 到 `n` 转字符串统计 |
+| 鸡兔同笼 | `x+y=n, 2x+4y=m` |
+| 年龄问题 | 设当前年龄，按年份差列方程 |
+| 工程问题 | 总工作量设为 1，效率相加 |
+| 相遇追及 | 相遇：相对速度相加；追及：速度相减 |
+| 阶梯计价 | 按区间逐段扣减最稳 |
+
+
+---
+
+
+<!-- source: 03_modules/SIGN-MEDIA-02-media-format-compression.md -->
+# SIGN-MEDIA-02 多媒体、文件格式与压缩估算
+
+模块编号：SIGN-MEDIA-02
+
+模块名称：图片、音频、视频、文件格式和压缩估算
+
+标签：签到题、多媒体、图片、音频、视频、BMP、颜色、压缩、文件大小、C++17
+
+一句话用途：遇到图片大小、采样率、码率、颜色编码、压缩率和文件格式估算时，用本模块查公式。
+
+题面触发词：BMP、像素、分辨率、DPI、RGB、RGBA、灰度、采样率、声道、帧率、码率、压缩率。
+
+什么时候用：
+
+- 题目给宽高、位深、采样率、帧率，要求文件大小。
+- 题目问 RGB/HSV、alpha、颜色十六进制。
+- 题目问压缩前后比例或传输时间。
+
+不要什么时候用：
+
+- 真正图像处理算法，如卷积、边缘检测，按矩阵模拟。
+- 复杂文件格式头部结构，以题面给出的字段为准。
+- 历史编码和字体渲染细节不在本卷范围内。
+
+复杂度：公式估算 `O(1)`；像素逐个处理 `O(width*height)`。
+
+依赖的标准容器：`string`、`vector<int>`、`iomanip`。
+
+输入如何整理：
+
+```text
+图像：宽、高、每像素 bit、是否行对齐。
+音频：秒数、采样率、每样本 bit、声道数。
+视频：秒数、帧率、每帧大小或码率。
+```
+
+接口：
+
+```text
+image_raw_bytes = width * height * bits_per_pixel / 8。
+BMP bytes = row_aligned_bytes * height。
+audio bytes = seconds * sample_rate * bits_per_sample/8 * channels。
+video bytes = seconds * bitrate_bps / 8。
+```
+
+常见坑：
+
+- BMP 像素数据每行 4 字节对齐。
+- 24 位 RGB 是 3 字节，不含 alpha。
+- 32 位 RGBA 是 4 字节。
+- DPI 是打印密度，不直接改变像素总数，除非题目用英寸换算像素。
+- 码率通常已经包含压缩后每秒 bit 数。
+
+暴力/部分分替代：
+
+- 不知道头部大小时，先算像素数据大小。
+- 不知道压缩格式时，按题面给的压缩率。
+- RGB 转换复杂时，先处理十六进制拆分。
+
+## 1. 图片大小
+
+| 图像类型 | 每像素 |
+|---|---|
+| 黑白 1 bit | `1/8` byte |
+| 灰度 8 bit | 1 byte |
+| RGB 24 bit | 3 byte |
+| RGBA 32 bit | 4 byte |
+| 16 bit 色 | 2 byte |
+
+BMP 行对齐：
+
+```text
+row_bytes = ceil(width * bits_per_pixel / 32) * 4
+total_pixel_bytes = row_bytes * height
+```
+
+## 2. 颜色
+
+| 表示 | 含义 |
+|---|---|
+| `#RRGGBB` | 红绿蓝各 8 bit |
+| `#AARRGGBB` | alpha + RGB |
+| RGB | 红绿蓝 |
+| BGR | BMP 等格式常见存储顺序 |
+| Alpha | 透明度 |
+| HSV | 色相、饱和度、明度 |
+
+十六进制颜色拆分：
+
+```cpp
+int hex2(char a, char b) {
+    auto val = [](char c) {
+        if ('0' <= c && c <= '9') return c - '0';
+        if ('a' <= c && c <= 'f') return c - 'a' + 10;
+        return c - 'A' + 10;
+    };
+    return val(a) * 16 + val(b);
+}
+```
+
+## 3. 音频大小
+
+```text
+bytes = seconds * sample_rate * bits_per_sample / 8 * channels
+```
+
+例子：
+
+```text
+60 秒，44100 Hz，16 bit，双声道：
+60 * 44100 * 16/8 * 2 = 10584000 byte
+```
+
+## 4. 视频大小
+
+两种常见题面：
+
+```text
+未压缩：width * height * bytes_per_pixel * fps * seconds
+有码率：bitrate_bps * seconds / 8
+```
+
+## 5. 压缩率
+
+| 问法 | 公式 |
+|---|---|
+| 压缩后大小 | `original * ratio` |
+| 压缩节省 | `original - compressed` |
+| 节省百分比 | `(original-compressed)/original` |
+| 码率估算 | `file_bits / seconds` |
+
+
+---
+
+
+<!-- source: 03_modules/SIGN-ML-01-machine-learning-cheatsheet.md -->
+# SIGN-ML-01 机器学习算法常识与小模拟
+
+模块编号：SIGN-ML-01
+
+模块名称：机器学习签到题：评估指标、常见模型和按公式模拟
+
+标签：签到题、机器学习、监督学习、无监督学习、分类、回归、聚类、SVM、DNN、C++17
+
+一句话用途：AI 背景题如果只是给小数据和规则，按本模块公式模拟，不需要任何第三方库。
+
+题面触发词：训练集、测试集、标签、特征、分类、回归、聚类、SVM、DNN、softmax、precision、recall、F1。
+
+什么时候用：
+
+- 题目要求按给定公式算预测、指标或若干轮训练。
+- 数据规模小，可以直接二维数组或 `vector` 模拟。
+- 题目是 Special Judge，要求最大化某个评估指标。
+
+不要什么时候用：
+
+- 不要把真实机器学习库思路带进考场，不能用第三方库。
+- 大规模稀疏文本检索优先倒排索引、排序和哈希。
+- 神经网络复杂反传优先第 10 卷 `AI-14/15`。
+
+复杂度：
+
+- 混淆矩阵：`O(n)`。
+- kNN：`O(q*n*d)`。
+- k-means 一轮：`O(n*k*d)`。
+- 全连接层前向：`O(in*out)`。
+
+依赖的标准容器：`vector<double>`、`vector<int>`、`map`、`sort`、`cmath`。
+
+输入如何整理：
+
+```text
+样本表常见格式：n d，然后每行 d 个特征和 1 个标签。
+特征一般用 double，标签一般用 int/string。
+分类指标先数 TP/FP/FN/TN。
+```
+
+接口：
+
+```text
+confusion -> 混淆矩阵。
+metrics_binary -> accuracy/precision/recall/F1。
+knn_predict -> kNN 投票。
+stable_softmax -> 稳定 softmax。
+```
+
+常见坑：
+
+- precision 分母是预测为正，recall 分母是真实为正。
+- `exp(x)` 可能溢出，softmax 要先减最大值。
+- kNN 平票规则按题面，没说时可取标签编号小者。
+- 归一化时最大值等于最小值要特判。
+
+暴力/部分分替代：
+
+- 不会训练模型时，先写最近邻、多数类、线性打分 baseline。
+- 不会复杂指标时，先输出混淆矩阵和 accuracy。
+- 聚类不会收敛判断时，按题面固定迭代次数。
+
+## 1. 监督学习和评估指标
+
+| 概念 | 说明 |
+|---|---|
+| feature | 样本输入变量 |
+| label | 真实类别或目标值 |
+| train/test | 训练集/测试集 |
+| overfit | 训练好、测试差 |
+| underfit | 训练和测试都差 |
+| accuracy | `(TP+TN)/(TP+TN+FP+FN)` |
+| precision | `TP/(TP+FP)` |
+| recall | `TP/(TP+FN)` |
+| F1 | `2PR/(P+R)` |
+| MSE | 平方误差均值 |
+| MAE | 绝对误差均值 |
+
+```cpp
+struct BinaryMetric {
+    int tp = 0, fp = 0, fn = 0, tn = 0;
+    double accuracy, precision, recall, f1;
 };
 
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
+BinaryMetric binary_metrics(const vector<int> &truth, const vector<int> &pred) {
+    BinaryMetric r;
+    int n = (int)truth.size();
+    for (int i = 0; i < n; i++) {
+        if (truth[i] == 1 && pred[i] == 1) r.tp++;
+        else if (truth[i] == 0 && pred[i] == 1) r.fp++;
+        else if (truth[i] == 1 && pred[i] == 0) r.fn++;
+        else r.tn++;
+    }
+    r.accuracy = (double)(r.tp + r.tn) / max(1, n);
+    r.precision = (r.tp + r.fp == 0 ? 0 : (double)r.tp / (r.tp + r.fp));
+    r.recall = (r.tp + r.fn == 0 ? 0 : (double)r.tp / (r.tp + r.fn));
+    r.f1 = (r.precision + r.recall == 0 ? 0 : 2 * r.precision * r.recall / (r.precision + r.recall));
+    return r;
+}
+```
 
+## 2. 常见模型速查
+
+| 模型 | 考场实现 |
+|---|---|
+| kNN | 算距离，排序，前 k 个投票 |
+| 朴素贝叶斯 | 用 log 概率相加，避免下溢 |
+| 线性回归 | `y=w dot x + b` |
+| Logistic | `p=sigmoid(w dot x+b)` |
+| SVM | margin 与 hinge loss |
+| 决策树 | Gini 或 entropy 选划分 |
+| k-means | 分配最近中心，再重算中心 |
+| DNN 前向 | 矩阵乘 + 激活函数 |
+| Q-learning | `Q=Q+alpha*(r+gamma*maxQ-next - Q)` |
+
+## 3. softmax 和 kNN 短代码
+
+```cpp
+vector<double> stable_softmax(vector<double> z) {
+    double mx = *max_element(z.begin(), z.end());
+    double sum = 0;
+    for (double &x : z) {
+        x = exp(x - mx);
+        sum += x;
+    }
+    for (double &x : z) x /= sum;
+    return z;
+}
+
+int knn_predict(const vector<vector<double>> &x, const vector<int> &label,
+                const vector<double> &q, int k) {
+    vector<pair<double, int>> v;
+    for (int i = 0; i < (int)x.size(); i++) {
+        double d2 = 0;
+        for (int j = 0; j < (int)q.size(); j++) {
+            double t = x[i][j] - q[j];
+            d2 += t * t;
+        }
+        v.push_back({d2, label[i]});
+    }
+    sort(v.begin(), v.end());
+    map<int, int> cnt;
+    int best_label = v[0].second, best_count = 0;
+    for (int i = 0; i < k && i < (int)v.size(); i++) {
+        int c = ++cnt[v[i].second];
+        if (c > best_count || (c == best_count && v[i].second < best_label)) {
+            best_count = c;
+            best_label = v[i].second;
+        }
+    }
+    return best_label;
+}
+```
+
+
+---
+
+
+<!-- source: 03_modules/SIGN-NOIP-01-preliminary-knowledge.md -->
+# SIGN-NOIP-01 NOIP/CSP 初赛式信息学常识
+
+模块编号：SIGN-NOIP-01
+
+模块名称：NOIP/CSP 初赛式信息学基础常识：概念题、读程序、复杂度和常识判断
+
+标签：签到题、NOIP初赛、CSP初赛、信息学常识、读程序、复杂度、计算机基础、C++17
+
+一句话用途：遇到选择/填空风格的计算机常识、复杂度判断、读程序输出、基础概念题时，用本模块快速排除错误选项和防止签到题失分。
+
+题面触发词：
+
+- 下列说法正确的是、时间复杂度、空间复杂度、输出结果。
+- 数据结构、栈、队列、树、图、二叉树遍历。
+- 操作系统、网络、数据库、信息安全、编码、ASCII、二进制。
+- 算法性质、稳定排序、递归、循环、溢出、短路求值。
+
+什么时候用：
+
+- 题目不像上机编程题，而像 NOIP/CSP 初赛知识点。
+- 题目要求判断概念、估算复杂度或阅读一段短代码。
+- 你需要在很短时间内确定常识性结论。
+
+不要什么时候用：
+
+- 需要完整实现算法时，回到前面对应算法卷。
+- 需要具体网络协议或 OS API 细节时，按题面给出的规则为准。
+- 需要现代 AI 细节时，翻 `SIGN-AI-02` 或第 10 卷。
+
+复杂度：
+
+- 读程序题按循环嵌套估算。
+- 概念题 `O(1)` 查表。
+- 树图概念题按节点边数量判断。
+
+依赖的标准容器：无固定依赖；常用 `vector`、`stack`、`queue`、`set` 辅助模拟。
+
+输入如何整理：
+
+```text
+读程序题：
+1. 标出变量初值。
+2. 标出循环次数。
+3. 标出每轮改变哪些变量。
+4. 小数据直接手动列表模拟。
+```
+
+接口：
+
+```text
+复杂度估算 -> 看循环层数、递归式、排序、图边数。
+概念判断 -> 查本模块术语表。
+读程序 -> 建表模拟变量变化。
+```
+
+常见坑：
+
+- `&&` 和 `||` 有短路求值。
+- `i++` 返回旧值，`++i` 返回新值。
+- 整数除法会截断，小数要转 `double`。
+- 递归既有时间消耗，也有调用栈空间。
+- 稳定排序保持相等关键字原相对顺序。
+
+暴力/部分分替代：
+
+- 读程序算不清时，把每轮变量写成表格。
+- 复杂度不确定时，先算最内层语句总执行次数。
+- 树图题不确定时，画 5 个点以内的例子。
+
+## 1. 初赛常识速查表
+
+| 主题 | 关键结论 |
+|---|---|
+| 冯诺依曼结构 | 运算器、控制器、存储器、输入设备、输出设备 |
+| CPU | 负责取指、译码、执行；主频不等于绝对性能 |
+| RAM | 断电丢失，随机访问 |
+| ROM | 通常用于固件，断电不丢 |
+| Cache | 比内存快，比寄存器慢，用局部性提升性能 |
+| 操作系统 | 管理进程、内存、文件、设备 |
+| 编译器 | 把高级语言翻译成机器可执行程序 |
+| 解释器 | 边解释边执行 |
+| ASCII | 7 bit 基本编码，常用字符可用 0..127 |
+| Unicode | 字符集，UTF-8 是一种编码方式 |
+| IP | 网络层地址 |
+| TCP | 面向连接、可靠传输 |
+| UDP | 无连接、不保证可靠，开销较小 |
+| HTTP | 应用层协议 |
+| 数据库主键 | 唯一标识一条记录 |
+| 排序稳定性 | 相等元素相对顺序不变 |
+
+## 2. 复杂度判断口令
+
+| 代码形态 | 复杂度 |
+|---|---|
+| 单循环 `i=1..n` | `O(n)` |
+| 双重独立循环 | `O(n^2)` |
+| `for (i=1;i<=n;i*=2)` | `O(log n)` |
+| 外层 `n`，内层 `log n` | `O(n log n)` |
+| 排序 | 通常 `O(n log n)` |
+| BFS/DFS 邻接表 | `O(n+m)` |
+| Floyd | `O(n^3)` |
+| 枚举所有子集 | `O(2^n)` |
+| 全排列 | `O(n!)` |
+| 二分查找 | `O(log n)` |
+| 递归 `T(n)=T(n/2)+O(1)` | `O(log n)` |
+| 递归 `T(n)=2T(n/2)+O(n)` | `O(n log n)` |
+
+## 3. 读程序常见语义
+
+| 语法 | 规则 |
+|---|---|
+| `a = b = c` | 从右向左赋值 |
+| `a += b` | 等价于 `a = a + b` |
+| `i++` | 表达式值是旧 `i`，然后加一 |
+| `++i` | 先加一，表达式值是新 `i` |
+| `&&` | 左边假则右边不算 |
+| `||` | 左边真则右边不算 |
+| `break` | 跳出最近一层循环 |
+| `continue` | 进入下一轮循环 |
+| 数组越界 | C++ 未定义行为，上机要避免 |
+
+## 4. 数据结构概念题
+
+| 结构 | 特征 |
+|---|---|
+| 栈 | 后进先出，括号匹配、递归调用 |
+| 队列 | 先进先出，BFS |
+| 优先队列 | 每次取最小/最大，堆实现 |
+| 集合 | 去重，判断存在 |
+| 映射 | key -> value |
+| 二叉树 | 每个节点最多两个孩子 |
+| 满二叉树 | 每层都满 |
+| 完全二叉树 | 最后一层从左到右填 |
+| 二叉搜索树 | 左小右大，中序有序 |
+| 图 | 点和边 |
+| 树 | 连通无环图，`n` 点 `n-1` 边 |
+
+## 5. 排序常识
+
+| 排序 | 平均复杂度 | 稳定性 |
+|---|---:|---|
+| 冒泡排序 | `O(n^2)` | 稳定 |
+| 插入排序 | `O(n^2)` | 稳定 |
+| 选择排序 | `O(n^2)` | 通常不稳定 |
+| 快速排序 | `O(n log n)` 平均 | 不稳定 |
+| 归并排序 | `O(n log n)` | 稳定 |
+| 堆排序 | `O(n log n)` | 不稳定 |
+| 计数排序 | `O(n+V)` | 可稳定 |
+
+
+---
+
+
+<!-- source: 03_modules/SIGN-NOIP-02-reading-program-flowchart.md -->
+# SIGN-NOIP-02 读程序、流程图、伪代码与基础程序语义
+
+模块编号：SIGN-NOIP-02
+
+模块名称：读程序和流程图速查：变量表、循环次数、递归栈、伪代码、运算符优先级和输出判断
+
+标签：签到题、NOIP初赛、CSP初赛、读程序、流程图、伪代码、程序语义、C++17
+
+一句话用途：当题目要求阅读一段程序、判断流程图输出、把伪代码翻译成代码或分析基础程序语义时，用本模块按固定步骤模拟，避免凭感觉丢签到分。
+
+题面触发词：
+
+- 阅读程序，写出运行结果。
+- 流程图、开始/结束、判断框、处理框、输入输出框。
+- 伪代码、算法描述、循环变量、递归调用。
+- `i++`、`++i`、短路求值、运算符优先级。
+- 函数传参、局部变量、全局变量、递归返回。
+
+什么时候用：
+
+- 题目不要求你设计新算法，只要求模拟已有代码。
+- 题目给一段短程序或流程图，让你填输出。
+- 模拟题规则复杂，先用本模块方法整理状态表。
+- NOIP/CSP 初赛式判断题涉及 C++ 基础语义。
+
+不要什么时候用：
+
+- 代码超过几十行且是完整算法时，应回到对应算法卷理解整体模型。
+- 题目使用非 C++ 语言时，不要套 C++ 特有规则。
+- 如果题面明确给了伪代码语义，以题面规则优先。
+
+复杂度：
+
+- 手动读程序：按循环总执行次数。
+- 流程图模拟：按路径和循环次数。
+- 递归模拟：按调用树节点数；小数据画调用栈。
+
+依赖的标准容器：
+
+- 纸上变量表即可。
+- 若要写小模拟程序，常用 `vector`、`stack`、`queue`、`map`。
+
+输入如何整理：
+
+```text
+读程序四步：
+1. 抄变量初值。
+2. 标循环边界和每轮变化。
+3. 建表记录每轮关键变量。
+4. 只在输出语句处记录输出，不要脑补。
+```
+
+接口：
+
+```text
+trace_variables(code) -> 变量表。
+count_loop_times(loop) -> 循环次数。
+simulate_recursion(f,args) -> 调用栈/返回值。
+flowchart_to_pseudocode(chart) -> 按框和箭头翻译。
+```
+
+常见坑：
+
+- `i++` 和 `++i` 在表达式中的值不同。
+- `&&` 左侧为假时右侧不执行，`||` 左侧为真时右侧不执行。
+- `=` 是赋值，`==` 是比较。
+- `/` 对整数是整除，`%` 只适合整数。
+- `else` 与最近的未匹配 `if` 配对。
+- 函数局部变量每次调用都有自己的一份。
+- 数组下标从 0 开始是 C++ 语义，但本资料算法模板统一偏向 1-index；读别人代码时按代码本身。
+
+暴力/部分分替代：
+
+- 手算困难时，在草稿纸上列 5 到 10 行变量表。
+- 递归困难时画调用树，并标每个调用的参数和返回值。
+- 流程图困难时把每个框编号，沿箭头一步步走。
+- 选择题不确定时先排除违反短路、整除、循环次数的选项。
+
+## 1. 流程图符号
+
+| 符号 | 含义 |
+|---|---|
+| 圆角矩形/椭圆 | 开始或结束 |
+| 平行四边形 | 输入或输出 |
+| 矩形 | 处理、赋值、计算 |
+| 菱形 | 判断条件，分 Yes/No |
+| 箭头 | 控制流方向 |
+
+口令：
+
+```text
+流程图就是没有语法糖的程序。
+菱形对应 if/while 条件。
+回到前面的一条箭头通常表示循环。
+```
+
+## 2. 变量表模板
+
+建议画表：
+
+| 步骤 | 条件 | i | j | ans | 输出 |
+|---:|---|---:|---:|---:|---|
+| 初始 | - |  |  |  |  |
+| 1 |  |  |  |  |  |
+| 2 |  |  |  |  |  |
+
+不要把所有变量都抄进去，只保留会影响分支、循环和输出的变量。
+
+## 3. 循环次数速查
+
+| 循环 | 执行次数 |
+|---|---:|
+| `for (int i=1;i<=n;i++)` | `n` |
+| `for (int i=0;i<n;i++)` | `n` |
+| `for (int i=1;i<n;i++)` | `n-1` |
+| `for (int i=n;i>=1;i--)` | `n` |
+| `for (int i=1;i<=n;i*=2)` | `floor(log2 n)+1` |
+| `while (x>0) x/=10` | 十进制位数 |
+| `while (x) x-=x&-x` | `x` 的二进制 1 的个数 |
+
+双层循环要看内层是否依赖外层：
+
+```cpp
+for (int i = 1; i <= n; i++) {
+    for (int j = 1; j <= i; j++) {
+        cnt++;
+    }
+}
+```
+
+总次数：
+
+```text
+1 + 2 + ... + n = n(n+1)/2
+```
+
+## 4. C++ 运算符优先级高频版
+
+从高到低记常用部分：
+
+| 优先级 | 运算符 |
+|---:|---|
+| 高 | `!`、`++`、`--`、一元负号 |
+|  | `*`、`/`、`%` |
+|  | `+`、`-` |
+|  | `<`、`<=`、`>`、`>=` |
+|  | `==`、`!=` |
+|  | `&&` |
+|  | `||` |
+| 低 | `=`、`+=`、`-=` |
+
+考场建议：
+
+```text
+读题时按优先级算。
+写代码时主动加括号，降低心智负担。
+```
+
+## 5. 自增自减
+
+```cpp
+int i = 3;
+int a = i++; // a=3, i=4
+int b = ++i; // i=5, b=5
+```
+
+不要在同一表达式里多次修改同一个变量，例如：
+
+```cpp
+int x = i++ + ++i; // 不建议，读程序题也要谨慎按语言规则
+```
+
+竞赛写代码时避免这种写法。读程序题若出现，优先看题面是否规定语言版本和行为；若是未定义行为，通常不会作为严肃考点。
+
+## 6. 短路求值
+
+```cpp
+if (p != 0 && x / p > 3) {
+    // p==0 时右边不会算，避免除以 0
+}
+```
+
+规则：
+
+| 表达式 | 左边情况 | 右边是否执行 |
+|---|---|---|
+| `A && B` | `A` 为假 | 不执行 |
+| `A && B` | `A` 为真 | 执行 |
+| `A || B` | `A` 为真 | 不执行 |
+| `A || B` | `A` 为假 | 执行 |
+
+读程序时，右侧如果有 `i++`、函数调用、输出，必须考虑是否真的执行。
+
+## 7. 函数传参
+
+C++ 常见：
+
+```cpp
+void f1(int x) { x = 10; }      // 值传递，外面不变
+void f2(int &x) { x = 10; }     // 引用传递，外面改变
+void f3(int a[]) { a[1] = 10; } // 数组传入后可改原数组
+```
+
+最小示例：
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+void add_value(int x) {
+    x++;
+}
+
+void add_ref(int &x) {
+    x++;
+}
+
+int main() {
+    int a = 5;
+    add_value(a);
+    cout << a << "\n"; // 5
+    add_ref(a);
+    cout << a << "\n"; // 6
+    return 0;
+}
+```
+
+## 8. 递归调用栈
+
+读递归三问：
+
+```text
+1. 递归终止条件是什么？
+2. 每次调用参数怎么变？
+3. 返回后还做什么？
+```
+
+例子：
+
+```cpp
+int f(int n) {
+    if (n <= 1) return 1;
+    return f(n - 1) + f(n - 2);
+}
+```
+
+`f(4)` 调用树：
+
+```text
+f(4)
+  f(3)
+    f(2)
+      f(1)=1
+      f(0)=1
+    f(1)=1
+  f(2)
+    f(1)=1
+    f(0)=1
+```
+
+所以 `f(4)=5`。
+
+## 9. 递归输出顺序
+
+```cpp
+void g(int n) {
+    if (n == 0) return;
+    cout << n << " ";
+    g(n - 1);
+    cout << n << " ";
+}
+```
+
+`g(3)` 输出：
+
+```text
+3 2 1 1 2 3
+```
+
+口令：
+
+```text
+递归调用前的输出：从大到小。
+递归返回后的输出：从小到大。
+```
+
+## 10. 伪代码翻译规则
+
+| 伪代码 | C++ |
+|---|---|
+| `x <- y` | `x = y;` |
+| `for i = 1 to n` | `for (int i=1;i<=n;i++)` |
+| `while condition` | `while (condition)` |
+| `if condition then` | `if (condition)` |
+| `return x` | `return x;` |
+| `and/or/not` | `&& / || / !` |
+
+注意：
+
+```text
+伪代码数组可能从 1 开始，C++ vector 默认 0 开始。
+为了和本资料模板统一，自己实现时优先开 n+1 用 1-index。
+```
+
+## 11. 分支配对
+
+```cpp
+if (a)
+    if (b) x = 1;
+    else x = 2;
+```
+
+`else` 与最近的未匹配 `if (b)` 配对，不是 `if (a)`。
+
+建议写法：
+
+```cpp
+if (a) {
+    if (b) x = 1;
+    else x = 2;
+}
+```
+
+## 12. 二维数组和循环顺序
+
+```cpp
+for (int i = 1; i <= n; i++) {
+    for (int j = 1; j <= m; j++) {
+        cin >> a[i][j];
+    }
+}
+```
+
+含义：
+
+```text
+i 通常是行，j 通常是列。
+先读第 1 行从左到右，再读第 2 行。
+```
+
+坐标题常用方向数组：
+
+```cpp
+int dx[5] = {0, -1, 1, 0, 0};
+int dy[5] = {0, 0, 0, -1, 1};
+```
+
+## 13. 读程序完整示例
+
+题目：
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    int n = 5, ans = 0;
+    for (int i = 1; i <= n; i++) {
+        if (i % 2 == 0) ans += i;
+        else ans += i * i;
+    }
+    cout << ans << "\n";
+    return 0;
+}
+```
+
+变量表：
+
+| i | 奇偶 | 加多少 | ans |
+|---:|---|---:|---:|
+| 1 | 奇 | 1 | 1 |
+| 2 | 偶 | 2 | 3 |
+| 3 | 奇 | 9 | 12 |
+| 4 | 偶 | 4 | 16 |
+| 5 | 奇 | 25 | 41 |
+
+输出：
+
+```text
+41
+```
+
+## 14. 看输出格式
+
+| 代码 | 输出效果 |
+|---|---|
+| `cout << x;` | 不自动换行 |
+| `cout << x << "\n";` | 输出后换行 |
+| `cout << a << " " << b;` | 中间一个空格 |
+| `cout << fixed << setprecision(2) << x;` | 保留 2 位小数 |
+
+读程序题要保留空格和换行。选择题若只问数值，通常忽略末尾空格；上机提交时不要多输出调试信息。
+
+## 15. 代码阅读排错清单
+
+- 循环从 `0` 还是 `1` 开始？
+- 结束条件是 `< n` 还是 `<= n`？
+- 变量是否在循环内部重新初始化？
+- `break`/`continue` 跳到哪里？
+- 右侧表达式是否因为短路没有执行？
+- 函数改的是副本还是原变量？
+- 递归返回后还有没有语句？
+- 输出语句执行了几次？
+
+
+---
+
+
+<!-- source: 03_modules/SIGN-OSNET-01-os-network-database.md -->
+# SIGN-OSNET-01 操作系统、网络与数据库常识
+
+模块编号：SIGN-OSNET-01
+
+模块名称：操作系统、计算机网络、数据库和 Web 常识
+
+标签：签到题、操作系统、网络、数据库、Web、SQL、HTTP、进程线程、C++17
+
+一句话用途：信息学/AI 招生题可能把 OS、网络、数据库和 Web 概念作为背景，本模块用于快速识别术语和常见计算。
+
+题面触发词：进程、线程、死锁、内存、文件系统、TCP、UDP、HTTP、IP、DNS、SQL、数据库、事务。
+
+什么时候用：
+
+- 题目是计算机常识判断或简单模拟。
+- 题目给网络带宽、延迟、请求数、数据库表格，要求计算或筛选。
+- 题目涉及 SQL 的选择、过滤、排序、分组概念。
+
+不要什么时候用：
+
+- 需要真实系统调用或网络编程，考试一般不会要求。
+- 复杂 SQL 优化和数据库事务细节，本卷只作常识。
+- IP 位运算具体代码翻 `SIGN-CS-01`。
+
+复杂度：
+
+- 概念判断 `O(1)`。
+- 表格筛选排序按 `O(n)` 或 `O(n log n)`。
+- 网络传输按字节数和带宽估算。
+
+依赖的标准容器：`vector`、`map`、`set`、`sort`、`string`。
+
+输入如何整理：
+
+```text
+网络题先统一 bps/B/s。
+数据库题先明确表头、筛选条件、排序键、聚合字段。
+OS 题先分清进程、线程、程序。
+```
+
+接口：
+
+```text
+OS 概念 -> 查表。
+网络计算 -> time = data / bandwidth + latency。
+SQL 模拟 -> filter -> group -> sort -> output。
+```
+
+常见坑：
+
+- 程序是静态文件，进程是运行中的程序实例。
+- 线程共享同一进程地址空间，进程之间相对隔离。
+- TCP 可靠有连接，UDP 简单低开销但不保证可靠。
+- DNS 负责域名到 IP 的解析。
+- SQL 的 `WHERE` 在分组前过滤，`HAVING` 在分组后过滤。
+
+暴力/部分分替代：
+
+- SQL 题不会写抽象查询时，按行模拟筛选。
+- 网络题协议复杂时，按题面公式和单位计算。
+- 资源调度题数据小可逐时间片模拟。
+
+## 1. 操作系统常识
+
+| 概念 | 说明 |
+|---|---|
+| 程序 | 存在磁盘上的代码和数据 |
+| 进程 | 程序的一次运行实例 |
+| 线程 | 进程内的执行流 |
+| 并发 | 多任务交替推进 |
+| 并行 | 多任务同时执行 |
+| 死锁 | 多个任务互相等待资源 |
+| 虚拟内存 | 给进程提供连续地址空间的抽象 |
+| 页 | 内存管理的固定大小块 |
+| 文件系统 | 管理文件命名、目录、权限、存储 |
+| 调度 | 决定哪个任务运行 |
+
+死锁四个必要条件：
+
+```text
+互斥、占有且等待、不可抢占、循环等待。
+```
+
+## 2. 网络常识
+
+| 层/协议 | 作用 |
+|---|---|
+| IP | 寻址和路由 |
+| TCP | 可靠字节流，面向连接 |
+| UDP | 无连接报文 |
+| DNS | 域名解析 |
+| HTTP | Web 请求响应 |
+| HTTPS | HTTP + TLS 加密 |
+| URL | 资源定位符 |
+| CDN | 内容分发网络 |
+
+HTTP 状态码：
+
+| 范围 | 含义 |
+|---|---|
+| 2xx | 成功 |
+| 3xx | 重定向 |
+| 4xx | 客户端错误 |
+| 5xx | 服务器错误 |
+
+## 3. 数据库和 SQL
+
+| 概念 | 说明 |
+|---|---|
+| 表 | 行和列组成 |
+| 行/记录 | 一条数据 |
+| 列/字段 | 一个属性 |
+| 主键 | 唯一标识记录 |
+| 外键 | 指向另一表主键 |
+| 索引 | 加速查找的数据结构 |
+| 事务 | 一组操作作为整体 |
+| ACID | 原子性、一致性、隔离性、持久性 |
+
+SQL 执行直觉：
+
+```text
+FROM -> WHERE -> GROUP BY -> HAVING -> SELECT -> ORDER BY -> LIMIT
+```
+
+模拟 SQL：
+
+```cpp
+struct Row {
+    string name;
+    int score;
+};
+
+vector<Row> filter_sort(vector<Row> rows, int low) {
+    vector<Row> v;
+    for (auto r : rows) {
+        if (r.score >= low) v.push_back(r);
+    }
+    sort(v.begin(), v.end(), [](const Row &a, const Row &b) {
+        if (a.score != b.score) return a.score > b.score;
+        return a.name < b.name;
+    });
+    return v;
+}
+```
+
+
+---
+
+
+<!-- source: 03_modules/SIGN-PROB-01-probability-statistics.md -->
+# SIGN-PROB-01 概率统计速查
+
+模块编号：SIGN-PROB-01
+
+模块名称：概率、期望、统计指标和描述统计
+
+标签：签到题、概率、统计、期望、方差、分位数、Bayes、C++17
+
+一句话用途：遇到概率、统计、平均数、方差、分位数、相关系数或 A/B 测试类题时，用本模块快速查公式和小代码。
+
+题面触发词：概率、条件概率、Bayes、期望、方差、标准差、中位数、众数、分位数、相关系数、直方图。
+
+什么时候用：
+
+- 题目给一组数，要求统计量。
+- 题目给事件概率，要求组合概率或条件概率。
+- 机器学习评估题需要先算基础统计。
+
+不要什么时候用：
+
+- 概率 DP 状态复杂，优先 DP 卷。
+- 组合概率涉及大组合数取模，优先第 8 卷。
+- 随机模拟只能做调试或部分分，不应替代精确算法。
+
+复杂度：
+
+- 均值/方差：`O(n)`。
+- 中位数/分位数：排序 `O(n log n)`，或 `nth_element` 平均 `O(n)`。
+- 相关系数：`O(n)`。
+
+依赖的标准容器：`vector<double>`、`vector<int>`、`sort`、`map`。
+
+输入如何整理：
+
+```text
+先确认统计的是总体还是样本。
+总体方差分母 n，样本方差分母 n-1。
+百分位定义题面可能不同，按题面为准。
+```
+
+接口：
+
+```text
+mean(a,n) -> 平均数。
+variance_population(a,n) -> 总体方差。
+median(a,n) -> 中位数。
+pearson(x,y,n) -> 皮尔逊相关系数。
+```
+
+常见坑：
+
+- 方差不要忘记平方。
+- `n=1` 时样本方差分母 `n-1` 为 0，要特判。
+- 概率相乘需要独立性；不独立时用条件概率。
+- 精度输出用 `double`，计数用 `long long`。
+
+暴力/部分分替代：
+
+- 概率推不出时，小状态可枚举所有结果。
+- 分位数规则不确定时，优先按题面样例反推。
+- 大样本统计不会优化时，先排序写 `O(n log n)`。
+
+## 1. 概率公式
+
+| 名称 | 公式 |
+|---|---|
+| 补事件 | `P(not A)=1-P(A)` |
+| 加法公式 | `P(A or B)=P(A)+P(B)-P(A and B)` |
+| 条件概率 | `P(A|B)=P(A and B)/P(B)` |
+| 乘法公式 | `P(A and B)=P(A|B)*P(B)` |
+| 独立事件 | `P(A and B)=P(A)*P(B)` |
+| Bayes | `P(A|B)=P(B|A)P(A)/P(B)` |
+| 期望线性性 | `E(X+Y)=E(X)+E(Y)` |
+| 方差 | `E(X^2)-E(X)^2` |
+
+## 2. 描述统计小代码
+
+```cpp
+double mean_value(const vector<double> &a) {
+    double s = 0;
+    for (double x : a) s += x;
+    return s / (double)a.size();
+}
+
+double variance_population(const vector<double> &a) {
+    double mu = mean_value(a), s = 0;
+    for (double x : a) s += (x - mu) * (x - mu);
+    return s / (double)a.size();
+}
+
+double median_value(vector<double> a) {
+    sort(a.begin(), a.end());
+    int n = (int)a.size();
+    if (n % 2 == 1) return a[n / 2];
+    return (a[n / 2 - 1] + a[n / 2]) / 2.0;
+}
+```
+
+## 3. 相关系数
+
+```cpp
+double pearson(const vector<double> &x, const vector<double> &y) {
+    int n = (int)x.size();
+    double mx = mean_value(x), my = mean_value(y);
+    double num = 0, sx = 0, sy = 0;
+    for (int i = 0; i < n; i++) {
+        double dx = x[i] - mx, dy = y[i] - my;
+        num += dx * dy;
+        sx += dx * dx;
+        sy += dy * dy;
+    }
+    if (sx == 0 || sy == 0) return 0;
+    return num / sqrt(sx * sy);
+}
+```
+
+## 4. 常见分布
+
+| 分布 | 使用场景 | 关键量 |
+|---|---|---|
+| Bernoulli | 一次成败 | `P(1)=p` |
+| Binomial | `n` 次独立成败 | `C(n,k)p^k(1-p)^(n-k)` |
+| Geometric | 第一次成功在第几次 | `(1-p)^(k-1)p` |
+| Poisson | 单位时间稀有事件数 | `lambda^k e^-lambda / k!` |
+| Normal | 近似连续测量误差 | z-score |
+
+
+---
+
+
+<!-- source: 03_modules/SIGN-SEC-01-security-information-theory.md -->
+# SIGN-SEC-01 信息安全、校验、压缩与信息论常识
+
+模块编号：SIGN-SEC-01
+
+模块名称：信息安全、哈希、校验、压缩和信息论基础
+
+标签：签到题、信息安全、哈希、校验和、压缩、熵、编码、CRC、C++17
+
+一句话用途：遇到校验码、哈希、加密、压缩率、熵、错误检测等常识题时，用本模块快速查概念和小公式。
+
+题面触发词：校验和、奇偶校验、CRC、哈希、MD5、SHA、加密、压缩率、熵、Huffman、错误检测。
+
+什么时候用：
+
+- 题目考概念判断：哈希 vs 加密，压缩 vs 编码。
+- 题目要求计算简单校验和、奇偶校验、压缩率。
+- 题目给频率，要求估算信息熵或 Huffman 直觉。
+
+不要什么时候用：
+
+- 不要自己实现真实密码算法，考试一般不会要求。
+- 如果题目给了具体编码树，按题面模拟，不要套概念。
+- 大规模字符串哈希算法题翻字符串卷。
+
+复杂度：
+
+- 简单校验：`O(n)`。
+- 频率统计：`O(n)`。
+- Huffman 建树：`O(k log k)`。
+
+依赖的标准容器：`string`、`vector<int>`、`priority_queue`、`map`。
+
+输入如何整理：
+
+```text
+先确认处理单位是 bit、byte 还是字符。
+压缩率常见写法：
+compressed / original 或 (original-compressed)/original，按题面。
+```
+
+接口：
+
+```text
+xor_checksum(s) -> 异或校验。
+parity(x) -> 二进制 1 的个数奇偶。
+entropy(freq) -> 信息熵。
+```
+
+常见坑：
+
+- 哈希不是加密；哈希通常不可逆，加密应可用密钥解密。
+- 编码不是压缩；Base64 反而会变大。
+- 压缩后大小可能因为头部信息而变大。
+- 奇偶校验只能检测奇数个位错误，不一定能纠错。
+
+暴力/部分分替代：
+
+- 复杂 CRC 不会时，先按题面给的小规则逐位模拟。
+- Huffman 不会时，小数据可以枚举树形很难，优先掌握优先队列贪心。
+
+## 1. 概念区分
+
+| 概念 | 目的 | 是否可逆 |
+|---|---|---|
+| 编码 | 表示数据 | 通常可逆 |
+| 压缩 | 减少大小 | 无损可逆，有损不可完全恢复 |
+| 哈希 | 摘要/查找/完整性 | 通常不可逆 |
+| 加密 | 保密 | 有密钥可逆 |
+| 签名 | 证明身份和完整性 | 验证可行，不是解密 |
+| 校验 | 检测错误 | 通常不能恢复 |
+
+## 2. 校验短代码
+
+```cpp
+int parity_ones(unsigned int x) {
+    return __builtin_popcount(x) & 1;
+}
+
+unsigned char xor_checksum(const string &s) {
+    unsigned char ans = 0;
+    for (unsigned char c : s) ans ^= c;
+    return ans;
+}
+
+int digit_sum_mod10(const string &s) {
+    int sum = 0;
+    for (char c : s) if (isdigit((unsigned char)c)) sum = (sum + c - '0') % 10;
+    return sum;
+}
+```
+
+## 3. 压缩和熵
+
+信息熵：
+
+```text
+H = -sum p_i * log2(p_i)
+```
+
+直觉：
+
+- 越均匀，熵越大。
+- 越集中，越容易压缩。
+- Huffman 编码给高频字符更短码。
+
+```cpp
+double entropy_from_counts(const vector<int> &cnt) {
+    double total = 0;
+    for (int x : cnt) total += x;
+    double h = 0;
+    for (int x : cnt) {
+        if (x == 0) continue;
+        double p = x / total;
+        h -= p * log2(p);
+    }
+    return h;
+}
+```
+
+## 4. 常见压缩率
+
+| 问法 | 公式 |
+|---|---|
+| 压缩后占原来的比例 | `compressed/original` |
+| 压缩率减少了多少 | `(original-compressed)/original` |
+| 压缩倍数 | `original/compressed` |
+| Base64 大小 | 约 `ceil(n/3)*4` byte |
+
+
+---
+
+
+<!-- source: 03_modules/SIGN-SIM-01-life-simulation-templates.md -->
+# SIGN-SIM-01 生活化签到模拟题模板
+
+模块编号：SIGN-SIM-01
+
+模块名称：生活化模拟题：日期、BMI、排名、Excel 列号、格式和小工具
+
+标签：签到题、生活模拟、日期、BMI、排名、Excel列号、格式化、C++17
+
+一句话用途：把最常见的生活化签到题做成可抄模板，重点保证输入输出合法、边界不丢分。
+
+题面触发词：BMI、成绩等级、GPA、排名、同分、Excel 列号、日期差、星期、单位换算、括号匹配、状态机。
+
+什么时候用：
+
+- 题目是现实规则模拟，算法不难但规则细。
+- 输出格式要求固定小数、补零、对齐或分类文字。
+- 需要把字符串编号转换成数字，或把数字转编号。
+
+不要什么时候用：
+
+- 日期题涉及历史儒略历/格里高利历切换、夏令时数据库，优先 `SIM-06`。
+- 表达式、JSON、脚本等复杂解析，优先 `SIM-03/04/05`。
+- 方程求解优先 `SIM-07`。
+
+复杂度：多数 `O(1)`；字符串扫描 `O(len)`；排名排序 `O(n log n)`。
+
+依赖的标准容器：`string`、`vector`、`algorithm`、`stack`、`iomanip`。
+
+输入如何整理：
+
+```text
+先读规则，再把每条规则写成 if/else 或小函数。
+有多组数据时每组清空状态。
+涉及格式输出时统一放到最后输出。
+```
+
+接口：
+
+```text
+bmi(weight,height) -> BMI。
+excel_col_to_num(s) -> A1 风格列号转数字。
+excel_num_to_col(x) -> 数字转列号。
+days_from_civil(y,m,d) -> 日期转序号。
+rank_with_ties(score) -> 同分排名。
+```
+
+常见坑：
+
+- 身高若输入厘米，BMI 要除以 100 转米。
+- Excel 列号是 1-index：A=1，Z=26，AA=27。
+- 排名有 dense ranking 和 competition ranking，按题面。
+- 日期差是否包含起止当天，要看题面样例。
+
+暴力/部分分替代：
+
+- 日期公式忘记时，小范围逐日加。
+- 排名规则复杂时，先排序输出普通名次。
+- 状态机不会抽象时，用 `if/else` 按字符扫描。
+
+## 1. 高频短规则
+
+| 模型 | 规则 |
+|---|---|
+| BMI | `weight_kg / height_m^2` |
+| 成绩等级 | 从高到低写 `if`，避免区间重叠 |
+| GPA | 加权平均：`sum(score*credit)/sum(credit)` |
+| 同分排名 | 比自己分高的人数 + 1 |
+| Excel 列号 | 26 进制但没有 0 |
+| 括号匹配 | 栈 |
+| 自动机 | `state = trans[state][input]` |
+
+## 2. 完整可运行小工具
+
+这个程序故意覆盖多个签到常识：BMP 大小、三角形面积、日期差、二分类指标、进制转换、BMI、Excel 列号。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+using ll = long long;
+const double PI = acos(-1.0);
+
+bool triangle_ok(double a, double b, double c) {
+    return a + b > c && a + c > b && b + c > a;
+}
+
+double triangle_area(double a, double b, double c) {
+    if (!triangle_ok(a, b, c)) return -1.0;
+    double s = (a + b + c) / 2.0;
+    return sqrt(max(0.0, s * (s - a) * (s - b) * (s - c)));
+}
+
+ll bmp_pixel_bytes(ll w, ll h, int bpp) {
+    ll row_bits = w * bpp;
+    ll row_bytes = ((row_bits + 31) / 32) * 4;
+    return row_bytes * h;
+}
+
+ll days_from_civil(int y, int m, int d) {
+    y -= m <= 2;
+    const int era = (y >= 0 ? y : y - 399) / 400;
+    const unsigned yoe = (unsigned)(y - era * 400);
+    const unsigned doy = (153 * (m + (m > 2 ? -3 : 9)) + 2) / 5 + d - 1;
+    const unsigned doe = yoe * 365 + yoe / 4 - yoe / 100 + doy;
+    return era * 146097LL + (ll)doe - 719468LL;
+}
+
+int hex_value(char c) {
+    if ('0' <= c && c <= '9') return c - '0';
+    if ('a' <= c && c <= 'f') return c - 'a' + 10;
+    if ('A' <= c && c <= 'F') return c - 'A' + 10;
+    return -1;
+}
+
+ll to_decimal(const string &s, int base) {
+    ll ans = 0;
+    for (char c : s) ans = ans * base + hex_value(c);
+    return ans;
+}
+
+ll excel_col_to_num(const string &s) {
+    ll ans = 0;
+    for (char c : s) ans = ans * 26 + (c - 'A' + 1);
+    return ans;
+}
+
+string excel_num_to_col(ll x) {
+    string s;
+    while (x > 0) {
+        x--;
+        s.push_back(char('A' + x % 26));
+        x /= 26;
+    }
+    reverse(s.begin(), s.end());
+    return s;
+}
+
+void solve_metrics() {
     int n;
     cin >> n;
-    vector<Node> a(n + 1);
-    vector<int> vars;
+    int tp = 0, fp = 0, fn = 0, tn = 0;
     for (int i = 1; i <= n; i++) {
-        cin >> a[i].op;
-        if (a[i].op == "var" || a[i].op == "const") {
-            cin >> a[i].val;
-            if (a[i].op == "var") vars.push_back(i);
-        } else if (a[i].op == "add" || a[i].op == "mul") {
-            cin >> a[i].l >> a[i].r;
-            if (a[i].op == "add") a[i].val = a[a[i].l].val + a[a[i].r].val;
-            else a[i].val = a[a[i].l].val * a[a[i].r].val;
-        } else if (a[i].op == "sin") {
-            cin >> a[i].l;
-            a[i].val = sin(a[a[i].l].val);
-        }
+        int y, p;
+        cin >> y >> p;
+        if (y == 1 && p == 1) tp++;
+        else if (y == 0 && p == 1) fp++;
+        else if (y == 1 && p == 0) fn++;
+        else tn++;
     }
-    a[n].grad = 1;
-    for (int i = n; i >= 1; i--) {
-        double g = a[i].grad;
-        if (a[i].op == "add") {
-            a[a[i].l].grad += g;
-            a[a[i].r].grad += g;
-        } else if (a[i].op == "mul") {
-            int l = a[i].l, r = a[i].r;
-            a[l].grad += g * a[r].val;
-            a[r].grad += g * a[l].val;
-        } else if (a[i].op == "sin") {
-            int l = a[i].l;
-            a[l].grad += g * cos(a[l].val);
-        }
-    }
-    cout << fixed << setprecision(6) << a[n].val << '\n';
-    for (int i = 0; i < (int)vars.size(); i++) {
-        if (i) cout << ' ';
-        cout << a[vars[i]].grad;
-    }
-    cout << '\n';
-    return 0;
-}
-```
-
-**测试设计：**
-
-1. 输入：
-```text
-3
-var 2
-var 3
-mul 1 2
-```
-期望输出：
-```text
-6.000000
-3.000000 2.000000
-```
-
-2. 输入：
-```text
-2
-var 0
-sin 1
-```
-期望输出：
-```text
-0.000000
-1.000000
-```
-
-***
-### V10-EX10 Viterbi 与 accuracy 评分
-
-- 归属卷：第 10 卷
-- 覆盖模块：AI-07 Viterbi、AI-10 SPJ 评分
-- 考场用途：用 log 概率做 HMM 最优路径，并计算预测准确率。
-
-**题目描述：** 给定一个 HMM，输出观测序列的最可能隐藏状态路径。随后给出真实隐藏状态路径，输出路径预测准确率。概率为 0 时认为该路径不可走。
-
-**输入格式：** 第一行 `n m T`。第二行 `n` 个初始概率。接下来 `n` 行转移矩阵。接下来 `n` 行发射矩阵。一行 `T` 个观测编号。一行 `T` 个真实状态编号。
-
-**输出格式：** 第一行输出预测路径。第二行输出准确率，保留 6 位。
-
-**样例输入：**
-```text
-2 2 3
-0.6 0.4
-0.7 0.3
-0.4 0.6
-0.5 0.5
-0.1 0.9
-1 2 2
-1 2 2
-```
-
-**样例输出：**
-```text
-1 2 2
-1.000000
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-const double NEG = -1e100;
-
-double safe_log(double x) {
-    return x <= 0 ? NEG : log(x);
+    double acc = (double)(tp + tn) / max(1, n);
+    double precision = (tp + fp == 0 ? 0 : (double)tp / (tp + fp));
+    double recall = (tp + fn == 0 ? 0 : (double)tp / (tp + fn));
+    double f1 = (precision + recall == 0 ? 0 : 2 * precision * recall / (precision + recall));
+    cout << fixed << setprecision(6) << acc << ' ' << precision << ' ' << recall << ' ' << f1 << "\n";
 }
 
 int main() {
     ios::sync_with_stdio(false);
     cin.tie(nullptr);
 
-    int n, m, T;
-    cin >> n >> m >> T;
-    vector<double> pi(n + 1);
-    for (int i = 1; i <= n; i++) cin >> pi[i];
-    vector<vector<double>> trans(n + 1, vector<double>(n + 1));
-    for (int i = 1; i <= n; i++) for (int j = 1; j <= n; j++) cin >> trans[i][j];
-    vector<vector<double>> emit(n + 1, vector<double>(m + 1));
-    for (int i = 1; i <= n; i++) for (int j = 1; j <= m; j++) cin >> emit[i][j];
-    vector<int> obs(T + 1), real(T + 1);
-    for (int t = 1; t <= T; t++) cin >> obs[t];
-    for (int t = 1; t <= T; t++) cin >> real[t];
+    string mode;
+    cin >> mode;
+    cout << fixed << setprecision(6);
 
-    vector<vector<double>> dp(T + 1, vector<double>(n + 1, NEG));
-    vector<vector<int>> pre(T + 1, vector<int>(n + 1, 1));
-    for (int s = 1; s <= n; s++) dp[1][s] = safe_log(pi[s]) + safe_log(emit[s][obs[1]]);
-    for (int t = 2; t <= T; t++) {
-        for (int s = 1; s <= n; s++) {
-            for (int p = 1; p <= n; p++) {
-                double cur = dp[t - 1][p] + safe_log(trans[p][s]) + safe_log(emit[s][obs[t]]);
-                if (cur > dp[t][s]) {
-                    dp[t][s] = cur;
-                    pre[t][s] = p;
-                }
-            }
-        }
+    if (mode == "triangle") {
+        double a, b, c;
+        cin >> a >> b >> c;
+        double area = triangle_area(a, b, c);
+        if (area < 0) cout << "INVALID\n";
+        else cout << area << "\n";
+    } else if (mode == "bmp") {
+        ll w, h;
+        int bpp;
+        cin >> w >> h >> bpp;
+        cout << bmp_pixel_bytes(w, h, bpp) << "\n";
+    } else if (mode == "datediff") {
+        int y1, m1, d1, y2, m2, d2;
+        cin >> y1 >> m1 >> d1 >> y2 >> m2 >> d2;
+        cout << llabs(days_from_civil(y1, m1, d1) - days_from_civil(y2, m2, d2)) << "\n";
+    } else if (mode == "metrics") {
+        solve_metrics();
+    } else if (mode == "base") {
+        string s;
+        int b;
+        cin >> s >> b;
+        cout.unsetf(ios::floatfield);
+        cout << to_decimal(s, b) << "\n";
+    } else if (mode == "bmi") {
+        double kg, cm;
+        cin >> kg >> cm;
+        double h = cm / 100.0;
+        cout << kg / (h * h) << "\n";
+    } else if (mode == "excel_to_num") {
+        string s;
+        cin >> s;
+        cout.unsetf(ios::floatfield);
+        cout << excel_col_to_num(s) << "\n";
+    } else if (mode == "excel_to_col") {
+        ll x;
+        cin >> x;
+        cout << excel_num_to_col(x) << "\n";
     }
-    int last = 1;
-    for (int s = 2; s <= n; s++) if (dp[T][s] > dp[T][last]) last = s;
-    vector<int> path(T + 1);
-    path[T] = last;
-    for (int t = T; t >= 2; t--) path[t - 1] = pre[t][path[t]];
-
-    int correct = 0;
-    for (int t = 1; t <= T; t++) {
-        if (t > 1) cout << ' ';
-        cout << path[t];
-        if (path[t] == real[t]) correct++;
-    }
-    cout << '\n' << fixed << setprecision(6) << (double)correct / T << '\n';
     return 0;
 }
 ```
 
-**测试设计：**
+## 3. 最小测试样例
 
-1. 输入：
 ```text
-1 1 2
-1
-1
-1
-1 1
-1 1
+triangle
+3 4 5
+=> 6.000000
+
+bmp
+3 2 24
+=> 24
+
+datediff
+2024 2 28 2024 3 1
+=> 2
+
+excel_to_num
+AA
+=> 27
 ```
-期望输出：
-```text
-1 1
-1.000000
-```
-
-2. 输入：
-```text
-2 1 1
-0.9 0.1
-1 0
-0 1
-1
-1
-2
-```
-期望输出：
-```text
-1
-0.000000
-```
-### V10-CEX01 余弦相似度
-
-- 归属卷：第 10 卷
-- 覆盖模块：向量、相似度
-- 考场用途：文本/推荐题常见基础组件。
-- 参考题型来源：参考来源：TF-IDF/向量检索基础。
-
-**题目描述：** 给两个向量，输出余弦相似度。
-
-**输入格式：** 第一行 n，之后 n 行 xi yi。
-
-**输出格式：** 输出 6 位小数。
-
-**样例输入：**
-```text
-3
-1 1
-2 0
-0 2
-```
-
-**样例输出：**
-```text
-0.200000
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-
-int main(){ios::sync_with_stdio(false);cin.tie(nullptr);int n;cin>>n; vector<double>x(n+1),y(n+1); for(int i=1;i<=n;i++)cin>>x[i]>>y[i]; double dot=0,nx=0,ny=0; for(int i=1;i<=n;i++){dot+=x[i]*y[i];nx+=x[i]*x[i];ny+=y[i]*y[i];} cout<<fixed<<setprecision(6)<<dot/(sqrt(nx)*sqrt(ny))<<"\n";return 0;}
-```
-
-**测试设计：** 额外测试：构造最小规模、重复值、边界值各一组，和样例一起运行。
-
-***
-### V10-CEX02 最近邻分类
-
-- 归属卷：第 10 卷
-- 覆盖模块：KNN、欧氏距离
-- 考场用途：AI 题里最容易模拟的分类器。
-- 参考题型来源：参考来源：监督学习 KNN 基础。
-
-**题目描述：** 给训练样本和查询点，输出最近样本标签。
-
-**输入格式：** 第一行 n m，之后特征和标签，最后查询点。
-
-**输出格式：** 输出标签。
-
-**样例输入：**
-```text
-3 2
-0 0 1
-5 5 2
-1 0 1
-0 1
-```
-
-**样例输出：**
-```text
-1
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n, m;
-    cin >> n >> m;
-    vector<vector<double>> x(n + 1, vector<double>(m + 1));
-    vector<int> y(n + 1);
-
-    for (int i = 1; i <= n; i++) {
-        for (int j = 1; j <= m; j++) cin >> x[i][j];
-        cin >> y[i];
-    }
-
-    vector<double> q(m + 1);
-    for (int j = 1; j <= m; j++) cin >> q[j];
-
-    int ans_label = -1;
-    double best_dist = 1e100;
-    for (int i = 1; i <= n; i++) {
-        double d = 0;
-        for (int j = 1; j <= m; j++) {
-            d += (x[i][j] - q[j]) * (x[i][j] - q[j]);
-        }
-        if (d < best_dist) {
-            best_dist = d;
-            ans_label = y[i];
-        }
-    }
-
-    cout << ans_label << '\n';
-    return 0;
-}
-```
-
-**测试设计：** 额外测试：构造最小规模、重复值、边界值各一组，和样例一起运行。
-
-***
-### V10-CEX03 逻辑回归一轮 SGD
-
-- 归属卷：第 10 卷
-- 覆盖模块：监督学习、梯度下降
-- 考场用途：模拟训练规则，不追求真实模型效果。
-- 参考题型来源：参考来源：机器学习 logistic regression 基础。
-
-**题目描述：** 用每个样本做一次 SGD 更新。
-
-**输入格式：** 第一行 n lr，之后 x y。
-
-**输出格式：** 输出 w b。
-
-**样例输入：**
-```text
-2 1
-0 0
-1 1
-```
-
-**样例输出：**
-```text
-0.622459 0.122459
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-
-double sigmoid(double z){return 1.0/(1.0+exp(-z));}
-int main(){ios::sync_with_stdio(false);cin.tie(nullptr);int n;double lr;cin>>n>>lr;double w=0,b=0; for(int i=1;i<=n;i++){double x,y;cin>>x>>y;double p=sigmoid(w*x+b);double e=p-y;w-=lr*e*x;b-=lr*e;}cout<<fixed<<setprecision(6)<<w<<" "<<b<<"\n";return 0;}
-```
-
-**测试设计：** 额外测试：构造最小规模、重复值、边界值各一组，和样例一起运行。
-
-***
-### V10-CEX04 单神经元反向传播
-
-- 归属卷：第 10 卷
-- 覆盖模块：反向传播、梯度
-- 考场用途：把链式法则落实成代码。
-- 参考题型来源：参考来源：反向传播基础。
-
-**题目描述：** 单神经元 y=wx+b，平方损失，做一次梯度下降。
-
-**输入格式：** 输入 x w b target lr。
-
-**输出格式：** 输出 loss 新w 新b。
-
-**样例输入：**
-```text
-2 1 0 3 0.1
-```
-
-**样例输出：**
-```text
-1.0000 1.4000 0.2000
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-
-int main(){ios::sync_with_stdio(false);cin.tie(nullptr);double x,w,b,target,lr;cin>>x>>w>>b>>target>>lr;double y=w*x+b;double loss=(y-target)*(y-target);double gw=2*(y-target)*x;double gb=2*(y-target);w-=lr*gw;b-=lr*gb;cout<<fixed<<setprecision(4)<<loss<<" "<<w<<" "<<b<<"\n";return 0;}
-```
-
-**测试设计：** 额外测试：构造最小规模、重复值、边界值各一组，和样例一起运行。
-
-***
-### V10-CEX05 手算反向模式自动求导
-
-- 归属卷：第 10 卷
-- 覆盖模块：自动求导、计算图
-- 考场用途：AI 模拟题可能要求按规则反传。
-- 参考题型来源：参考来源：自动微分/反向模式基础。
-
-**题目描述：** 计算 `e=(x*y+x)^2` 及对 x,y 的梯度。
-
-**输入格式：** 输入 x y。
-
-**输出格式：** 输出 e dx dy。
-
-**样例输入：**
-```text
-2 3
-```
-
-**样例输出：**
-```text
-64.0000 64.0000 32.0000
-```
-
-**完整代码：**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-
-struct Var{double val,grad;};
-int main(){ios::sync_with_stdio(false);cin.tie(nullptr);double x,y;cin>>x>>y;Var a{x,0},b{y,0};double c=a.val*b.val;double d=c+a.val;double e=d*d;double ge=1;double gd=ge*2*d;double gc=gd; a.grad+=gd; a.grad+=gc*b.val; b.grad+=gc*a.val;cout<<fixed<<setprecision(4)<<e<<" "<<a.grad<<" "<<b.grad<<"\n";return 0;}
-```
-
-**测试设计：** 额外测试：构造最小规模、重复值、边界值各一组，和样例一起运行。
-
-***
-
-<!-- V02_EXAMPLES_END -->
 
 
 
@@ -54018,6 +43980,7 @@ l=r
 | SVM、DNN、反向传播、自动求导 | AI 公式模拟 | 计算图 / 矩阵向量 | AI-11..15 | SIM-03 | 数据大时先 baseline |
 | JSON/CSV/INI、表达式、脚本规则 | 解析模拟 | Token / AST | SIM-03/04/05 | string / map | 不要临场乱写半解析 |
 | 日期、时区、经过天数、历法 | 日期模拟 | Date / day number | SIM-06 | 数学取模 | 夏令时规则不明时按题面 |
+| BMP、单位换算、三角形面积、F1、Markov、补码浮点、流程图、AI术语、bit/byte、Excel列号 | 签到题百科 | Formula / Rule | SIGN-00..SIM | C++ 小函数 | 复杂算法题不要停留在常识页 |
 | 区间合并、区间删除、括号匹配 | 区间 DP | Array | IntervalDP | PrefixSum | `n` 很大 |
 | `n <= 20` 且访问集合 | 状压 | State mask | BitmaskDP / DFS | Floyd/Dijkstra | `n > 22` 基本爆 |
 | 1..N、数位限制、上界很大 | 数位 DP | digits + state | DP-17 | DFS memo | 小范围普通枚举 |
@@ -80515,6 +70478,712 @@ tz
 ---
 
 
+<!-- source: 03_modules/SIM-07-equation-solving.md -->
+## SIM-07 方程求解：高斯消元、模方程、一元方程与多项式
+
+模块编号：SIM-07
+
+模块名称：方程求解模板：线性方程组、高斯消元、模意义方程、一元方程迭代、多项式求值与低次公式
+
+标签：模拟、数学、方程求解、高斯消元、模方程、二分、牛顿法、多项式、C++17、考场模板
+
+一句话用途：题目把条件写成若干方程、要求求未知数或判无解/多解时，先判断是线性方程组、模方程、一元连续方程还是低次多项式，再套对应模板。
+
+题面触发词：
+
+- 给出 `n` 个未知数和 `m` 条线性约束，求每个未知数。
+- 解方程组、判断唯一解/无解/无穷多解。
+- 所有运算在 `mod p` 意义下进行。
+- 求 `f(x)=0` 的一个根，答案允许误差 `1e-6`。
+- 给多项式系数，求某点函数值或求区间内根。
+- 一元一次/二次方程，输出实根。
+
+什么时候用：
+
+- 方程是一次的：用高斯消元，实数版或模质数版。
+- 单条同余方程 `a*x ≡ b (mod m)`：用 `gcd + exgcd`。
+- 一元连续函数有单调性或已知区间两端异号：用二分。
+- 已有较好初值、函数和导数好算：可用牛顿法做加速或备用。
+- 多项式求值：用 Horner，少写幂函数。
+- 一元一次/二次：直接公式，比迭代更稳。
+
+不要什么时候用：
+
+- 模数不是质数且是多元方程组：普通模高斯只对可逆主元安全，复合模需要拆 CRT 或更高阶线性代数。
+- 方程里有乘积项如 `x*y`、`x^2+y^2`：不是线性方程组，不能直接高斯。
+- 二分区间两端不异号且没有单调性证明：可能漏根。
+- 牛顿法没有好初值或导数会接近 0：容易飞出有效区间。
+- 只要求整数解且变量范围很小：直接枚举/搜索可能更短。
+
+复杂度：
+
+- 实数高斯消元：`O(m*n*min(m,n))`，方阵常记 `O(n^3)`。
+- 模质数高斯消元：同上，每个主元多一次快速幂求逆，方阵约 `O(n^3 + n log mod)`。
+- 单条线性同余：`O(log mod)`。
+- 二分求根：`O(iter * eval)`，常用 80 到 100 次。
+- 牛顿法：`O(iter * eval)`，常用 30 到 60 次。
+- Horner 多项式求值：`O(deg)`。
+- 一次/二次公式：`O(1)`。
+
+数据范围参考：
+
+- `n <= 100`：静态二维数组高斯最舒服。
+- `n <= 500`：`O(n^3)` 可能还能过，注意常数和时限。
+- 模数为 `998244353`、`1e9+7` 等质数时，模高斯最稳。
+- 浮点答案误差 `1e-6`：二分 80 次通常足够。
+- 多项式次数高且 `x` 很大时，`double` 可能溢出，按题意改 `long double` 或取模 Horner。
+
+依赖的标准容器：
+
+- 静态数组 `a[MAXN][MAXN]`：方程矩阵，行列按 1-index。
+- `double`：实数高斯、二分、牛顿、公式根。
+- `long long`：模方程系数和答案。
+- `vector<double>`：只在输出低次公式根时临时装答案；核心矩阵仍是静态数组。
+
+输入如何整理：
+
+```cpp
+int m, n;
+cin >> m >> n;
+for (int i = 1; i <= m; i++) {
+    for (int j = 1; j <= n; j++) cin >> a[i][j];
+    cin >> a[i][n + 1]; // 右端常数
+}
+```
+
+接口：
+
+```text
+gauss_real(m,n) -> 0 无解，1 唯一解，2 多解；答案在 ans_real[1..n]。
+gauss_mod_prime(m,n,mod) -> 模质数方程组，返回值同上；答案在 ans_mod[1..n]。
+solve_linear_congruence(a,b,mod,x0,step) -> 解 a*x ≡ b (mod mod)，通解 x=x0+k*step。
+poly_eval(deg,c,x) -> Horner 求 c[0]+c[1]x+...+c[deg]x^deg。
+poly_derivative_eval(deg,c,x) -> 多项式导数在 x 的值。
+bisect_poly_root(deg,c,l,r,root) -> 区间两端异号时二分一个根。
+newton_poly_root(deg,c,start,root) -> 从 start 出发尝试牛顿求根。
+solve_quadratic_formula(a,b,c,roots) -> 解 a*x^2+b*x+c=0，返回根数，-1 表示任意实数。
+```
+
+### 先判断题目属于哪一类
+
+| 题面形式 | 优先模板 | 关键检查 |
+|---|---|---|
+| `a11*x1+...+a1n*xn=b1` | 实数高斯 | `EPS`、主元、无解/多解 |
+| 同上但 `mod p` | 模质数高斯 | `p` 是质数、负数取模 |
+| `a*x ≡ b (mod m)` | `gcd + exgcd` | `gcd(a,m)` 是否整除 `b` |
+| `f(x)=0`，连续且有区间 | 二分 | 两端异号或单调性 |
+| `f(x)=0`，有导数和初值 | 牛顿 | 导数别接近 0 |
+| 多项式代入 | Horner | 系数顺序和溢出 |
+| 一次/二次 | 公式 | 退化和判别式 `EPS` |
+
+### 高斯消元的行列约定
+
+增广矩阵按 1-index 存：
+
+```text
+a[i][1..n]     是第 i 条方程的系数
+a[i][n + 1]    是右端常数
+ans[1..n]      是未知数 x1..xn
+where[col]     记录第 col 个未知数在哪一行成为主元
+```
+
+判定顺序：
+
+1. 每一列找绝对值最大的主元。
+2. 主元行归一化。
+3. 消掉其他所有行的这一列。
+4. 最后检查 `0 = 非零`，这是无解。
+5. 有变量没主元，是多解；所有变量有主元，是唯一解。
+
+模板代码：
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+using ll = long long;
+
+const int MAXN = 105;
+const double EPS = 1e-10;
+
+double mat_real[MAXN][MAXN];
+double ans_real[MAXN];
+int where_real[MAXN];
+
+ll mat_mod[MAXN][MAXN];
+ll ans_mod[MAXN];
+int where_mod[MAXN];
+
+double coef_poly[MAXN];
+
+int sign_double(double x) {
+    if (x > EPS) return 1;
+    if (x < -EPS) return -1;
+    return 0;
+}
+
+ll norm_mod(ll x, ll mod) {
+    x %= mod;
+    if (x < 0) x += mod;
+    return x;
+}
+
+ll mul_mod(ll a, ll b, ll mod) {
+    return (ll)((__int128)norm_mod(a, mod) * norm_mod(b, mod) % mod);
+}
+
+ll pow_mod(ll a, ll e, ll mod) {
+    ll res = 1 % mod;
+    a = norm_mod(a, mod);
+    while (e > 0) {
+        if (e & 1) res = mul_mod(res, a, mod);
+        a = mul_mod(a, a, mod);
+        e >>= 1;
+    }
+    return res;
+}
+
+ll exgcd(ll a, ll b, ll &x, ll &y) {
+    if (b == 0) {
+        x = 1;
+        y = 0;
+        return a;
+    }
+    ll x1, y1;
+    ll g = exgcd(b, a % b, x1, y1);
+    x = y1;
+    y = x1 - (a / b) * y1;
+    return g;
+}
+
+ll inv_mod_coprime(ll a, ll mod) {
+    ll x, y;
+    ll g = exgcd(norm_mod(a, mod), mod, x, y);
+    if (g != 1) return -1;
+    return norm_mod(x, mod);
+}
+
+int gauss_real(int m, int n) {
+    for (int i = 1; i <= n; i++) where_real[i] = 0;
+
+    int row = 1;
+    for (int col = 1; col <= n && row <= m; col++) {
+        int sel = row;
+        for (int i = row + 1; i <= m; i++) {
+            if (fabs(mat_real[i][col]) > fabs(mat_real[sel][col])) {
+                sel = i;
+            }
+        }
+        if (fabs(mat_real[sel][col]) < EPS) continue;
+
+        for (int j = col; j <= n + 1; j++) {
+            swap(mat_real[sel][j], mat_real[row][j]);
+        }
+
+        where_real[col] = row;
+        double div = mat_real[row][col];
+        for (int j = col; j <= n + 1; j++) mat_real[row][j] /= div;
+
+        for (int i = 1; i <= m; i++) {
+            if (i == row) continue;
+            double factor = mat_real[i][col];
+            if (fabs(factor) < EPS) continue;
+            for (int j = col; j <= n + 1; j++) {
+                mat_real[i][j] -= factor * mat_real[row][j];
+            }
+        }
+        row++;
+    }
+
+    for (int i = 1; i <= m; i++) {
+        bool all_zero = true;
+        for (int j = 1; j <= n; j++) {
+            if (fabs(mat_real[i][j]) > EPS) {
+                all_zero = false;
+                break;
+            }
+        }
+        if (all_zero && fabs(mat_real[i][n + 1]) > EPS) return 0;
+    }
+
+    for (int i = 1; i <= n; i++) {
+        ans_real[i] = where_real[i] ? mat_real[where_real[i]][n + 1] : 0.0;
+    }
+    for (int i = 1; i <= n; i++) {
+        if (!where_real[i]) return 2;
+    }
+    return 1;
+}
+
+int gauss_mod_prime(int m, int n, ll mod) {
+    for (int i = 1; i <= n; i++) where_mod[i] = 0;
+
+    int row = 1;
+    for (int col = 1; col <= n && row <= m; col++) {
+        int sel = 0;
+        for (int i = row; i <= m; i++) {
+            if (norm_mod(mat_mod[i][col], mod) != 0) {
+                sel = i;
+                break;
+            }
+        }
+        if (!sel) continue;
+
+        for (int j = col; j <= n + 1; j++) {
+            swap(mat_mod[sel][j], mat_mod[row][j]);
+            mat_mod[row][j] = norm_mod(mat_mod[row][j], mod);
+        }
+
+        where_mod[col] = row;
+        ll inv = pow_mod(mat_mod[row][col], mod - 2, mod);
+        for (int j = col; j <= n + 1; j++) {
+            mat_mod[row][j] = mul_mod(mat_mod[row][j], inv, mod);
+        }
+
+        for (int i = 1; i <= m; i++) {
+            if (i == row) continue;
+            ll factor = norm_mod(mat_mod[i][col], mod);
+            if (factor == 0) continue;
+            for (int j = col; j <= n + 1; j++) {
+                mat_mod[i][j] = norm_mod(mat_mod[i][j] - mul_mod(factor, mat_mod[row][j], mod), mod);
+            }
+        }
+        row++;
+    }
+
+    for (int i = 1; i <= m; i++) {
+        bool all_zero = true;
+        for (int j = 1; j <= n; j++) {
+            if (norm_mod(mat_mod[i][j], mod) != 0) {
+                all_zero = false;
+                break;
+            }
+        }
+        if (all_zero && norm_mod(mat_mod[i][n + 1], mod) != 0) return 0;
+    }
+
+    for (int i = 1; i <= n; i++) {
+        ans_mod[i] = where_mod[i] ? norm_mod(mat_mod[where_mod[i]][n + 1], mod) : 0;
+    }
+    for (int i = 1; i <= n; i++) {
+        if (!where_mod[i]) return 2;
+    }
+    return 1;
+}
+
+bool solve_linear_congruence(ll a, ll b, ll mod, ll &x0, ll &step) {
+    if (mod <= 0) return false;
+    if (mod == 1) {
+        x0 = 0;
+        step = 1;
+        return true;
+    }
+
+    ll aa = norm_mod(a, mod);
+    ll g = gcd(aa, mod);
+    if (b % g != 0) return false;
+
+    ll reduced_mod = mod / g;
+    if (reduced_mod == 1) {
+        x0 = 0;
+        step = 1;
+        return true;
+    }
+
+    ll inv = inv_mod_coprime(aa / g, reduced_mod);
+    if (inv < 0) return false;
+    ll rhs = norm_mod(b / g, reduced_mod);
+    x0 = mul_mod(rhs, inv, reduced_mod);
+    step = reduced_mod;
+    return true;
+}
+
+double poly_eval(int deg, const double c[], double x) {
+    double res = c[deg];
+    for (int i = deg - 1; i >= 0; i--) {
+        res = res * x + c[i];
+    }
+    return res;
+}
+
+double poly_derivative_eval(int deg, const double c[], double x) {
+    if (deg == 0) return 0.0;
+    double res = deg * c[deg];
+    for (int i = deg - 1; i >= 1; i--) {
+        res = res * x + i * c[i];
+    }
+    return res;
+}
+
+bool bisect_poly_root(int deg, const double c[], double l, double r, double &root) {
+    double fl = poly_eval(deg, c, l);
+    double fr = poly_eval(deg, c, r);
+    if (fabs(fl) < EPS) {
+        root = l;
+        return true;
+    }
+    if (fabs(fr) < EPS) {
+        root = r;
+        return true;
+    }
+    if (fl * fr > 0) return false;
+
+    for (int it = 1; it <= 100; it++) {
+        double mid = (l + r) / 2.0;
+        double fm = poly_eval(deg, c, mid);
+        if (fabs(fm) < EPS) {
+            root = mid;
+            return true;
+        }
+        if (fl * fm <= 0) {
+            r = mid;
+            fr = fm;
+        } else {
+            l = mid;
+            fl = fm;
+        }
+        (void)fr;
+    }
+    root = (l + r) / 2.0;
+    return true;
+}
+
+bool newton_poly_root(int deg, const double c[], double start, double &root) {
+    double x = start;
+    for (int it = 1; it <= 60; it++) {
+        double fx = poly_eval(deg, c, x);
+        double dfx = poly_derivative_eval(deg, c, x);
+        if (!isfinite(fx) || !isfinite(dfx) || fabs(dfx) < EPS) return false;
+        double nx = x - fx / dfx;
+        if (!isfinite(nx)) return false;
+        if (fabs(nx - x) < 1e-12) {
+            root = nx;
+            return fabs(poly_eval(deg, c, root)) < 1e-7;
+        }
+        x = nx;
+    }
+    root = x;
+    return fabs(poly_eval(deg, c, root)) < 1e-7;
+}
+
+int solve_quadratic_formula(double a, double b, double c, double roots[]) {
+    if (fabs(a) < EPS) {
+        if (fabs(b) < EPS) {
+            return fabs(c) < EPS ? -1 : 0;
+        }
+        roots[1] = -c / b;
+        return 1;
+    }
+
+    double delta = b * b - 4.0 * a * c;
+    if (delta < -EPS) return 0;
+    if (fabs(delta) <= EPS) {
+        roots[1] = -b / (2.0 * a);
+        return 1;
+    }
+
+    double sqrt_delta = sqrt(max(0.0, delta));
+    double q = -0.5 * (b + (b >= 0 ? sqrt_delta : -sqrt_delta));
+    if (fabs(q) < EPS) {
+        roots[1] = (-b - sqrt_delta) / (2.0 * a);
+        roots[2] = (-b + sqrt_delta) / (2.0 * a);
+    } else {
+        roots[1] = q / a;
+        roots[2] = c / q;
+    }
+    if (roots[1] > roots[2]) swap(roots[1], roots[2]);
+    return 2;
+}
+
+void print_real_solution(const string &tag, int n) {
+    cout << tag << '\n';
+    if (tag == "NO") return;
+    for (int i = 1; i <= n; i++) {
+        if (i > 1) cout << ' ';
+        double x = fabs(ans_real[i]) < 5e-13 ? 0.0 : ans_real[i];
+        cout << x;
+    }
+    cout << '\n';
+}
+
+void print_mod_solution(const string &tag, int n) {
+    cout << tag << '\n';
+    if (tag == "NO") return;
+    for (int i = 1; i <= n; i++) {
+        if (i > 1) cout << ' ';
+        cout << ans_mod[i];
+    }
+    cout << '\n';
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    cout.setf(ios::fixed);
+    cout << setprecision(10);
+
+    string op;
+    if (!(cin >> op)) return 0;
+
+    if (op == "real") {
+        int m, n;
+        cin >> m >> n;
+        for (int i = 1; i <= m; i++) {
+            for (int j = 1; j <= n + 1; j++) cin >> mat_real[i][j];
+        }
+        int status = gauss_real(m, n);
+        if (status == 0) print_real_solution("NO", n);
+        else if (status == 1) print_real_solution("UNIQUE", n);
+        else print_real_solution("MANY", n);
+    } else if (op == "mod") {
+        int m, n;
+        ll mod;
+        cin >> m >> n >> mod;
+        if (mod <= 1) {
+            cout << "BAD_MOD\n";
+            return 0;
+        }
+        for (int i = 1; i <= m; i++) {
+            for (int j = 1; j <= n + 1; j++) {
+                cin >> mat_mod[i][j];
+                mat_mod[i][j] = norm_mod(mat_mod[i][j], mod);
+            }
+        }
+        int status = gauss_mod_prime(m, n, mod);
+        if (status == 0) print_mod_solution("NO", n);
+        else if (status == 1) print_mod_solution("UNIQUE", n);
+        else print_mod_solution("MANY", n);
+    } else if (op == "congruence") {
+        ll a, b, mod, x0, step;
+        cin >> a >> b >> mod;
+        if (!solve_linear_congruence(a, b, mod, x0, step)) {
+            cout << "NO\n";
+        } else {
+            cout << x0 << ' ' << step << '\n';
+        }
+    } else if (op == "eval") {
+        int deg;
+        double x;
+        cin >> deg;
+        for (int i = 0; i <= deg; i++) cin >> coef_poly[i];
+        cin >> x;
+        cout << poly_eval(deg, coef_poly, x) << '\n';
+    } else if (op == "bisect") {
+        int deg;
+        double l, r, root;
+        cin >> deg;
+        for (int i = 0; i <= deg; i++) cin >> coef_poly[i];
+        cin >> l >> r;
+        if (bisect_poly_root(deg, coef_poly, l, r, root)) {
+            cout << root << ' ' << poly_eval(deg, coef_poly, root) << '\n';
+        } else {
+            cout << "NO_BRACKET\n";
+        }
+    } else if (op == "newton") {
+        int deg;
+        double start, root;
+        cin >> deg;
+        for (int i = 0; i <= deg; i++) cin >> coef_poly[i];
+        cin >> start;
+        if (newton_poly_root(deg, coef_poly, start, root)) {
+            cout << root << ' ' << poly_eval(deg, coef_poly, root) << '\n';
+        } else {
+            cout << "FAIL\n";
+        }
+    } else if (op == "quad") {
+        double a, b, c;
+        double roots[3] = {0, 0, 0};
+        cin >> a >> b >> c;
+        int cnt = solve_quadratic_formula(a, b, c, roots);
+        if (cnt < 0) {
+            cout << "INF\n";
+        } else {
+            cout << cnt << '\n';
+            for (int i = 1; i <= cnt; i++) {
+                double x = fabs(roots[i]) < 5e-13 ? 0.0 : roots[i];
+                cout << x << '\n';
+            }
+        }
+    }
+
+    return 0;
+}
+```
+
+调用示例：
+
+```cpp
+// 2x + y = 5
+// x - y = 1
+// 高斯后得到 x=2, y=1。
+int m = 2, n = 2;
+mat_real[1][1] = 2; mat_real[1][2] = 1;  mat_real[1][3] = 5;
+mat_real[2][1] = 1; mat_real[2][2] = -1; mat_real[2][3] = 1;
+int status = gauss_real(m, n);
+if (status == 1) {
+    cout << ans_real[1] << ' ' << ans_real[2] << '\n';
+}
+
+// 多项式 1 - 3x + 2x^2 在 x=3 的值。
+double c[3];
+c[0] = 1;
+c[1] = -3;
+c[2] = 2;
+cout << poly_eval(2, c, 3) << '\n'; // 10
+```
+
+### 二分和牛顿怎么选
+
+二分是“慢但稳”：
+
+- 必须能保证根在区间里。
+- 最常见保证是 `f(l)` 与 `f(r)` 异号。
+- 如果函数单调，也可以二分找 `f(x) >= 0` 的边界。
+
+牛顿是“快但挑初值”：
+
+```text
+x_{k+1} = x_k - f(x_k) / f'(x_k)
+```
+
+- 初值离根太远可能发散。
+- 导数接近 0 时要停。
+- 考场建议：能二分先二分；牛顿只在题目明确或需要加速时用。
+
+### 多项式求根的低心智路线
+
+```text
+一次：a*x+b=0，直接 -b/a。
+二次：a*x^2+b*x+c=0，判别式 delta=b^2-4ac。
+三次及以上：如果只求某个区间一个根，用二分/牛顿；不要临场硬抄三次公式。
+```
+
+如果题目要求“所有实根”：
+
+- 二次公式可以全部输出。
+- 高次多项式需要导数分段、Sturm、或题面给出特殊性质；普通 SIM 模板不强行覆盖。
+- 只给误差要求且区间小，可以按题意扫描小区间，再对异号段二分，但偶重根可能不会异号。
+
+常见坑：
+
+- 高斯消元一定要先判无解，再判多解。
+- 实数高斯主元要选绝对值最大行，别直接拿当前行。
+- `EPS` 不是越小越好；普通 `double` 用 `1e-9` 到 `1e-12`。
+- 多解时自由变量可以先置 0，但题目如果要求参数形式，要单独输出自由变量。
+- 模高斯这里默认 `mod` 是质数；复合模下非零数不一定有逆元。
+- 读入负数系数后要 `((x % mod) + mod) % mod`。
+- `a*x ≡ b (mod m)` 有解条件是 `gcd(a,m) | b`。
+- 二分根要求连续函数；离散答案二分和连续二分不是同一件事。
+- 区间两端同号不代表没有根，例如 `(x-1)^2=0`。
+- 牛顿法要防导数为 0、结果变成 `nan/inf`。
+- Horner 系数顺序必须统一，本模板用低次到高次：`c[0], c[1], ..., c[deg]`。
+- 二次公式里 `delta` 接近 0 时按一个根处理，避免输出两个几乎相同的根。
+- 输出浮点答案记得 `fixed << setprecision(...)`。
+
+暴力/部分分替代：
+
+- 未知数 `n <= 3` 且整数范围小：枚举所有变量检查方程。
+- 实数方程组只要求小数据：可以用 Cramer's rule 解 `2x2/3x3`，但高斯更通用。
+- 模方程变量很少且模数小：直接枚举 `0..mod-1`。
+- 一元方程区间很短且答案是整数：枚举整数点。
+- 多项式次数低：优先一次/二次公式。
+- Newton 不稳时，退回二分。
+
+升级方向：
+
+```text
+整数小范围枚举 -> 实数/模高斯
+单条同余 -> exgcd
+模质数方程组 -> 模高斯
+连续一元方程 -> 二分
+二分太慢且导数好算 -> 牛顿
+二次以内 -> 公式
+高次所有根 -> 导数分段 / Sturm / 专题数学
+```
+
+最小测试样例：
+
+```text
+输入
+real
+2 2
+2 1 5
+1 -1 1
+
+输出
+UNIQUE
+2.0000000000 1.0000000000
+```
+
+补充自测 1：
+
+```text
+输入
+mod
+2 2 1000000007
+2 1 5
+1 -1 1
+
+输出
+UNIQUE
+2 1
+```
+
+补充自测 2：
+
+```text
+输入
+congruence
+14 30 100
+
+输出
+45 50
+```
+
+补充自测 3：
+
+```text
+输入
+eval
+2
+1 -3 2
+3
+
+输出
+10.0000000000
+```
+
+补充自测 4：
+
+```text
+输入
+bisect
+2
+-2 0 1
+0 2
+
+输出示例
+1.4142135624 0.0000000000
+```
+
+补充自测 5：
+
+```text
+输入
+quad
+1 -3 2
+
+输出
+2
+1.0000000000
+2.0000000000
+```
+
+
+---
+
+
 <!-- source: 03_modules/GREEDY-00-routing.md -->
 ## GREEDY-00 贪心路由与短模板
 
@@ -89848,6 +80517,12 @@ Trie 节点编号从 0 开始，0 是根节点。
 | 总模式长度 `<= 2e5` | AC 自动机稳 |
 | 总模式长度 `<= 1e6` | 静态数组 AC 更稳；本模板用 vector，写法更短 |
 
+依赖的标准容器：
+
+- `string`：模式串和文本。
+- `queue<int>`：BFS 构造 fail 指针。
+- `vector`：短模板写法；若总长度很大，可改成静态全局数组。
+
 输入如何整理：
 
 ```cpp
@@ -90204,6 +80879,11 @@ d2[i]：以 i-1 和 i 中间为中心的偶数回文半径。
 | `n <= 1e5` | Manacher 稳 |
 | `n <= 1e6` | Manacher + 静态全局数组，避免反复分配 |
 
+依赖的标准容器：
+
+- `string`：存原串和 1-index 处理串。
+- 静态全局数组 `d1[]/d2[]`：存奇偶回文半径。
+
 输入如何整理：
 
 ```cpp
@@ -90492,6 +81172,3962 @@ YES
 NO
 YES
 YES
+```
+
+
+---
+
+
+<!-- source: 03_modules/SIGN-00-routing.md -->
+## SIGN-00 签到题百科总路由
+
+模块编号：SIGN-00
+
+模块名称：签到题百科总路由：常用数学、计算机常识和生活模拟
+
+标签：签到题、常识题、公式题、模拟、数学、计算机基础、C++17、速查
+
+一句话用途：遇到看起来不像经典算法模板、而是考公式、单位、格式、常识或按规则计算的题时，先用本模块把题面关键词路由到第 11 卷对应页。
+
+题面触发词：
+
+- 图片大小、BMP、RGB、DPI、音频采样、码率、下载时间。
+- 三角形面积、角度弧度、速度时间路程、折扣、税率、复利。
+- 导数、积分、梯度、矩阵、概率、方差、混淆矩阵、F1。
+- bit、byte、ASCII、UTF-8、补码、IP、CIDR、Base64、URL 编码。
+- BMI、GPA、排名、Excel 列号、日期差、星期、时区。
+
+什么时候用：
+
+- 题目数据范围很小，核心是套公式或按规则模拟。
+- 题面含现实对象、文件格式、统计指标、机器学习指标、单位换算。
+- 你感觉“应该很简单”，但公式、边界或单位可能记不准。
+
+不要什么时候用：
+
+- 已经明显是图论、DP、数据结构、字符串匹配等算法题，应回到对应卷。
+- 题目要求完整 JSON/表达式/解释器，优先 `SIM-03/04/05`。
+- 方程求解、数值求根和多项式计算，优先 `SIM-07`。
+
+复杂度：
+
+- 本卷多数公式题是 `O(1)`。
+- 统计、转换、扫描类通常是 `O(n)`。
+- 小矩阵、小数据机器学习模拟通常是 `O(n*d)` 或 `O(n*d*k)`。
+
+依赖的标准容器：
+
+- `string`：格式、编码、进制、列号。
+- `vector<double>` / 静态数组：统计、向量、矩阵、小规模机器学习。
+- `map` / `unordered_map`：频次统计、类别映射。
+- `queue` / `stack`：括号、自动机、简单状态模拟。
+
+输入如何整理：
+
+```text
+1. 先判断是公式题、格式题、统计题还是现实模拟题。
+2. 圈单位：bit/byte、秒/分钟、度/弧度、KB/KiB、bps/B/s。
+3. 圈输出：整数、保留小数、百分比、四舍五入、向下取整。
+4. 圈边界：0、负数、闰年、前导零、空字符串、同分排名。
+```
+
+接口：
+
+```text
+SIGN-00 先路由。
+SIGN-MATH-01 查初等数学和单位。
+SIGN-CALC-01 查微积分和数值方法。
+SIGN-LA-01 查向量、矩阵、线性代数。
+SIGN-PROB-01 查概率统计。
+SIGN-ML-01 查机器学习指标和小模型模拟。
+SIGN-CS-01 查计算机常识、编码、文件和网络。
+SIGN-SIM-01 查生活化模拟题短模板。
+```
+
+常见坑：
+
+- `KB` 可能是 1000 byte，`KiB` 才是 1024 byte，题面不明时按题面样例。
+- 网络带宽常用 `bps`，文件大小常用 `B`，下载时间要除以 8。
+- BMP 每行通常 4 字节对齐，24 位图每像素 3 字节，不是简单 `w*h*3`。
+- 角度三角函数要先转弧度。
+- 保留小数是输出格式，不等于内部先四舍五入。
+- 百分点和百分比不同：从 20% 到 30% 是增加 10 个百分点，也是相对增长 50%。
+
+暴力/部分分替代：
+
+- 公式忘了但数据小：直接模拟或枚举。
+- 日期公式忘了：从较早日期一天一天加，拿小范围分。
+- 统计指标忘了：先输出准确率、计数矩阵等基础量。
+- 几何公式忘了：坐标题可用叉积，三边题可枚举或套海伦公式。
+
+### 1. 题面关键词路由表
+
+| 题面信号 | 先翻模块 | 关键提醒 |
+|---|---|---|
+| 三角形三边、面积、合法性 | `SIGN-MATH-01` | 先判 `a+b>c`，海伦公式用 `double` |
+| 速度、路程、工作效率、折扣、税率 | `SIGN-MATH-01` | 单位统一后再算 |
+| 向上取整、四舍五入、保留小数 | `SIGN-MATH-01` | 整数向上取整用 `(a+b-1)/b` |
+| 导数、梯度、牛顿法、积分近似 | `SIGN-CALC-01` | 迭代要设次数和 `EPS` |
+| 矩阵乘、点积、叉积、投影 | `SIGN-LA-01` | 坐标题优先用向量公式 |
+| 均值、中位数、方差、分位数 | `SIGN-PROB-01` | 样本方差分母是 `n-1` |
+| Bayes、条件概率、期望、Markov | `SIGN-PROB-01` | 概率相乘前确认独立 |
+| accuracy、precision、recall、F1 | `SIGN-ML-01` | 分母为 0 时按题意，常见输出 0 |
+| kNN、k-means、softmax、交叉熵 | `SIGN-ML-01` | 数据小，按公式模拟 |
+| bit/byte、补码、ASCII、UTF-8 | `SIGN-CS-01` | 注意 signed/unsigned |
+| BMP、音频、视频、带宽、IP | `SIGN-CS-01` | 注意行对齐、bps 和 B/s |
+| BMI、GPA、排名、Excel 列号 | `SIGN-SIM-01` | 多数是分支和字符串转换 |
+| 日期差、星期、时区 | `SIGN-SIM-01` / `SIM-06` | 简单题翻 SIGN，复杂历法翻 SIM-06 |
+
+### 2. 超过 160 条覆盖清单
+
+| 编号段 | 内容 | 必须配代码的高频点 |
+|---|---|---|
+| 001-010 | 常数、角度、log、取整、百分比、像素、科学计数法 | 角度弧度、取整、公式代入 |
+| 011-020 | 等差等比、阶乘、极限、泰勒、级数、收敛 | 迭代到收敛 |
+| 021-030 | 导数、偏导、梯度、Hessian、凸性、牛顿法、梯度下降 | 牛顿法、有限差分 |
+| 031-040 | 积分、梯形、Simpson、Euler 法、函数平均值 | 数值积分、ODE Euler |
+| 041-050 | 向量、点积、叉积、范数、投影、旋转、齐次坐标 | 距离、叉积、旋转 |
+| 051-060 | 矩阵乘、行列式、逆、秩、特征值、Markov、最小二乘 | 小矩阵乘、2x2 逆 |
+| 061-070 | 条件概率、Bayes、独立、期望、方差、二项、Poisson | Bayes、二项概率 |
+| 071-080 | z-score、Monte Carlo、Markov 链、分位数、协方差、相关系数 | 相关系数、分位数 |
+| 081-090 | 均值、中位数、众数、方差、IQR、直方图、A/B 测试 | 描述统计 |
+| 091-100 | 特征、归一化、标准化、one-hot、混淆矩阵、F1、AUC | 指标计算 |
+| 101-110 | kNN、距离、朴素贝叶斯、回归、sigmoid、SVM、Gini、k-means | kNN、k-means |
+| 111-120 | ReLU、softmax、交叉熵、全连接、反传、Q-learning | stable softmax |
+| 121-130 | bit、byte、进制、补码、浮点、ASCII、UTF-8、位掩码、checksum | 进制、ASCII、校验 |
+| 131-140 | 文件路径、MIME、CSV、线程、栈堆、缓存、IPv4、CIDR、HTTP、SQL | IPv4/CIDR |
+| 141-150 | 闰年、日期差、时区、Base64、URL 编码、HTML entity、RGB/HSV、图片大小 | BMP/媒体大小 |
+| 151-160 | BMI、单位换算、折扣、GPA、排名、Excel 列号、括号、自动机 | 生活模拟 |
+
+### 3. 考场优先级
+
+1. 先翻 `SIGN-00` 路由。
+2. 如果题面是“真实世界对象”，先查单位和格式。
+3. 如果有公式，先写小函数，不要把公式散落在 `solve()` 里。
+4. 如果输出保留小数，统一 `fixed << setprecision(k)`。
+5. 如果答案可能溢出，先用 `long long`，乘法用 `__int128` 或 `long double`。
+
+
+---
+
+
+<!-- source: 03_modules/SIGN-AI-02-ai-principles-overview.md -->
+## SIGN-AI-02 AI 原理基础百科
+
+模块编号：SIGN-AI-02
+
+模块名称：AI 原理基础：搜索、监督学习、无监督学习、神经网络、强化学习和评估
+
+标签：签到题、AI原理、人工智能、机器学习、神经网络、强化学习、搜索、C++17
+
+一句话用途：AI 专项招生可能把 AI 基础概念出成判断、填空或简单公式模拟，本模块提供从概念到考场实现的最小知识图谱。
+
+题面触发词：人工智能、机器学习、深度学习、监督学习、无监督学习、强化学习、搜索、启发式、模型、训练、推理、评估。
+
+什么时候用：
+
+- 题目问 AI 概念之间的关系。
+- 题目给小模型公式，要求算一次预测或更新。
+- 题目是 AI 背景但实际是搜索、统计、排序、DP 或模拟。
+
+不要什么时候用：
+
+- 需要完整 AI 模板代码时，翻第 10 卷。
+- 需要机器学习指标短代码时，翻 `SIGN-ML-01`。
+- 不要使用任何第三方库或联网模型。
+
+复杂度：
+
+- 概念判断 `O(1)`。
+- 小模型前向 `O(层数 * 矩阵大小)`。
+- 搜索类按状态数和边数。
+
+依赖的标准容器：`vector<double>`、`queue`、`priority_queue`、`map`。
+
+输入如何整理：
+
+```text
+AI 题先拆壳：
+搜索/规划 -> 图搜索。
+分类/回归 -> 公式和统计。
+聚类 -> 距离和迭代。
+神经网络 -> 矩阵乘和激活函数。
+强化学习 -> 状态、动作、奖励、转移。
+```
+
+接口：
+
+```text
+AI 关键词 -> 算法本质 -> 对应模块。
+概念题 -> 查关系表。
+公式题 -> 按题面逐步模拟。
+```
+
+常见坑：
+
+- AI 题不等于要写神经网络，大量题只是搜索、图论、统计。
+- 训练是更新参数，推理是用已有参数预测。
+- 监督学习有标签，无监督学习无标签，强化学习有奖励。
+- 深度学习是机器学习的一类，机器学习是 AI 的一类。
+
+暴力/部分分替代：
+
+- 分类不会写复杂模型时，用最近邻或多数类。
+- 强化学习不会最优策略时，按给定策略模拟。
+- 搜索不会 A* 时，用 BFS/Dijkstra 拿部分分。
+
+### 1. 概念层级
+
+```text
+人工智能 AI
+  -> 搜索与规划
+  -> 机器学习 ML
+       -> 监督学习
+       -> 无监督学习
+       -> 强化学习
+       -> 深度学习 DL
+```
+
+| 概念 | 一句话 |
+|---|---|
+| AI | 让机器表现出智能行为 |
+| ML | 从数据中学习规律 |
+| DL | 多层神经网络为主的 ML |
+| 训练 | 用数据更新参数 |
+| 推理 | 用模型给新输入输出结果 |
+| 泛化 | 对没见过的数据表现好 |
+| 过拟合 | 训练集好、测试集差 |
+| 欠拟合 | 模型太弱，训练也差 |
+
+### 2. 学习范式
+
+| 类型 | 输入 | 输出/目标 | 例子 |
+|---|---|---|---|
+| 监督学习 | `x,y` | 学 `x->y` | 分类、回归 |
+| 无监督学习 | 只有 `x` | 找结构 | 聚类、降维 |
+| 强化学习 | 状态、动作、奖励 | 学策略 | 游戏、路径决策 |
+| 半监督 | 少量标签+大量无标签 | 利用无标签数据 | 文本分类 |
+| 自监督 | 从数据自己构造标签 | 表征学习 | 预测被遮住词 |
+
+### 3. 搜索和规划
+
+| 名称 | 本质 |
+|---|---|
+| BFS | 无权最短路 |
+| Dijkstra | 非负权最短路 |
+| A* | `f=g+h` 的启发式搜索 |
+| Minimax | 对手也最优的博弈搜索 |
+| Alpha-Beta | Minimax 剪枝 |
+| MDP | 马尔可夫决策过程 |
+
+A* 提醒：
+
+- `g` 是已走代价。
+- `h` 是估计剩余代价。
+- 若 `h` 不超过真实剩余代价，A* 更容易保证最优。
+
+### 4. 常见模型
+
+| 模型 | 考场公式 |
+|---|---|
+| kNN | 距离最近的 k 个投票 |
+| 朴素贝叶斯 | `argmax_y P(y)*prod P(x_i|y)` |
+| 线性回归 | `y=w dot x+b` |
+| Logistic | `p=sigmoid(w dot x+b)` |
+| SVM | 最大间隔，hinge loss |
+| 决策树 | 按特征划分，降低不纯度 |
+| k-means | 最近中心分配，重算中心 |
+| 神经网络 | 层层矩阵乘 + 激活 |
+| HMM | 隐状态 + 观测，Viterbi |
+| Q-learning | 基于奖励更新动作价值 |
+
+### 5. 神经网络最小概念
+
+| 概念 | 说明 |
+|---|---|
+| neuron | 加权求和再激活 |
+| weight | 权重参数 |
+| bias | 偏置 |
+| activation | ReLU/sigmoid/tanh |
+| loss | 预测和真实的差距 |
+| gradient | 参数改变对 loss 的影响 |
+| backprop | 链式法则从后往前传梯度 |
+| epoch | 全数据训练一轮 |
+| batch | 一小批样本 |
+| learning rate | 每次更新步长 |
+
+### 6. AI 题型路由
+
+| 题面 | 实际模块 |
+|---|---|
+| 机器人走路、智能体规划 | 图 BFS/Dijkstra/A* |
+| 棋类决策 | 搜索、博弈 DP |
+| 文档相似 | 字符串、词频、向量 |
+| 分类指标 | `SIGN-ML-01` |
+| 小神经网络前向 | 第 10 卷 AI 前向传播 |
+| 反向传播/自动求导 | 第 10 卷 AI-14/15 |
+| SPJ 得分函数 | baseline + 指标模拟 |
+
+
+---
+
+
+<!-- source: 03_modules/SIGN-AI-03-modern-ai-terms.md -->
+## SIGN-AI-03 现代 AI 术语、向量检索与 Transformer 常识
+
+模块编号：SIGN-AI-03
+
+模块名称：现代 AI 术语速查：Token、Embedding、Attention、Transformer、RAG、向量相似度和训练评估
+
+标签：签到题、AI原理、现代AI、Token、Embedding、Attention、Transformer、RAG、向量检索、C++17
+
+一句话用途：题面出现大模型、向量检索、注意力机制、RAG、嵌入向量、训练/推理等现代 AI 词汇时，用本模块把概念翻译成可计算的字符串、向量、矩阵、排序和统计问题。
+
+题面触发词：
+
+- token、词元、分词、词表、embedding、词向量、向量相似度。
+- attention、self-attention、query/key/value、Transformer。
+- RAG、检索增强生成、向量数据库、Top-K 相似文档。
+- 训练集、验证集、测试集、数据泄漏、泛化、过拟合。
+- 参数、超参数、batch、epoch、learning rate、optimizer。
+- 大语言模型、prompt、上下文窗口、幻觉、temperature。
+
+什么时候用：
+
+- 题目要求判断 AI 术语关系，或者给小向量/小矩阵要求算一次结果。
+- 题目给多个文本或向量，要求按相似度排序或选 Top-K。
+- 题目描述 RAG/推荐系统/检索系统，但实质是字符串处理、词频统计、余弦相似度和排序。
+- 题目要求模拟 attention 的一小步计算。
+
+不要什么时候用：
+
+- 如果题面只是普通分类指标，优先翻 `SIGN-ML-01`。
+- 如果题面给完整神经网络和梯度，优先翻第 10 卷的前向传播、反向传播和自动求导。
+- 不要现场实现真实深度学习训练框架；上机题通常只会考小规模公式模拟。
+- 不要使用第三方库、联网模型或在线 API。
+
+复杂度：
+
+- 文本分词和计数：`O(总字符数)` 或 `O(总词数)`。
+- 向量余弦相似度：每对 `O(d)`。
+- Top-K 检索：排序 `O(n log n)`，堆 `O(n log k)`。
+- 简化 attention：`O(n^2*d)`，其中 `n` 是 token 数，`d` 是向量维度。
+
+依赖的标准容器：
+
+- `string`：文本和 token。
+- `map<string,int>` 或 `unordered_map<string,int>`：词频、词表编号。
+- `vector<double>`：向量。
+- `priority_queue`：Top-K。
+- 静态数组：小矩阵计算时更容易 1-index。
+
+输入如何整理：
+
+```text
+1. 文本题：先决定分隔方式，是按空格、字符、还是题面给定规则分词。
+2. 向量题：把每个样本编号为 1..n，每个维度编号为 1..d。
+3. 检索题：对每个候选算 score，再排序或用堆取 Top-K。
+4. Transformer/attention 题：按题面公式逐步算 Q、K、V、score、softmax、加权和。
+```
+
+接口：
+
+```text
+cosine(a,b,d) -> 两个向量余弦相似度。
+softmax(x,n) -> 把分数转成概率。
+top_k_by_score(items,k) -> 取分数最大的 k 项。
+attention_one_query(q,K,V,n,d) -> 单个 query 对 n 个 key/value 做注意力。
+```
+
+常见坑：
+
+- embedding 不是一个词本身，而是词/文本对应的数值向量。
+- 余弦相似度要除以两个向量长度；零向量要特判。
+- softmax 要减去最大值防止 `exp` 溢出。
+- 训练集用于学习参数，验证集用于调超参数，测试集用于最终评估。
+- 数据泄漏是把测试信息提前用于训练或调参，会导致虚高分。
+- temperature 越大输出越随机，越小越确定；但竞赛题一般只要求按题面公式模拟。
+- RAG 本身不神秘：先检索相关资料，再把资料放入生成模型上下文。
+
+暴力/部分分替代：
+
+- 不会复杂 embedding 时，用词频向量、0/1 出现向量或 Jaccard 相似度。
+- Top-K 不会堆时，直接排序。
+- attention 不会矩阵化时，按三层循环逐项算。
+- 题面数据很小，直接用 `map<string,int>` 和 `vector<double>`，常数足够。
+
+### 1. 现代 AI 术语翻译表
+
+| 术语 | 考场理解 |
+|---|---|
+| token | 模型处理的最小单位，可能是字、词、子词或符号 |
+| tokenizer | 把文本切成 token 的规则或算法 |
+| vocabulary | token 到编号的映射表 |
+| embedding | token/文本/图片映射成向量 |
+| context window | 一次能放进模型的 token 上限 |
+| prompt | 输入给模型的指令和上下文 |
+| inference | 用训练好的模型预测 |
+| pretraining | 大规模预训练 |
+| fine-tuning | 在特定数据上继续训练 |
+| alignment | 让模型行为更符合人类偏好 |
+| hallucination | 生成看似合理但不真实的内容 |
+| RAG | 检索资料 + 生成回答 |
+| vector database | 存向量并做相似度搜索 |
+| multimodal | 文本、图像、音频等多模态 |
+
+### 2. 训练、验证、测试
+
+| 集合 | 用途 | 能否调参 |
+|---|---|---|
+| 训练集 | 更新模型参数 | 可以 |
+| 验证集 | 选模型、调超参数、早停 | 可以间接用 |
+| 测试集 | 最终报告性能 | 不应参与调参 |
+
+常见问法：
+
+```text
+模型在训练集 99%，测试集 60% -> 过拟合。
+训练集和测试集都很低 -> 欠拟合或特征不足。
+用测试集挑模型 -> 数据泄漏。
+```
+
+参数和超参数：
+
+| 名称 | 例子 | 谁决定 |
+|---|---|---|
+| 参数 | 权重 `w`、偏置 `b` | 训练学出来 |
+| 超参数 | 学习率、层数、kNN 的 k、正则强度 | 人或搜索过程指定 |
+
+### 3. 向量相似度
+
+常用公式：
+
+```text
+dot(a,b) = sum a[i]*b[i]
+cos(a,b) = dot(a,b) / (sqrt(sum a[i]^2) * sqrt(sum b[i]^2))
+euclidean(a,b) = sqrt(sum (a[i]-b[i])^2)
+manhattan(a,b) = sum abs(a[i]-b[i])
+```
+
+什么时候用：
+
+| 题面 | 常见距离 |
+|---|---|
+| 文本向量相似 | cosine |
+| 几何坐标最近 | Euclidean |
+| 网格/街区距离 | Manhattan |
+| 集合相似 | Jaccard |
+
+余弦相似度模板：
+
+```cpp
+double cosine(double a[], double b[], int d) {
+    double dot = 0, na = 0, nb = 0;
+    for (int i = 1; i <= d; i++) {
+        dot += a[i] * b[i];
+        na += a[i] * a[i];
+        nb += b[i] * b[i];
+    }
+    if (na == 0 || nb == 0) return 0;
+    return dot / sqrt(na) / sqrt(nb);
+}
+```
+
+### 4. Top-K 检索完整代码
+
+输入 `n d k`，再输入查询向量和 `n` 个候选向量，输出余弦相似度最高的 `k` 个编号。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int MAXN = 1005;
+const int MAXD = 105;
+
+int n, d, k;
+double qv[MAXD], vec[MAXN][MAXD];
+
+double cosine_one(int id) {
+    double dot = 0, nq = 0, nv = 0;
+    for (int j = 1; j <= d; j++) {
+        dot += qv[j] * vec[id][j];
+        nq += qv[j] * qv[j];
+        nv += vec[id][j] * vec[id][j];
+    }
+    if (nq == 0 || nv == 0) return 0;
+    return dot / sqrt(nq) / sqrt(nv);
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    cin >> n >> d >> k;
+    for (int j = 1; j <= d; j++) cin >> qv[j];
+    for (int i = 1; i <= n; i++) {
+        for (int j = 1; j <= d; j++) cin >> vec[i][j];
+    }
+
+    vector<pair<double,int>> score;
+    for (int i = 1; i <= n; i++) score.push_back({cosine_one(i), i});
+    sort(score.begin(), score.end(), [](const pair<double,int> &a, const pair<double,int> &b) {
+        if (fabs(a.first - b.first) > 1e-12) return a.first > b.first;
+        return a.second < b.second;
+    });
+
+    for (int i = 0; i < k && i < (int)score.size(); i++) {
+        cout << score[i].second << (i + 1 == k || i + 1 == (int)score.size() ? '\n' : ' ');
+    }
+    return 0;
+}
+```
+
+最小测试：
+
+```text
+输入：
+3 2 2
+1 0
+1 0
+0 1
+1 1
+
+输出：
+1 3
+```
+
+### 5. Softmax
+
+用途：
+
+- 把一组分数转成概率。
+- 多分类最后一层常用。
+- attention 中把相似度分数转成权重。
+
+稳定写法：
+
+```cpp
+void softmax(double x[], double p[], int n) {
+    double mx = x[1];
+    for (int i = 2; i <= n; i++) mx = max(mx, x[i]);
+    double sum = 0;
+    for (int i = 1; i <= n; i++) {
+        p[i] = exp(x[i] - mx);
+        sum += p[i];
+    }
+    for (int i = 1; i <= n; i++) p[i] /= sum;
+}
+```
+
+为什么减最大值：
+
+```text
+exp(1000) 会溢出。
+softmax(x) 与 softmax(x - max(x)) 结果相同。
+```
+
+### 6. Attention 最小模型
+
+给一个 query `q`，多个 key `K[i]` 和 value `V[i]`：
+
+```text
+score[i] = dot(q, K[i]) / sqrt(d)
+weight = softmax(score)
+out = sum_i weight[i] * V[i]
+```
+
+口令：
+
+```text
+Q 问“我要找什么”，K 表示“我有什么标签”，V 表示“真正取走的信息”。
+```
+
+简化模板：
+
+```cpp
+const int MAXN = 105;
+const int MAXD = 105;
+double q[MAXD], key[MAXN][MAXD], val[MAXN][MAXD];
+double score[MAXN], w[MAXN], out[MAXD];
+
+void attention_one_query(int n, int d) {
+    for (int i = 1; i <= n; i++) {
+        score[i] = 0;
+        for (int j = 1; j <= d; j++) score[i] += q[j] * key[i][j];
+        score[i] /= sqrt((double)d);
+    }
+    softmax(score, w, n);
+    for (int j = 1; j <= d; j++) out[j] = 0;
+    for (int i = 1; i <= n; i++) {
+        for (int j = 1; j <= d; j++) out[j] += w[i] * val[i][j];
+    }
+}
+```
+
+### 7. Transformer 常识
+
+| 部件 | 作用 |
+|---|---|
+| token embedding | 把 token 编号变成向量 |
+| positional encoding | 给序列位置信息 |
+| self-attention | 每个 token 看其他 token |
+| multi-head | 多组 attention 并行关注不同关系 |
+| feed-forward | 每个位置独立的小网络 |
+| residual | 残差连接，缓解训练困难 |
+| layer norm | 层归一化，稳定训练 |
+
+考场判断：
+
+```text
+Transformer 的核心不是 RNN，而是 self-attention。
+自注意力可以并行处理序列，但标准注意力有 O(n^2) 序列长度开销。
+```
+
+### 8. RAG 题型拆解
+
+RAG 流程：
+
+```text
+query -> 编码成向量 -> 检索 Top-K 文档 -> 拼接上下文 -> 生成答案
+```
+
+可能考法：
+
+| 考法 | 实际操作 |
+|---|---|
+| 给查询和文档向量，选最相关文档 | 余弦相似度排序 |
+| 给词频，算相似度 | TF/TF-IDF + cosine |
+| 给多个候选答案和证据分 | 按加权得分排序 |
+| 判断 RAG 优点 | 可引入外部资料、缓解知识过期 |
+| 判断 RAG 风险 | 检索错、上下文太长、仍可能幻觉 |
+
+### 9. 生成模型参数常识
+
+| 参数 | 含义 |
+|---|---|
+| temperature | 随机性，越高越发散 |
+| top-k | 只在概率最高的 k 个 token 中采样 |
+| top-p | 只在累计概率达到 p 的候选中采样 |
+| max tokens | 最大生成长度 |
+
+竞赛题如果给出这些参数，通常会把概率表也给出，让你按规则采样或选最大概率。若题目要求确定输出，一般会规定取概率最大或给随机数序列。
+
+### 10. 与 Markov 性质的关系
+
+现代 AI 中经常出现“只看当前状态”的简化：
+
+| 场景 | Markov 化方式 |
+|---|---|
+| 强化学习 | 状态必须包含决策所需信息 |
+| 文本生成 | 下一个 token 由当前上下文决定 |
+| HMM | 隐状态按 Markov 链转移 |
+| 递归/DP | 状态包含未来所需的全部历史摘要 |
+
+如果题目说“下一步还依赖上一步动作/前两个字符/上一轮输出”，就把这些历史并入状态，和 `SIGN-MARKOV-01` 的升维思想一致。
+
+
+---
+
+
+<!-- source: 03_modules/SIGN-ARCH-01-computer-architecture.md -->
+## SIGN-ARCH-01 计算机体系结构基础
+
+模块编号：SIGN-ARCH-01
+
+模块名称：计算机体系结构：CPU、内存层次、缓存、指令、性能和字节序
+
+标签：签到题、计算机体系结构、CPU、内存、缓存、指令、字节序、性能估算、C++17
+
+一句话用途：当题目考 CPU、内存、缓存、字节序、性能单位或程序运行成本时，用本模块建立正确直觉。
+
+题面触发词：CPU、主频、寄存器、Cache、内存、磁盘、流水线、指令、字节序、局部性、寻址、吞吐量。
+
+什么时候用：
+
+- 题目要求判断计算机组成、内存层级或性能瓶颈。
+- 题目问数组行优先、缓存命中、访问模式。
+- 题目涉及大小端、二进制表示、对齐、栈堆。
+
+不要什么时候用：
+
+- 题目要求操作系统调度细节，翻 `SIGN-OSNET-01`。
+- 题目要求 C++ 具体语法，翻第 1 卷。
+- 题目要求硬件电路深入设计，本卷只提供信息学考试层面常识。
+
+复杂度：
+
+- 概念题 `O(1)`。
+- 缓存/访问次数估算按循环次数和数据大小计算。
+
+依赖的标准容器：无固定依赖；代码题通常用数组和 `vector`。
+
+输入如何整理：
+
+```text
+先统一单位：
+Hz = cycles/second。
+1 ns = 1e-9 s。
+1 GB/s 是字节带宽还是 bit 带宽要看题面。
+```
+
+接口：
+
+```text
+性能估算：time = operations / operations_per_second。
+传输估算：time = bytes / bytes_per_second。
+缓存估算：按 cache line 大小和访问连续性判断。
+```
+
+常见坑：
+
+- 主频高不一定程序快，内存访问和算法复杂度也重要。
+- 顺序访问数组通常比随机访问快。
+- 二维数组 C/C++ 按行优先存储，`a[i][j]` 中 `j` 连续变化更友好。
+- 大端/小端影响多字节整数在内存里的字节顺序，不影响数值本身。
+
+暴力/部分分替代：
+
+- 复杂性能题不会精算时，先按数量级比较。
+- 缓存题不会算行数时，先判断顺序访问优于跳跃访问。
+
+### 1. 五大部件和层次结构
+
+| 层次 | 速度 | 容量 | 特点 |
+|---|---|---|---|
+| 寄存器 | 最快 | 最小 | CPU 内部 |
+| L1/L2/L3 Cache | 很快 | 小 | 利用局部性 |
+| RAM | 中等 | 较大 | 断电丢失 |
+| SSD/HDD | 慢 | 很大 | 持久存储 |
+| 网络/外设 | 更慢 | 远端 | 延迟大 |
+
+冯诺依曼结构：
+
+```text
+输入设备 -> 存储器 -> 运算器/控制器 -> 输出设备
+程序和数据都存在存储器中。
+```
+
+### 2. CPU 执行模型
+
+| 名称 | 含义 |
+|---|---|
+| 取指 | 从内存取下一条指令 |
+| 译码 | 判断指令类型和操作数 |
+| 执行 | ALU 运算、访存或跳转 |
+| 寄存器 | CPU 内部高速小存储 |
+| ALU | 算术逻辑单元 |
+| PC | 程序计数器，指向下一条指令 |
+| 指令集 | CPU 能理解的机器指令集合 |
+| 流水线 | 多条指令不同阶段重叠执行 |
+| 分支预测 | 猜测 if/跳转方向减少停顿 |
+
+### 3. 局部性和缓存
+
+| 局部性 | 例子 |
+|---|---|
+| 时间局部性 | 一个变量刚访问过，很快又访问 |
+| 空间局部性 | 访问 `a[i]` 后很可能访问 `a[i+1]` |
+
+二维数组访问：
+
+```cpp
+int a[1000][1000];
+
+// 更符合 C++ 行优先，通常更快。
+for (int i = 0; i < 1000; i++) {
+    for (int j = 0; j < 1000; j++) {
+        a[i][j]++;
+    }
+}
+
+// 跳列访问，缓存不友好。
+for (int j = 0; j < 1000; j++) {
+    for (int i = 0; i < 1000; i++) {
+        a[i][j]++;
+    }
+}
+```
+
+### 4. 字节序
+
+以 `0x12345678` 为例：
+
+| 字节序 | 低地址到高地址 |
+|---|---|
+| 大端 | `12 34 56 78` |
+| 小端 | `78 56 34 12` |
+
+考试提醒：
+
+- 网络字节序通常是大端。
+- x86 常见小端。
+- 普通 C++ 数值运算不需要关心字节序，只有按字节读写二进制时才关心。
+
+### 5. 性能估算
+
+| 单位 | 含义 |
+|---|---|
+| Hz | 每秒周期数 |
+| GHz | `1e9 Hz` |
+| FLOPS | 每秒浮点运算次数 |
+| IOPS | 每秒 I/O 操作次数 |
+| latency | 单次延迟 |
+| throughput | 吞吐量 |
+
+估算口令：
+
+```text
+如果 1 秒约 1e8 简单操作：
+O(n^2), n=1e5 -> 1e10，危险。
+O(n log n), n=1e6 -> 约 2e7，通常可试。
+```
+
+
+---
+
+
+<!-- source: 03_modules/SIGN-ARCH-02-number-memory-representation.md -->
+## SIGN-ARCH-02 数值表示、补码、浮点、字节序与内存
+
+模块编号：SIGN-ARCH-02
+
+模块名称：计算机数值与内存表示：进制、补码、移位、浮点、字节序、内存区和对齐
+
+标签：签到题、计算机组成、数值表示、补码、浮点数、字节序、内存、C++17
+
+一句话用途：当题目要求二进制/十六进制转换、补码范围、移位、浮点误差、大小端、内存大小或 C++ 对象存储常识时，用本模块快速判断。
+
+题面触发词：
+
+- 二进制、八进制、十六进制、原码、反码、补码。
+- 有符号整数范围、溢出、左移、右移、位运算。
+- 浮点数、精度误差、有效数字、IEEE 754。
+- 大端、小端、字节序、内存地址。
+- 栈、堆、全局区、静态区、Cache、对齐。
+
+什么时候用：
+
+- 题目像计算机组成/体系结构常识题。
+- 模拟题中出现二进制协议、文件头、字节解析。
+- 签到题要求估算数组占用、图片/音频/内存大小。
+- 代码阅读题涉及溢出、移位、整数除法、浮点比较。
+
+不要什么时候用：
+
+- 需要严格解析真实 IEEE 754 位字段时，按题面给出的格式处理。
+- 不要依赖 C++ 有符号整数溢出的结果；这是未定义行为。
+- 不要用指针强转读浮点二进制，可能违反别名规则；用 `memcpy`。
+- 需要操作系统 API 时，不要按本模块硬猜，按题面规则。
+
+复杂度：
+
+- 进制转换：`O(位数)`。
+- 位运算判断：`O(1)`。
+- 内存估算：`O(1)` 乘法。
+- 模拟二进制协议：`O(字节数)`。
+
+依赖的标准容器：
+
+- `string`：进制表示。
+- `unsigned int`、`unsigned long long`：位运算更安全。
+- `memcpy`：安全查看浮点/整数字节。
+- `iomanip`：十六进制输出。
+
+输入如何整理：
+
+```text
+1. 先确认单位：bit 还是 byte，KB 是 1024 还是题面指定 1000。
+2. 进制题先把每 4 个二进制位映射成 1 个十六进制位。
+3. 补码题先确认位数，例如 8 bit、16 bit、32 bit。
+4. 内存题统一换算成 byte，再除以 1024 得 KiB/MiB。
+```
+
+接口：
+
+```text
+range_signed(bits) -> 有符号补码范围。
+range_unsigned(bits) -> 无符号范围。
+hex_to_binary / binary_to_hex -> 进制互转。
+safe_float_bits(x) -> 用 memcpy 查看浮点底层字节。
+memory_bytes(count, sizeof_type) -> 数组占用估算。
+```
+
+常见坑：
+
+- `1 KB` 在计算机存储题通常是 `1024 B`，网络速率题常用十进制，要看题面。
+- `1 byte = 8 bit`。
+- 8 bit 有符号补码范围是 `[-128,127]`，不是 `[-127,127]`。
+- `char` 是否有符号与实现有关，竞赛中不要依赖。
+- 有符号整数溢出是未定义行为，无符号整数按模 `2^bits` 回绕。
+- 浮点数不能用 `==` 判断一般小数结果。
+- 小端机器低地址存低字节，大端机器低地址存高字节。
+
+暴力/部分分替代：
+
+- 不确定复杂位运算时，把小位数列出真值表。
+- 进制转换怕错时，先转十进制再转目标进制。
+- 浮点输出不确定时，按题面精度用 `fixed << setprecision(k)`。
+- 二进制协议题先写逐字节解析，别急着用结构体强转。
+
+### 1. 进制速查
+
+| 进制 | 前缀习惯 | 基数 |
+|---|---|---:|
+| 二进制 | `0b` | 2 |
+| 八进制 | `0` | 8 |
+| 十进制 | 无 | 10 |
+| 十六进制 | `0x` | 16 |
+
+四位二进制到十六进制：
+
+| 二进制 | 十六进制 | 二进制 | 十六进制 |
+|---|---|---|---|
+| 0000 | 0 | 1000 | 8 |
+| 0001 | 1 | 1001 | 9 |
+| 0010 | 2 | 1010 | A |
+| 0011 | 3 | 1011 | B |
+| 0100 | 4 | 1100 | C |
+| 0101 | 5 | 1101 | D |
+| 0110 | 6 | 1110 | E |
+| 0111 | 7 | 1111 | F |
+
+口令：
+
+```text
+二进制转十六进制：从右往左每 4 位一组，不足左补 0。
+十六进制转二进制：每个十六进制位展开成 4 位。
+```
+
+### 2. 补码范围
+
+`b` 位整数：
+
+| 类型 | 范围 |
+|---|---|
+| 无符号 | `0 .. 2^b - 1` |
+| 有符号补码 | `-2^(b-1) .. 2^(b-1)-1` |
+
+常见范围：
+
+| 位数 | 无符号 | 有符号补码 |
+|---:|---:|---:|
+| 8 | `0..255` | `-128..127` |
+| 16 | `0..65535` | `-32768..32767` |
+| 32 | `0..4294967295` | `-2147483648..2147483647` |
+| 64 | `0..2^64-1` | `-2^63..2^63-1` |
+
+负数补码口令：
+
+```text
+求 -x 的 b 位补码：x 的二进制按位取反，再加 1。
+```
+
+例子：8 bit 中 `-5`：
+
+```text
+5        = 00000101
+取反     = 11111010
+加 1     = 11111011
+```
+
+### 3. 位运算常识
+
+| 表达式 | 用途 |
+|---|---|
+| `x & 1` | 判断奇偶 |
+| `x >> 1` | 无符号时相当于除以 2 向下取整 |
+| `x << k` | 无符号时乘 `2^k`，注意溢出 |
+| `x & (x-1)` | 去掉最低位的 1 |
+| `x & -x` | 取最低位的 1 对应权值，树状数组常用 |
+| `x | (1<<i)` | 把第 i 位设 1 |
+| `x & ~(1<<i)` | 把第 i 位清 0 |
+| `x ^ (1<<i)` | 翻转第 i 位 |
+
+建议：
+
+```cpp
+unsigned int mask = 1u << i;
+unsigned long long big_mask = 1ull << i;
+```
+
+不要写：
+
+```cpp
+int mask = 1 << 31; // 可能触发符号位问题
+```
+
+### 4. 整数溢出
+
+竞赛结论：
+
+| 类型 | 溢出规则 |
+|---|---|
+| `unsigned int` | 按模 `2^32` 回绕 |
+| `unsigned long long` | 按模 `2^64` 回绕 |
+| `int/long long` | 有符号溢出是未定义行为 |
+
+安全乘法判断：
+
+```cpp
+long long a, b;
+__int128 t = (__int128)a * b;
+```
+
+如果只需要取模：
+
+```cpp
+long long mul_mod(long long a, long long b, long long mod) {
+    return (long long)((__int128)a * b % mod);
+}
+```
+
+### 5. 浮点数常识
+
+| 类型 | 常见大小 | 有效十进制位 |
+|---|---:|---:|
+| `float` | 4 byte | 约 6-7 位 |
+| `double` | 8 byte | 约 15-16 位 |
+| `long double` | 依环境 | 通常更高 |
+
+口令：
+
+```text
+0.1、0.2 这类十进制小数通常不能被二进制浮点精确表示。
+比较浮点用 abs(a-b) < EPS。
+```
+
+```cpp
+const double EPS = 1e-9;
+bool equal_double(double a, double b) {
+    return fabs(a - b) < EPS;
+}
+```
+
+输出：
+
+```cpp
+cout << fixed << setprecision(6) << ans << "\n";
+```
+
+### 6. 字节序
+
+假设整数 `0x12345678` 占 4 字节：
+
+| 字节序 | 低地址到高地址 |
+|---|---|
+| 大端 big-endian | `12 34 56 78` |
+| 小端 little-endian | `78 56 34 12` |
+
+安全查看本机字节序：
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    unsigned int x = 0x12345678u;
+    unsigned char b[4];
+    memcpy(b, &x, 4);
+    for (int i = 0; i < 4; i++) {
+        cout << hex << setw(2) << setfill('0') << (int)b[i] << (i == 3 ? '\n' : ' ');
+    }
+    return 0;
+}
+```
+
+注意：这段代码只是查看本机结果。正式题目若指定大端/小端，要按题面解析，不要依赖本机。
+
+### 7. 内存区常识
+
+| 区域 | 常见内容 |
+|---|---|
+| 栈 stack | 局部变量、函数调用信息 |
+| 堆 heap | `new`、动态分配 |
+| 全局/静态区 | 全局变量、`static` 变量 |
+| 常量区 | 字符串字面量等 |
+
+竞赛建议：
+
+```text
+大数组尽量开全局静态数组，避免栈爆。
+递归太深可能栈爆，图 DFS 深度可能到 2e5 时考虑迭代写法。
+```
+
+例子：
+
+```cpp
+const int MAXN = 200000 + 5;
+int a[MAXN]; // 全局数组，通常比函数内大数组更稳
+```
+
+### 8. 常见类型大小
+
+实际大小由环境决定，但 ACM/C++17 常见为：
+
+| 类型 | 常见大小 |
+|---|---:|
+| `char` | 1 byte |
+| `short` | 2 byte |
+| `int` | 4 byte |
+| `long long` | 8 byte |
+| `float` | 4 byte |
+| `double` | 8 byte |
+| 指针 | 64 位环境 8 byte |
+
+考场安全做法：
+
+```cpp
+cout << sizeof(int) << "\n";
+```
+
+但实际竞赛题通常按标准常见大小给条件，不要求现场探测。
+
+### 9. 内存估算
+
+公式：
+
+```text
+数组字节数 = 元素个数 * 每个元素字节数
+MiB = byte / 1024 / 1024
+```
+
+常见：
+
+| 数组 | 大约内存 |
+|---|---:|
+| `int a[1000000]` | 4 MB |
+| `long long a[1000000]` | 8 MB |
+| `double a[1000000]` | 8 MB |
+| `int dp[5000][5000]` | 约 100 MB |
+| `long long dp[5000][5000]` | 约 200 MB |
+
+### 10. 对齐和结构体大小
+
+结构体可能因为对齐产生填充字节：
+
+```cpp
+struct A {
+    char c;
+    int x;
+};
+```
+
+常见情况下不是 5 byte，而可能是 8 byte，因为 `int` 需要按 4 字节对齐。
+
+优化顺序：
+
+```cpp
+struct B {
+    int x;
+    char c;
+};
+```
+
+但结构体最终大小仍可能向最大对齐倍数补齐。
+
+竞赛口令：
+
+```text
+大规模结构体数组，要关注字段顺序和 sizeof。
+普通算法题不为了省几个字节过度折腾。
+```
+
+### 11. 字符编码长度
+
+| 编码 | 特点 |
+|---|---|
+| ASCII | 0..127，英文字符常见 1 byte |
+| UTF-8 | 英文 1 byte，中文通常 3 byte |
+| UTF-16 | 常见字符 2 byte，部分字符 4 byte |
+
+C++ `string::size()` 返回字节数，不是中文字符数。若题面有中文字符串长度，通常会明确处理规则；没明确时，不要擅自按 UTF-8 字符切。
+
+### 12. BCD 和固定小数
+
+BCD：每个十进制数字用 4 bit 表示。
+
+```text
+十进制 59 的 BCD：0101 1001
+普通二进制 59：00111011
+```
+
+固定小数：
+
+```text
+把金额扩大 100 倍存整数，例如 12.34 元 -> 1234 分。
+```
+
+适用：
+
+- 钱、积分、百分比等需要避免浮点误差的题。
+- 题面给保留两位小数且只做加减乘整数时。
+
+
+---
+
+
+<!-- source: 03_modules/SIGN-CALC-01-calculus-numerical.md -->
+## SIGN-CALC-01 高等数学、微积分与数值方法
+
+模块编号：SIGN-CALC-01
+
+模块名称：微积分、导数积分、梯度和数值近似速查
+
+标签：签到题、高等数学、微积分、导数、积分、梯度、牛顿法、数值积分、C++17
+
+一句话用途：当题目把微积分概念包装成公式模拟题时，用本模块查导数、积分、梯度、数值近似和迭代规则。
+
+题面触发词：导数、偏导、梯度、极值、凸函数、积分、面积、牛顿迭代、梯度下降、差分近似。
+
+什么时候用：
+
+- 题目给出明确函数和公式，要求按若干步迭代。
+- 题目要求用导数判断单调、极值或用数值积分近似面积。
+- 机器学习题里出现损失函数、梯度、学习率。
+
+不要什么时候用：
+
+- 方程求根已经给出一般一元函数，优先 `SIM-07` 的二分/牛顿模板。
+- 题目要求严格符号推导，本卷只提供常见公式和数值模拟。
+- 多变量优化规模大，不要自己写复杂优化器，按题面规则模拟。
+
+复杂度：
+
+- 单点导数公式：`O(1)`。
+- 数值积分：`O(n)`。
+- 迭代法：`O(iter * eval)`。
+
+依赖的标准容器：`vector<double>`、`cmath`、`iomanip`。
+
+输入如何整理：
+
+```text
+把函数参数和迭代次数读清楚。
+若题目给学习率 lr，每次更新通常是 x -= lr * grad。
+若题目给误差 eps，循环要有最大迭代次数防死循环。
+```
+
+接口：
+
+```text
+finite_diff(f,x) -> 中心差分近似导数。
+trapezoid(f,l,r,n) -> 梯形积分。
+simpson(f,l,r,n_even) -> Simpson 积分。
+gradient_descent_step(x,grad,lr) -> 一步梯度下降。
+```
+
+常见坑：
+
+- 三角函数 `sin/cos/tan` 参数是弧度。
+- 数值积分的 `n` 越大越准，但太大可能超时。
+- 牛顿法遇到导数接近 0 要停止或切换二分。
+- 梯度下降是减梯度，梯度上升才是加梯度。
+
+暴力/部分分替代：
+
+- 不会解析求导时，用中心差分近似。
+- 不会积分公式时，用梯形积分。
+- 不会最优解闭式公式时，按题面迭代固定次数。
+
+### 1. 常见导数表
+
+| 函数 | 导数 |
+|---|---|
+| `C` | `0` |
+| `x^n` | `n*x^(n-1)` |
+| `1/x` | `-1/x^2` |
+| `sqrt(x)` | `1/(2*sqrt(x))` |
+| `e^x` | `e^x` |
+| `a^x` | `a^x ln a` |
+| `ln x` | `1/x` |
+| `log_a x` | `1/(x ln a)` |
+| `sin x` | `cos x` |
+| `cos x` | `-sin x` |
+| `tan x` | `1/cos^2 x` |
+| `sigmoid(x)` | `s*(1-s)` |
+
+### 2. 求导规则
+
+```text
+(f+g)' = f' + g'
+(f*g)' = f'g + fg'
+(f/g)' = (f'g - fg') / g^2
+f(g(x))' = f'(g(x)) * g'(x)
+```
+
+偏导和梯度：
+
+```text
+f(x,y)=x^2+3xy+y
+df/dx = 2x+3y
+df/dy = 3x+1
+gradient = (df/dx, df/dy)
+```
+
+### 3. 数值方法短代码
+
+```cpp
+double finite_diff(double (*f)(double), double x) {
+    const double h = 1e-6;
+    return (f(x + h) - f(x - h)) / (2.0 * h);
+}
+
+double trapezoid(double (*f)(double), double l, double r, int n) {
+    double h = (r - l) / n;
+    double ans = (f(l) + f(r)) * 0.5;
+    for (int i = 1; i < n; i++) ans += f(l + h * i);
+    return ans * h;
+}
+
+double simpson(double (*f)(double), double l, double r, int n) {
+    if (n % 2) n++;
+    double h = (r - l) / n;
+    double ans = f(l) + f(r);
+    for (int i = 1; i < n; i++) {
+        ans += f(l + h * i) * (i % 2 ? 4.0 : 2.0);
+    }
+    return ans * h / 3.0;
+}
+```
+
+### 4. 常见原函数和积分
+
+| 函数 | 一个原函数 |
+|---|---|
+| `x^n` | `x^(n+1)/(n+1)`，`n!=-1` |
+| `1/x` | `ln|x|` |
+| `e^x` | `e^x` |
+| `sin x` | `-cos x` |
+| `cos x` | `sin x` |
+| `1/(1+x^2)` | `atan x` |
+
+### 5. 优化和机器学习常见式
+
+| 场景 | 公式 |
+|---|---|
+| 平方损失 | `L=(pred-y)^2` |
+| MSE | `sum((pred-y)^2)/n` |
+| 一维梯度下降 | `x = x - lr * grad(x)` |
+| 线性回归预测 | `pred = w*x + b` |
+| logistic | `sigmoid(z)=1/(1+exp(-z))` |
+| 二分类交叉熵 | `-y ln p - (1-y) ln(1-p)` |
+
+
+---
+
+
+<!-- source: 03_modules/SIGN-COMP-01-complexity-engineering-estimates.md -->
+## SIGN-COMP-01 复杂度、数据规模与工程估算
+
+模块编号：SIGN-COMP-01
+
+模块名称：复杂度、数据规模、内存和工程数量级估算
+
+标签：签到题、复杂度、内存估算、数量级、工程估算、C++17
+
+一句话用途：把数据范围快速翻译成可用复杂度、内存占用和实现风险，防止签到题和简单算法题因为估算错误丢分。
+
+题面触发词：数据范围、内存限制、时间限制、操作次数、数组大小、矩阵大小、提交限制、复杂度。
+
+什么时候用：
+
+- 读题后要判断暴力能不能过。
+- 题目问某算法复杂度或内存占用。
+- 需要估算 `int` 数组、`long long` 数组、二维矩阵占用。
+
+不要什么时候用：
+
+- 精确性能受平台影响，本卷只做数量级判断。
+- 卡常极限题要结合实际编译器和数据分布。
+
+复杂度：估算本身 `O(1)`。
+
+依赖的标准容器：无固定依赖；常见估算对象是数组、vector、图邻接表。
+
+输入如何整理：
+
+```text
+圈 n, m, q, T。
+看是否给多测总和。
+估算状态数 * 每状态转移。
+估算数组元素个数 * 单元素字节。
+```
+
+接口：
+
+```text
+ops <= 1e8 一般可试。
+memory_bytes = count * sizeof(type)。
+graph memory ~ edges * edge_record_size。
+```
+
+常见坑：
+
+- 多测试没有总和时，不能只看单测。
+- `vector<vector<int>>` 有额外开销，静态数组更容易估算。
+- `bool` 数组通常 1 byte，`bitset` 才压位。
+- 递归深度大可能栈爆。
+
+暴力/部分分替代：
+
+- 正解不会时，根据数据范围分档：小数据暴力，大数据合法兜底。
+- 内存不够时改滚动数组、压位、邻接表。
+
+### 1. 时间预算表
+
+| 最大操作量 | 直觉 |
+|---|---|
+| `1e6` | 很安全 |
+| `1e7` | 安全 |
+| `1e8` | C++ 可试 |
+| `1e9` | 通常危险 |
+| `1e10` | 基本不行 |
+
+数据范围：
+
+| 范围 | 可用复杂度 |
+|---|---|
+| `n<=10` | `n!` |
+| `n<=20` | `2^n * n` |
+| `n<=40` | 折半 `2^(n/2)` |
+| `n<=300` | `n^3` |
+| `n<=3000` | `n^2` |
+| `n<=2e5` | `n log n` |
+| `n<=1e6` | `n` 或较小常数 `n log n` |
+
+### 2. 内存估算
+
+| 类型 | 常见字节 |
+|---|---:|
+| `char` | 1 |
+| `bool` | 1 |
+| `int` | 4 |
+| `long long` | 8 |
+| `double` | 8 |
+| `pair<int,int>` | 通常 8 |
+| `pair<long long,int>` | 可能 16 |
+
+估算例子：
+
+```text
+int a[1000000] -> 约 4 MB
+long long dp[5000][5000] -> 5000*5000*8 = 200 MB，危险
+int dist[1000][1000] -> 4 MB
+```
+
+### 3. 图存储估算
+
+邻接表边：
+
+```cpp
+struct Edge {
+    int to;
+    int w;
+    int next;
+}; // 通常 12 byte
+```
+
+无向图要存两条边。
+
+```text
+m=2e5 无向边 -> 4e5 条 Edge -> 约 4.8 MB
+```
+
+### 4. 常见优化方向
+
+| 超时来源 | 优化方向 |
+|---|---|
+| 三重循环 | 前缀和、排序、DP 优化 |
+| 枚举所有对 | 排序 + 双指针 / 哈希 |
+| 重复 DFS | 记忆化 |
+| 区间反复求和 | 前缀和 / 树状数组 / 线段树 |
+| 全源最短路太大 | 多次 Dijkstra 或只求需要点 |
+| 二维 DP 内存大 | 滚动数组 |
+| 字符串反复截取 | 指针/下标，避免复制 |
+
+
+---
+
+
+<!-- source: 03_modules/SIGN-CS-01-computer-common-sense.md -->
+## SIGN-CS-01 计算机常识、编码、文件和网络
+
+模块编号：SIGN-CS-01
+
+模块名称：计算机基础常识：存储单位、编码、文件大小、网络和格式
+
+标签：签到题、计算机常识、bit、byte、ASCII、UTF-8、BMP、音频、视频、网络、C++17
+
+一句话用途：遇到文件大小、图片音视频、进制编码、IP、带宽、ASCII/UTF-8 等题时，用本模块先统一单位再计算。
+
+题面触发词：bit、byte、KB、KiB、BMP、RGB、RGBA、采样率、码率、ASCII、UTF-8、IPv4、CIDR、Base64、URL 编码。
+
+什么时候用：
+
+- 题目问内存、文件大小、传输时间、编码转换。
+- 输入是图片/音频/视频参数，要求估算容量。
+- 题目考二进制、十六进制、补码、校验和。
+
+不要什么时候用：
+
+- 复杂文件格式解析，优先 `SIM-04`。
+- 真正图像算法如卷积、滤波，优先按矩阵/模拟题处理。
+- 网络协议细节题若题面另给规则，以题面为准。
+
+复杂度：
+
+- 单个换算 `O(1)`。
+- 字符串编码扫描 `O(len)`。
+- IP/CIDR 解析 `O(len)`。
+
+依赖的标准容器：`string`、`vector<int>`、`sstream`、`iomanip`。
+
+输入如何整理：
+
+```text
+先看单位：bit 还是 byte，KB 还是 KiB，bps 还是 B/s。
+图片先看每像素位数和行对齐。
+网络传输先把带宽转成 byte/s。
+```
+
+接口：
+
+```text
+bmp_size(width,height,bits) -> BMP 像素数据字节数，按 4 字节行对齐。
+ipv4_to_int(s) -> IPv4 转 32 位整数。
+base_convert(s,base) -> 小范围进制转十进制。
+```
+
+常见坑：
+
+- 1 byte = 8 bit。
+- `Mbps` 是百万 bit/s，不是 MB/s。
+- BMP 24 位图每像素 3 byte，但每行要补到 4 的倍数。
+- UTF-8 中文通常占 3 byte，不等于字符个数。
+- 十六进制字符 `A-F` 可大小写。
+
+暴力/部分分替代：
+
+- 编码规则复杂时，先处理 ASCII 和题面出现的字符。
+- BMP 若忘记行对齐，先交 `w*h*bytes` 可能拿部分分。
+- IP/CIDR 不熟时，小范围直接字符串分段比较。
+
+### 1. 单位表
+
+| 单位 | 含义 |
+|---|---|
+| bit | 位 |
+| byte / B | 字节，`1B=8bit` |
+| KB | 常见十进制 `1000B`，看题面 |
+| KiB | `1024B` |
+| MB | `1000^2B`，看题面 |
+| MiB | `1024^2B` |
+| bps | bit per second |
+| B/s | byte per second |
+
+下载时间：
+
+```text
+seconds = file_bytes * 8 / bandwidth_bps
+```
+
+### 2. BMP 和媒体大小
+
+```cpp
+long long bmp_pixel_bytes(long long width, long long height, int bits_per_pixel) {
+    long long row_bits = width * bits_per_pixel;
+    long long row_bytes = ((row_bits + 31) / 32) * 4; // BMP 行 4 字节对齐
+    return row_bytes * height;
+}
+
+long long audio_bytes(long long seconds, long long sample_rate, int bits_per_sample, int channels) {
+    return seconds * sample_rate * bits_per_sample / 8 * channels;
+}
+
+long long video_bytes_by_bitrate(long long seconds, long long bitrate_bps) {
+    return seconds * bitrate_bps / 8;
+}
+```
+
+常见图像：
+
+| 格式 | 每像素 |
+|---|---|
+| 灰度 8 bit | 1 byte |
+| RGB 24 bit | 3 byte |
+| RGBA 32 bit | 4 byte |
+| BMP 24 bit | 3 byte + 行对齐 |
+
+### 3. 编码和进制
+
+```cpp
+int hex_value(char c) {
+    if ('0' <= c && c <= '9') return c - '0';
+    if ('a' <= c && c <= 'f') return c - 'a' + 10;
+    if ('A' <= c && c <= 'F') return c - 'A' + 10;
+    return -1;
+}
+
+long long to_decimal(const string &s, int base) {
+    long long ans = 0;
+    for (char c : s) ans = ans * base + hex_value(c);
+    return ans;
+}
+
+int utf8_byte_count(unsigned char c) {
+    if ((c & 0x80) == 0) return 1;
+    if ((c & 0xE0) == 0xC0) return 2;
+    if ((c & 0xF0) == 0xE0) return 3;
+    if ((c & 0xF8) == 0xF0) return 4;
+    return 1;
+}
+```
+
+### 4. IPv4 / CIDR
+
+```cpp
+unsigned int ipv4_to_uint(const string &s) {
+    unsigned int ans = 0, cur = 0;
+    for (char c : s) {
+        if (c == '.') {
+            ans = (ans << 8) | cur;
+            cur = 0;
+        } else {
+            cur = cur * 10 + (c - '0');
+        }
+    }
+    return (ans << 8) | cur;
+}
+
+bool same_cidr(const string &a, const string &b, int prefix) {
+    unsigned int x = ipv4_to_uint(a), y = ipv4_to_uint(b);
+    if (prefix == 0) return true;
+    unsigned int mask = 0xffffffffu << (32 - prefix);
+    return (x & mask) == (y & mask);
+}
+```
+
+
+---
+
+
+<!-- source: 03_modules/SIGN-LA-01-linear-algebra.md -->
+## SIGN-LA-01 线性代数、向量与小矩阵
+
+模块编号：SIGN-LA-01
+
+模块名称：线性代数常识：向量、矩阵、距离、投影和小规模变换
+
+标签：签到题、线性代数、向量、矩阵、距离、点积、叉积、Markov、C++17
+
+一句话用途：遇到向量、矩阵、坐标变换、小规模线性代数或机器学习特征计算时，用本模块快速查公式。
+
+题面触发词：向量、矩阵、点积、叉积、距离、投影、旋转、转移矩阵、特征、线性组合。
+
+什么时候用：
+
+- 坐标、几何、机器学习特征题需要向量计算。
+- 题目给小矩阵，要求乘法、转置、行列式、逆矩阵或转移若干步。
+- 题目出现 Markov 转移、状态概率、二维旋转。
+
+不要什么时候用：
+
+- 大规模线性方程组求解，优先 `SIM-07` 高斯消元。
+- 复杂矩阵快速幂，优先 `MATH-05`。
+- 高阶线代证明题，本卷只服务计算和模拟。
+
+复杂度：
+
+- 向量距离/点积：`O(d)`。
+- 矩阵乘法：`O(n*m*k)`。
+- 2x2 行列式/逆：`O(1)`。
+
+依赖的标准容器：`vector<double>`、静态二维数组、`cmath`、`iomanip`。
+
+输入如何整理：
+
+```text
+矩阵 A 的尺寸是 rows x cols。
+A*B 能乘的条件：A.cols == B.rows。
+向量维度必须一致。
+```
+
+接口：
+
+```text
+dot(a,b,d) -> 点积。
+norm2(a,d) -> 平方范数。
+dist2(a,b,d) -> 平方欧氏距离。
+cross2(ax,ay,bx,by) -> 二维叉积。
+mat_mul(A,B) -> 小矩阵乘法。
+```
+
+常见坑：
+
+- 矩阵乘法不满足交换律，`A*B` 和 `B*A` 通常不同。
+- 欧氏距离比较大小时可比较平方距离，少开根。
+- cosine 相似度分母为 0 要特判。
+- 旋转角必须是弧度。
+
+暴力/部分分替代：
+
+- 小矩阵直接三重循环。
+- 多步转移次数很小直接重复乘；次数很大再用矩阵快速幂。
+- 维度很低时直接展开公式。
+
+### 1. 向量公式
+
+| 名称 | 公式 |
+|---|---|
+| 点积 | `a dot b = sum ai*bi` |
+| 范数 | `||a|| = sqrt(a dot a)` |
+| 欧氏距离 | `sqrt(sum((ai-bi)^2))` |
+| 曼哈顿距离 | `sum(abs(ai-bi))` |
+| cosine 相似度 | `(a dot b)/(||a||*||b||)` |
+| 二维叉积 | `ax*by - ay*bx` |
+| 三角形有向面积 | `cross(B-A, C-A)/2` |
+| 投影长度 | `(a dot b)/||b||` |
+
+```cpp
+double dot_product(const double a[], const double b[], int d) {
+    double s = 0;
+    for (int i = 1; i <= d; i++) s += a[i] * b[i];
+    return s;
+}
+
+double dist2(const double a[], const double b[], int d) {
+    double s = 0;
+    for (int i = 1; i <= d; i++) {
+        double t = a[i] - b[i];
+        s += t * t;
+    }
+    return s;
+}
+
+double cross2(double ax, double ay, double bx, double by) {
+    return ax * by - ay * bx;
+}
+```
+
+### 2. 小矩阵公式
+
+| 名称 | 公式 |
+|---|---|
+| 2x2 行列式 | `ad-bc` |
+| 2x2 逆矩阵 | `1/det * [[d,-b],[-c,a]]` |
+| trace | 主对角线和 |
+| 对称矩阵 | `A[i][j] == A[j][i]` |
+| 单位矩阵 | 对角线 1，其余 0 |
+| 转置 | `B[j][i]=A[i][j]` |
+
+```cpp
+const int MAXD = 55;
+double A[MAXD][MAXD], B[MAXD][MAXD], C[MAXD][MAXD];
+
+void mat_mul(int n, int m, int k) {
+    for (int i = 1; i <= n; i++) {
+        for (int j = 1; j <= k; j++) {
+            C[i][j] = 0;
+            for (int t = 1; t <= m; t++) {
+                C[i][j] += A[i][t] * B[t][j];
+            }
+        }
+    }
+}
+```
+
+### 3. 机器学习里常见线代
+
+| 场景 | 计算 |
+|---|---|
+| 线性模型打分 | `score = w dot x + b` |
+| 全连接层 | `y[j] = b[j] + sum_i x[i]*W[i][j]` |
+| kNN 距离 | 常用欧氏距离或曼哈顿距离 |
+| 文本相似度 | cosine 或 Jaccard |
+| Markov 一步转移 | `next = cur * P` |
+| PCA 低维投影 | `z = x dot direction` |
+
+
+---
+
+
+<!-- source: 03_modules/SIGN-LOGIC-01-discrete-logic-automata.md -->
+## SIGN-LOGIC-01 离散逻辑、布尔代数与自动机
+
+模块编号：SIGN-LOGIC-01
+
+模块名称：离散数学常识：逻辑、集合、关系、自动机和形式语言
+
+标签：签到题、离散数学、逻辑、集合、关系、自动机、正则、状态机、C++17
+
+一句话用途：遇到命题逻辑、集合关系、布尔表达式、状态机、自动机和形式语言概念题时，用本模块快速查规则。
+
+题面触发词：命题、真值表、与或非、蕴含、集合、关系、等价关系、偏序、DFA、NFA、正则表达式。
+
+什么时候用：
+
+- 题目要求判断逻辑表达式真假或等价。
+- 题目给状态转移表，要求模拟自动机。
+- 题目考集合、关系、函数、映射的基础定义。
+
+不要什么时候用：
+
+- 复杂图论题回到图论卷。
+- 正则匹配完整实现可用 DP/自动机，按题面规模选择。
+- 编译器/解释器题优先 `SIM-05`。
+
+复杂度：
+
+- 真值表 `k` 个变量是 `O(2^k)`。
+- DFA 模拟 `O(len)`。
+- 集合操作按排序/哈希实现通常 `O(n log n)` 或均摊 `O(n)`。
+
+依赖的标准容器：`vector`、`set`、`map`、`string`。
+
+输入如何整理：
+
+```text
+逻辑题先列变量。
+自动机题先记录起始状态、接受状态和转移表。
+集合题先去重。
+```
+
+接口：
+
+```text
+truth table -> 枚举 mask。
+DFA simulate -> state = trans[state][char]。
+set relation -> 检查自反、对称、传递。
+```
+
+常见坑：
+
+- `A -> B` 只有 A 真 B 假时为假。
+- 德摩根：`not(A and B)=not A or not B`。
+- 空集是任意集合的子集。
+- DFA 每个状态每个字符只有一个转移；NFA 可以有多个。
+
+暴力/部分分替代：
+
+- 变量少时真值表枚举最稳。
+- 自动机状态少时直接二维表模拟。
+- 关系性质不会抽象时，三重循环检查传递性。
+
+### 1. 逻辑公式
+
+| 公式 | 等价 |
+|---|---|
+| `A -> B` | `!A or B` |
+| `A <-> B` | `(A and B) or (!A and !B)` |
+| `!(A and B)` | `!A or !B` |
+| `!(A or B)` | `!A and !B` |
+| 双重否定 | `!!A = A` |
+| 分配律 | `A and (B or C) = (A and B) or (A and C)` |
+
+真值表口令：
+
+```cpp
+for (int mask = 0; mask < (1 << k); mask++) {
+    bool a = mask & 1;
+    bool b = mask & 2;
+    bool implication = (!a) || b;
+}
+```
+
+### 2. 集合和关系
+
+| 概念 | 定义 |
+|---|---|
+| 子集 | `A` 中每个元素都在 `B` 中 |
+| 真子集 | 子集且不相等 |
+| 交集 | 同时属于 |
+| 并集 | 至少属于一个 |
+| 差集 | 属于 A 不属于 B |
+| 自反 | 对所有 `a`，`aRa` |
+| 对称 | `aRb` 则 `bRa` |
+| 反对称 | `aRb` 且 `bRa` 则 `a=b` |
+| 传递 | `aRb` 且 `bRc` 则 `aRc` |
+| 等价关系 | 自反、对称、传递 |
+| 偏序 | 自反、反对称、传递 |
+
+### 3. 自动机
+
+DFA 五元组：
+
+```text
+状态集合 Q
+字母表 Sigma
+转移函数 delta
+起始状态 start
+接受状态集合 F
+```
+
+模拟：
+
+```cpp
+int simulate_dfa(const vector<array<int, 26>> &go, int start, const string &s) {
+    int state = start;
+    for (char c : s) state = go[state][c - 'a'];
+    return state;
+}
+```
+
+### 4. 正则表达式常识
+
+| 符号 | 含义 |
+|---|---|
+| `a` | 字符 a |
+| `.` | 任意一个字符，按题面 |
+| `*` | 重复 0 次或多次 |
+| `+` | 重复 1 次或多次 |
+| `?` | 0 次或 1 次 |
+| `|` | 或 |
+| `()` | 分组 |
+
+
+---
+
+
+<!-- source: 03_modules/SIGN-MARKOV-01-markov-property.md -->
+## SIGN-MARKOV-01 马尔可夫性质、Markov 链与状态转移
+
+模块编号：SIGN-MARKOV-01
+
+模块名称：马尔可夫性质：Markov 链、转移矩阵、平稳分布、吸收状态、HMM 和 MDP
+
+标签：签到题、概率、马尔可夫性质、Markov链、转移矩阵、平稳分布、吸收链、HMM、MDP、C++17
+
+一句话用途：当题目说“下一步只和当前状态有关”、给状态转移概率矩阵、要求若干步后的分布或长期比例时，用本模块按 Markov 链处理。
+
+题面触发词：
+
+- 马尔可夫性质、Markov property、无后效性、记忆无关。
+- 状态转移矩阵、一步转移概率、`P[i][j]`。
+- 给初始分布，求第 `k` 步在各状态的概率。
+- 长期稳定概率、平稳分布、steady state。
+- 吸收状态、最终到达某状态的概率。
+- HMM、Viterbi、MDP、强化学习。
+
+什么时候用：
+
+- 系统未来只由当前状态决定，不需要知道更早历史。
+- 题目给的是概率状态机，而不是确定性自动机。
+- 需要重复乘转移矩阵或迭代分布。
+- AI/RL 题中状态、动作、转移、奖励明确给出。
+
+不要什么时候用：
+
+- 下一步依赖最近两步或更长历史时，原状态不满足 Markov 性质；要把“上一状态/上一步动作”等历史信息并入状态。
+- 转移概率随时间改变时，不是齐次 Markov 链；要按每一步自己的矩阵乘。
+- 状态数很大且步数很大时，不能直接 `O(k*n^2)`，考虑矩阵快速幂或稀疏图。
+- 题目要求最短路/最优策略而非概率演化时，可能是图论或 DP。
+
+复杂度：
+
+- 分布迭代 `k` 步：`O(k*n^2)`。
+- 转移矩阵快速幂：`O(n^3 log k)`。
+- 稀疏转移每步：`O(k*m)`。
+- 平稳分布迭代：`O(iter*n^2)`。
+- 吸收概率可用方程组，或按迭代近似。
+
+数据范围参考：
+
+- `n <= 50` 且 `k` 很大：矩阵快速幂。
+- `n <= 1000` 但边很少：稀疏转移迭代。
+- 只问几十步：直接分布迭代最简单。
+- 要长期比例且链收敛：迭代到稳定或解线性方程。
+
+依赖的标准容器：
+
+- 静态数组 `double P[MAXN][MAXN]`：转移矩阵，1-index。
+- 静态数组 `double dist[MAXN]`：当前分布。
+- `vector<pair<int,double>> g[MAXN]`：稀疏转移。
+- `iomanip`：概率输出。
+
+输入如何整理：
+
+```text
+1. 状态编号统一 1..n。
+2. P[i][j] 表示从状态 i 到状态 j 的概率。
+3. 每行概率和通常为 1；若题面允许误差，用 EPS 检查。
+4. 初始分布 dist[i] 也应和为 1。
+```
+
+接口：
+
+```text
+iterate_distribution(n,k,dist,P) -> 直接做 k 步分布。
+matrix_power_distribution(n,k,dist,P) -> 矩阵快速幂做 k 步分布。
+stationary_iter(n,dist,P,iter) -> 迭代近似平稳分布。
+is_markov_state_enough() -> 若未来还依赖历史，升维状态。
+```
+
+常见坑：
+
+- 把 `P[i][j]` 当成 `P[j][i]`，行列方向反了。
+- 初始分布不是概率分布，和不为 1。
+- 每行转移概率和不为 1，却没有按题面解释成权重。
+- 题目实际依赖上一步动作或上一个状态，却只把当前位置当状态。
+- 矩阵快速幂中行向量/列向量约定混乱。
+- 平稳分布不一定存在唯一极限，周期链可能震荡。
+- 浮点输出不要用 `==` 比较概率。
+
+暴力/部分分替代：
+
+- `k` 小时直接一步一步模拟分布。
+- 状态数小但历史依赖时，把最近历史并入状态，例如 `(当前点, 上一步方向)`。
+- 不会平稳分布精确解时，迭代 1000 到 10000 轮拿近似分。
+- 吸收概率不会列方程时，迭代很多步近似最终分布。
+- HMM 不会 Viterbi 时，小规模枚举隐状态序列拿部分分。
+
+### 1. Markov 性质到底是什么
+
+核心公式：
+
+```text
+P(X_{t+1}=j | X_t=i, X_{t-1}, ..., X_0) = P(X_{t+1}=j | X_t=i)
+```
+
+中文口令：
+
+```text
+未来只看现在，不看过去。
+```
+
+这和 DP 的“无后效性”很像：
+
+| DP 语境 | Markov 语境 |
+|---|---|
+| 状态包含决定未来的全部信息 | 当前状态包含下一步概率所需全部信息 |
+| 历史不影响后续转移 | 更早历史不影响下一步概率 |
+| 有后效性就升维 | 不满足 Markov 就把关键历史并入状态 |
+
+例子：
+
+```text
+不能连续向下走两步：
+只用位置 (i,j) 不够，因为下一步能否向下取决于上一步方向。
+升维为 (i,j,last_dir) 后，就恢复 Markov/无后效性。
+```
+
+### 2. 转移矩阵
+
+若有 `n` 个状态，`P[i][j]` 表示从 `i` 到 `j` 的概率。
+
+```text
+dist_next[j] = sum_i dist[i] * P[i][j]
+```
+
+矩阵写法：
+
+```text
+dist_after_k = dist_initial * P^k
+```
+
+注意：
+
+- 本卷默认行向量分布，所以是 `dist * P`。
+- 有些教材用列向量，会写 `P * dist`，不要混淆。
+- 竞赛题通常直接给 `P[i][j]`，按题意。
+
+### 3. 直接迭代模板
+
+适合 `k` 不大，或者 `n` 较大但转移稀疏。
+
+```cpp
+const int MAXN = 105;
+double P[MAXN][MAXN], distv[MAXN], ndist[MAXN];
+
+void iterate_distribution(int n, long long k) {
+    for (long long step = 1; step <= k; step++) {
+        for (int j = 1; j <= n; j++) ndist[j] = 0;
+        for (int i = 1; i <= n; i++) {
+            for (int j = 1; j <= n; j++) {
+                ndist[j] += distv[i] * P[i][j];
+            }
+        }
+        for (int j = 1; j <= n; j++) distv[j] = ndist[j];
+    }
+}
+```
+
+### 4. 矩阵快速幂模板
+
+适合 `k` 很大、`n` 不大。
+
+```cpp
+const int MAXN = 105;
+int N;
+double A[MAXN][MAXN], R[MAXN][MAXN], T[MAXN][MAXN];
+
+void mat_mul(double X[][MAXN], double Y[][MAXN], double Z[][MAXN]) {
+    static double C[MAXN][MAXN];
+    for (int i = 1; i <= N; i++) {
+        for (int j = 1; j <= N; j++) {
+            C[i][j] = 0;
+            for (int k = 1; k <= N; k++) C[i][j] += X[i][k] * Y[k][j];
+        }
+    }
+    for (int i = 1; i <= N; i++) {
+        for (int j = 1; j <= N; j++) Z[i][j] = C[i][j];
+    }
+}
+
+void mat_pow(long long e) {
+    for (int i = 1; i <= N; i++) {
+        for (int j = 1; j <= N; j++) R[i][j] = (i == j);
+    }
+    while (e > 0) {
+        if (e & 1) mat_mul(R, A, R);
+        mat_mul(A, A, A);
+        e >>= 1;
+    }
+}
+```
+
+得到 `P^k` 后：
+
+```cpp
+for (int j = 1; j <= n; j++) {
+    ans[j] = 0;
+    for (int i = 1; i <= n; i++) ans[j] += dist[i] * R[i][j];
+}
+```
+
+### 5. 平稳分布
+
+平稳分布 `pi` 满足：
+
+```text
+pi = pi * P
+sum pi[i] = 1
+```
+
+直觉：
+
+- 如果链满足一定连通/非周期条件，反复转移会趋向一个稳定分布。
+- 题目若只要求近似，直接迭代很多轮通常够用。
+
+```cpp
+void stationary_iter(int n, int iter) {
+    for (int i = 1; i <= n; i++) distv[i] = 1.0 / n;
+    for (int step = 1; step <= iter; step++) {
+        for (int j = 1; j <= n; j++) ndist[j] = 0;
+        for (int i = 1; i <= n; i++) {
+            for (int j = 1; j <= n; j++) ndist[j] += distv[i] * P[i][j];
+        }
+        for (int j = 1; j <= n; j++) distv[j] = ndist[j];
+    }
+}
+```
+
+### 6. 吸收状态
+
+吸收状态：
+
+```text
+P[x][x] = 1，且不会离开 x。
+```
+
+常见问题：
+
+- 最终被哪个吸收状态吸收的概率。
+- 到吸收状态的期望步数。
+
+处理方式：
+
+| 问题 | 方法 |
+|---|---|
+| 小数据近似 | 迭代很多步 |
+| 精确吸收概率 | 列线性方程组，用 `SIM-07` 高斯 |
+| 期望步数 | `E[u] = 1 + sum P[u][v]E[v]`，吸收态 `E=0` |
+
+### 7. HMM、MDP、强化学习的关系
+
+| 名称 | 核心 |
+|---|---|
+| Markov 链 | 只有状态转移 |
+| HMM | 隐状态 Markov，另有观测概率 |
+| MDP | 状态 + 动作 + 转移概率 + 奖励 |
+| Q-learning | 学 `Q[state][action]` |
+| Viterbi | HMM 中求最可能隐状态路径 |
+
+HMM 的两个概率：
+
+```text
+transition: P(hidden_t -> hidden_{t+1})
+emission: P(observation_t | hidden_t)
+```
+
+MDP 的 Markov 性质：
+
+```text
+下一状态和奖励只依赖当前状态与当前动作，不依赖更早历史。
+```
+
+### 8. 完整可运行模板
+
+支持三种模式：
+
+- `step`：直接迭代 `k` 步。
+- `power`：矩阵快速幂求 `k` 步。
+- `stationary`：迭代近似平稳分布。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int MAXN = 105;
+int N;
+double P[MAXN][MAXN], A[MAXN][MAXN], R[MAXN][MAXN];
+double distv[MAXN], ansv[MAXN], ndist[MAXN];
+
+void mat_mul(double X[][MAXN], double Y[][MAXN], double Z[][MAXN]) {
+    static double C[MAXN][MAXN];
+    for (int i = 1; i <= N; i++) {
+        for (int j = 1; j <= N; j++) {
+            C[i][j] = 0;
+            for (int k = 1; k <= N; k++) C[i][j] += X[i][k] * Y[k][j];
+        }
+    }
+    for (int i = 1; i <= N; i++) {
+        for (int j = 1; j <= N; j++) Z[i][j] = C[i][j];
+    }
+}
+
+void mat_pow(long long e) {
+    for (int i = 1; i <= N; i++) {
+        for (int j = 1; j <= N; j++) R[i][j] = (i == j ? 1.0 : 0.0);
+    }
+    while (e > 0) {
+        if (e & 1) mat_mul(R, A, R);
+        mat_mul(A, A, A);
+        e >>= 1;
+    }
+}
+
+void print_dist(double d[]) {
+    cout << fixed << setprecision(6);
+    for (int i = 1; i <= N; i++) {
+        if (i > 1) cout << ' ';
+        cout << d[i];
+    }
+    cout << "\n";
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    string mode;
+    long long k;
+    cin >> mode >> N >> k;
+    for (int i = 1; i <= N; i++) cin >> distv[i];
+    for (int i = 1; i <= N; i++) {
+        for (int j = 1; j <= N; j++) {
+            cin >> P[i][j];
+            A[i][j] = P[i][j];
+        }
+    }
+
+    if (mode == "step") {
+        for (long long step = 1; step <= k; step++) {
+            for (int j = 1; j <= N; j++) ndist[j] = 0;
+            for (int i = 1; i <= N; i++) {
+                for (int j = 1; j <= N; j++) ndist[j] += distv[i] * P[i][j];
+            }
+            for (int j = 1; j <= N; j++) distv[j] = ndist[j];
+        }
+        print_dist(distv);
+    } else if (mode == "power") {
+        mat_pow(k);
+        for (int j = 1; j <= N; j++) {
+            ansv[j] = 0;
+            for (int i = 1; i <= N; i++) ansv[j] += distv[i] * R[i][j];
+        }
+        print_dist(ansv);
+    } else if (mode == "stationary") {
+        for (int i = 1; i <= N; i++) distv[i] = 1.0 / N;
+        for (long long step = 1; step <= k; step++) {
+            for (int j = 1; j <= N; j++) ndist[j] = 0;
+            for (int i = 1; i <= N; i++) {
+                for (int j = 1; j <= N; j++) ndist[j] += distv[i] * P[i][j];
+            }
+            for (int j = 1; j <= N; j++) distv[j] = ndist[j];
+        }
+        print_dist(distv);
+    }
+    return 0;
+}
+```
+
+### 9. 最小测试样例
+
+```text
+step 2 2
+1 0
+0.5 0.5
+0.2 0.8
+=> 0.350000 0.650000
+
+power 2 10
+1 0
+0.5 0.5
+0.2 0.8
+=> 0.285735 0.714265
+
+stationary 2 100
+0 0
+0.5 0.5
+0.2 0.8
+=> 0.285714 0.714286
+```
+
+### 10. 考场判断清单
+
+- 当前状态是否包含影响未来的全部信息？
+- 转移概率每行是否和为 1？
+- 分布是行向量还是列向量？
+- `k` 大不大？大则考虑矩阵快速幂。
+- 是否有吸收态？
+- 是否要求最优策略？若是 MDP/强化学习，不只是普通 Markov 链。
+
+
+---
+
+
+<!-- source: 03_modules/SIGN-MATH-01-elementary-formulas.md -->
+## SIGN-MATH-01 初等数学、单位与几何公式
+
+模块编号：SIGN-MATH-01
+
+模块名称：初等数学、单位换算、常见几何和公式签到题
+
+标签：签到题、初等数学、几何、单位换算、数列、取整、百分比、C++17
+
+一句话用途：把最容易出成签到题的数学公式集中放在一页，避免现场忘记三角形面积、取整、增长率、单位换算等细节。
+
+题面触发词：三角形面积、圆、扇形、速度、折扣、利润率、百分比、等差数列、等比数列、四舍五入、单位换算。
+
+什么时候用：
+
+- 题目核心是公式计算或简单分类讨论。
+- 数据范围很小，但单位和输出格式容易错。
+- 题目问面积、体积、增长率、折扣、利息、页码、植树、鸡兔同笼等。
+
+不要什么时候用：
+
+- 坐标几何有大量点线关系，优先 `MATHREF-06` 或几何模块。
+- 方程组、数值求根、矩阵解法，优先 `SIM-07`。
+- 组合计数很复杂，优先第 8 卷数学参考。
+
+复杂度：大多 `O(1)`；排序统计类 `O(n log n)`；逐项模拟类 `O(n)`。
+
+依赖的标准容器：`vector<double>`、`vector<long long>`、`string`、`algorithm`、`iomanip`。
+
+输入如何整理：
+
+```text
+先统一单位，再套公式。
+长度、面积、体积不要混用单位。
+百分数输入如果是 20，先确认是 20% 还是 20 倍。
+```
+
+接口：
+
+```text
+ceil_div(a,b) -> 正整数向上取整。
+triangle_area_heron(a,b,c) -> 三边三角形面积。
+deg_to_rad(x) / rad_to_deg(x) -> 角度弧度转换。
+arith_sum(a1,d,n) / geom_sum(a1,r,n) -> 数列求和。
+```
+
+常见坑：
+
+- `pow(10, k)` 返回浮点，不适合精确整数幂，整数幂自己循环或快速幂。
+- `round()` 返回最接近整数，但输出保留小数应用 `fixed << setprecision(k)`。
+- 海伦公式中 `s*(s-a)*(s-b)*(s-c)` 可能因误差略为负，开根前可 `max(0.0, x)`。
+- `a/b` 如果都是整数会整除，需要写 `1.0*a/b`。
+
+暴力/部分分替代：
+
+- 几何公式忘记时，坐标多边形面积可用三角剖分或叉积。
+- 数列公式忘记时，`n` 小可循环累加。
+- 复杂分段计费不会化简时，按题面逐段模拟。
+
+### 1. 常用公式清单
+
+| 题型 | 公式/规则 | 坑 |
+|---|---|---|
+| 正整数向上取整 | `(a+b-1)/b` | 只适用于 `a,b>0` |
+| 负数取模转非负 | `(x%mod+mod)%mod` | C++ 负数 `%` 仍可能负 |
+| 百分比增长 | `(new-old)/old*100%` | `old=0` 要特判 |
+| 利润率 | `profit / cost` | 题面可能用售价作分母 |
+| 折扣 | `price * discount / 10` 或 `price * rate` | 九折是 `0.9` |
+| 单利 | `P*(1+r*t)` | `r` 是每期利率 |
+| 复利 | `P*pow(1+r,t)` | 注意年/月单位 |
+| 等差求和 | `n*(a1+an)/2` | 乘法用 `long long` |
+| 等比求和 | `a1*(1-r^n)/(1-r)` | `r=1` 特判 |
+| 平方和 | `n(n+1)(2n+1)/6` | 防溢出 |
+| 立方和 | `[n(n+1)/2]^2` | 防溢出 |
+| 圆面积 | `pi*r*r` | 角度无关 |
+| 圆周长 | `2*pi*r` | 直径是 `2r` |
+| 扇形面积 | `theta/360*pi*r*r` | `theta` 若是弧度则 `0.5*r*r*theta` |
+| 弧长 | `theta/360*2*pi*r` | 弧度时 `r*theta` |
+| 三角形合法 | `a+b>c && a+c>b && b+c>a` | 先排序更简单 |
+| 海伦公式 | `sqrt(s(s-a)(s-b)(s-c))` | `s=(a+b+c)/2` |
+| 梯形面积 | `(上底+下底)*高/2` | 类型转 `double` |
+| 球体体积 | `4/3*pi*r^3` | 写 `4.0/3` |
+| 圆柱体积 | `pi*r*r*h` | 单位一致 |
+| 圆锥体积 | `pi*r*r*h/3` | 写 `/3.0` |
+
+### 2. 高频小函数
+
+```cpp
+using ll = long long;
+const double PI = acos(-1.0);
+
+ll ceil_div_pos(ll a, ll b) {
+    return (a + b - 1) / b;
+}
+
+double deg_to_rad(double deg) {
+    return deg * PI / 180.0;
+}
+
+double rad_to_deg(double rad) {
+    return rad * 180.0 / PI;
+}
+
+bool triangle_ok(double a, double b, double c) {
+    return a + b > c && a + c > b && b + c > a;
+}
+
+double triangle_area_heron(double a, double b, double c) {
+    if (!triangle_ok(a, b, c)) return -1.0;
+    double s = (a + b + c) / 2.0;
+    return sqrt(max(0.0, s * (s - a) * (s - b) * (s - c)));
+}
+
+ll arith_sum(ll a1, ll d, ll n) {
+    return n * (2 * a1 + (n - 1) * d) / 2;
+}
+```
+
+### 3. 签到题模型补充
+
+| 模型 | 规则 |
+|---|---|
+| 植树问题 | 不成环：棵数 = 段数 + 1；成环：棵数 = 段数 |
+| 页码数字统计 | 小数据直接从 `1` 到 `n` 转字符串统计 |
+| 鸡兔同笼 | `x+y=n, 2x+4y=m` |
+| 年龄问题 | 设当前年龄，按年份差列方程 |
+| 工程问题 | 总工作量设为 1，效率相加 |
+| 相遇追及 | 相遇：相对速度相加；追及：速度相减 |
+| 阶梯计价 | 按区间逐段扣减最稳 |
+
+
+---
+
+
+<!-- source: 03_modules/SIGN-MEDIA-02-media-format-compression.md -->
+## SIGN-MEDIA-02 多媒体、文件格式与压缩估算
+
+模块编号：SIGN-MEDIA-02
+
+模块名称：图片、音频、视频、文件格式和压缩估算
+
+标签：签到题、多媒体、图片、音频、视频、BMP、颜色、压缩、文件大小、C++17
+
+一句话用途：遇到图片大小、采样率、码率、颜色编码、压缩率和文件格式估算时，用本模块查公式。
+
+题面触发词：BMP、像素、分辨率、DPI、RGB、RGBA、灰度、采样率、声道、帧率、码率、压缩率。
+
+什么时候用：
+
+- 题目给宽高、位深、采样率、帧率，要求文件大小。
+- 题目问 RGB/HSV、alpha、颜色十六进制。
+- 题目问压缩前后比例或传输时间。
+
+不要什么时候用：
+
+- 真正图像处理算法，如卷积、边缘检测，按矩阵模拟。
+- 复杂文件格式头部结构，以题面给出的字段为准。
+- 历史编码和字体渲染细节不在本卷范围内。
+
+复杂度：公式估算 `O(1)`；像素逐个处理 `O(width*height)`。
+
+依赖的标准容器：`string`、`vector<int>`、`iomanip`。
+
+输入如何整理：
+
+```text
+图像：宽、高、每像素 bit、是否行对齐。
+音频：秒数、采样率、每样本 bit、声道数。
+视频：秒数、帧率、每帧大小或码率。
+```
+
+接口：
+
+```text
+image_raw_bytes = width * height * bits_per_pixel / 8。
+BMP bytes = row_aligned_bytes * height。
+audio bytes = seconds * sample_rate * bits_per_sample/8 * channels。
+video bytes = seconds * bitrate_bps / 8。
+```
+
+常见坑：
+
+- BMP 像素数据每行 4 字节对齐。
+- 24 位 RGB 是 3 字节，不含 alpha。
+- 32 位 RGBA 是 4 字节。
+- DPI 是打印密度，不直接改变像素总数，除非题目用英寸换算像素。
+- 码率通常已经包含压缩后每秒 bit 数。
+
+暴力/部分分替代：
+
+- 不知道头部大小时，先算像素数据大小。
+- 不知道压缩格式时，按题面给的压缩率。
+- RGB 转换复杂时，先处理十六进制拆分。
+
+### 1. 图片大小
+
+| 图像类型 | 每像素 |
+|---|---|
+| 黑白 1 bit | `1/8` byte |
+| 灰度 8 bit | 1 byte |
+| RGB 24 bit | 3 byte |
+| RGBA 32 bit | 4 byte |
+| 16 bit 色 | 2 byte |
+
+BMP 行对齐：
+
+```text
+row_bytes = ceil(width * bits_per_pixel / 32) * 4
+total_pixel_bytes = row_bytes * height
+```
+
+### 2. 颜色
+
+| 表示 | 含义 |
+|---|---|
+| `#RRGGBB` | 红绿蓝各 8 bit |
+| `#AARRGGBB` | alpha + RGB |
+| RGB | 红绿蓝 |
+| BGR | BMP 等格式常见存储顺序 |
+| Alpha | 透明度 |
+| HSV | 色相、饱和度、明度 |
+
+十六进制颜色拆分：
+
+```cpp
+int hex2(char a, char b) {
+    auto val = [](char c) {
+        if ('0' <= c && c <= '9') return c - '0';
+        if ('a' <= c && c <= 'f') return c - 'a' + 10;
+        return c - 'A' + 10;
+    };
+    return val(a) * 16 + val(b);
+}
+```
+
+### 3. 音频大小
+
+```text
+bytes = seconds * sample_rate * bits_per_sample / 8 * channels
+```
+
+例子：
+
+```text
+60 秒，44100 Hz，16 bit，双声道：
+60 * 44100 * 16/8 * 2 = 10584000 byte
+```
+
+### 4. 视频大小
+
+两种常见题面：
+
+```text
+未压缩：width * height * bytes_per_pixel * fps * seconds
+有码率：bitrate_bps * seconds / 8
+```
+
+### 5. 压缩率
+
+| 问法 | 公式 |
+|---|---|
+| 压缩后大小 | `original * ratio` |
+| 压缩节省 | `original - compressed` |
+| 节省百分比 | `(original-compressed)/original` |
+| 码率估算 | `file_bits / seconds` |
+
+
+---
+
+
+<!-- source: 03_modules/SIGN-ML-01-machine-learning-cheatsheet.md -->
+## SIGN-ML-01 机器学习算法常识与小模拟
+
+模块编号：SIGN-ML-01
+
+模块名称：机器学习签到题：评估指标、常见模型和按公式模拟
+
+标签：签到题、机器学习、监督学习、无监督学习、分类、回归、聚类、SVM、DNN、C++17
+
+一句话用途：AI 背景题如果只是给小数据和规则，按本模块公式模拟，不需要任何第三方库。
+
+题面触发词：训练集、测试集、标签、特征、分类、回归、聚类、SVM、DNN、softmax、precision、recall、F1。
+
+什么时候用：
+
+- 题目要求按给定公式算预测、指标或若干轮训练。
+- 数据规模小，可以直接二维数组或 `vector` 模拟。
+- 题目是 Special Judge，要求最大化某个评估指标。
+
+不要什么时候用：
+
+- 不要把真实机器学习库思路带进考场，不能用第三方库。
+- 大规模稀疏文本检索优先倒排索引、排序和哈希。
+- 神经网络复杂反传优先第 10 卷 `AI-14/15`。
+
+复杂度：
+
+- 混淆矩阵：`O(n)`。
+- kNN：`O(q*n*d)`。
+- k-means 一轮：`O(n*k*d)`。
+- 全连接层前向：`O(in*out)`。
+
+依赖的标准容器：`vector<double>`、`vector<int>`、`map`、`sort`、`cmath`。
+
+输入如何整理：
+
+```text
+样本表常见格式：n d，然后每行 d 个特征和 1 个标签。
+特征一般用 double，标签一般用 int/string。
+分类指标先数 TP/FP/FN/TN。
+```
+
+接口：
+
+```text
+confusion -> 混淆矩阵。
+metrics_binary -> accuracy/precision/recall/F1。
+knn_predict -> kNN 投票。
+stable_softmax -> 稳定 softmax。
+```
+
+常见坑：
+
+- precision 分母是预测为正，recall 分母是真实为正。
+- `exp(x)` 可能溢出，softmax 要先减最大值。
+- kNN 平票规则按题面，没说时可取标签编号小者。
+- 归一化时最大值等于最小值要特判。
+
+暴力/部分分替代：
+
+- 不会训练模型时，先写最近邻、多数类、线性打分 baseline。
+- 不会复杂指标时，先输出混淆矩阵和 accuracy。
+- 聚类不会收敛判断时，按题面固定迭代次数。
+
+### 1. 监督学习和评估指标
+
+| 概念 | 说明 |
+|---|---|
+| feature | 样本输入变量 |
+| label | 真实类别或目标值 |
+| train/test | 训练集/测试集 |
+| overfit | 训练好、测试差 |
+| underfit | 训练和测试都差 |
+| accuracy | `(TP+TN)/(TP+TN+FP+FN)` |
+| precision | `TP/(TP+FP)` |
+| recall | `TP/(TP+FN)` |
+| F1 | `2PR/(P+R)` |
+| MSE | 平方误差均值 |
+| MAE | 绝对误差均值 |
+
+```cpp
+struct BinaryMetric {
+    int tp = 0, fp = 0, fn = 0, tn = 0;
+    double accuracy, precision, recall, f1;
+};
+
+BinaryMetric binary_metrics(const vector<int> &truth, const vector<int> &pred) {
+    BinaryMetric r;
+    int n = (int)truth.size();
+    for (int i = 0; i < n; i++) {
+        if (truth[i] == 1 && pred[i] == 1) r.tp++;
+        else if (truth[i] == 0 && pred[i] == 1) r.fp++;
+        else if (truth[i] == 1 && pred[i] == 0) r.fn++;
+        else r.tn++;
+    }
+    r.accuracy = (double)(r.tp + r.tn) / max(1, n);
+    r.precision = (r.tp + r.fp == 0 ? 0 : (double)r.tp / (r.tp + r.fp));
+    r.recall = (r.tp + r.fn == 0 ? 0 : (double)r.tp / (r.tp + r.fn));
+    r.f1 = (r.precision + r.recall == 0 ? 0 : 2 * r.precision * r.recall / (r.precision + r.recall));
+    return r;
+}
+```
+
+### 2. 常见模型速查
+
+| 模型 | 考场实现 |
+|---|---|
+| kNN | 算距离，排序，前 k 个投票 |
+| 朴素贝叶斯 | 用 log 概率相加，避免下溢 |
+| 线性回归 | `y=w dot x + b` |
+| Logistic | `p=sigmoid(w dot x+b)` |
+| SVM | margin 与 hinge loss |
+| 决策树 | Gini 或 entropy 选划分 |
+| k-means | 分配最近中心，再重算中心 |
+| DNN 前向 | 矩阵乘 + 激活函数 |
+| Q-learning | `Q=Q+alpha*(r+gamma*maxQ-next - Q)` |
+
+### 3. softmax 和 kNN 短代码
+
+```cpp
+vector<double> stable_softmax(vector<double> z) {
+    double mx = *max_element(z.begin(), z.end());
+    double sum = 0;
+    for (double &x : z) {
+        x = exp(x - mx);
+        sum += x;
+    }
+    for (double &x : z) x /= sum;
+    return z;
+}
+
+int knn_predict(const vector<vector<double>> &x, const vector<int> &label,
+                const vector<double> &q, int k) {
+    vector<pair<double, int>> v;
+    for (int i = 0; i < (int)x.size(); i++) {
+        double d2 = 0;
+        for (int j = 0; j < (int)q.size(); j++) {
+            double t = x[i][j] - q[j];
+            d2 += t * t;
+        }
+        v.push_back({d2, label[i]});
+    }
+    sort(v.begin(), v.end());
+    map<int, int> cnt;
+    int best_label = v[0].second, best_count = 0;
+    for (int i = 0; i < k && i < (int)v.size(); i++) {
+        int c = ++cnt[v[i].second];
+        if (c > best_count || (c == best_count && v[i].second < best_label)) {
+            best_count = c;
+            best_label = v[i].second;
+        }
+    }
+    return best_label;
+}
+```
+
+
+---
+
+
+<!-- source: 03_modules/SIGN-NOIP-01-preliminary-knowledge.md -->
+## SIGN-NOIP-01 NOIP/CSP 初赛式信息学常识
+
+模块编号：SIGN-NOIP-01
+
+模块名称：NOIP/CSP 初赛式信息学基础常识：概念题、读程序、复杂度和常识判断
+
+标签：签到题、NOIP初赛、CSP初赛、信息学常识、读程序、复杂度、计算机基础、C++17
+
+一句话用途：遇到选择/填空风格的计算机常识、复杂度判断、读程序输出、基础概念题时，用本模块快速排除错误选项和防止签到题失分。
+
+题面触发词：
+
+- 下列说法正确的是、时间复杂度、空间复杂度、输出结果。
+- 数据结构、栈、队列、树、图、二叉树遍历。
+- 操作系统、网络、数据库、信息安全、编码、ASCII、二进制。
+- 算法性质、稳定排序、递归、循环、溢出、短路求值。
+
+什么时候用：
+
+- 题目不像上机编程题，而像 NOIP/CSP 初赛知识点。
+- 题目要求判断概念、估算复杂度或阅读一段短代码。
+- 你需要在很短时间内确定常识性结论。
+
+不要什么时候用：
+
+- 需要完整实现算法时，回到前面对应算法卷。
+- 需要具体网络协议或 OS API 细节时，按题面给出的规则为准。
+- 需要现代 AI 细节时，翻 `SIGN-AI-02` 或第 10 卷。
+
+复杂度：
+
+- 读程序题按循环嵌套估算。
+- 概念题 `O(1)` 查表。
+- 树图概念题按节点边数量判断。
+
+依赖的标准容器：无固定依赖；常用 `vector`、`stack`、`queue`、`set` 辅助模拟。
+
+输入如何整理：
+
+```text
+读程序题：
+1. 标出变量初值。
+2. 标出循环次数。
+3. 标出每轮改变哪些变量。
+4. 小数据直接手动列表模拟。
+```
+
+接口：
+
+```text
+复杂度估算 -> 看循环层数、递归式、排序、图边数。
+概念判断 -> 查本模块术语表。
+读程序 -> 建表模拟变量变化。
+```
+
+常见坑：
+
+- `&&` 和 `||` 有短路求值。
+- `i++` 返回旧值，`++i` 返回新值。
+- 整数除法会截断，小数要转 `double`。
+- 递归既有时间消耗，也有调用栈空间。
+- 稳定排序保持相等关键字原相对顺序。
+
+暴力/部分分替代：
+
+- 读程序算不清时，把每轮变量写成表格。
+- 复杂度不确定时，先算最内层语句总执行次数。
+- 树图题不确定时，画 5 个点以内的例子。
+
+### 1. 初赛常识速查表
+
+| 主题 | 关键结论 |
+|---|---|
+| 冯诺依曼结构 | 运算器、控制器、存储器、输入设备、输出设备 |
+| CPU | 负责取指、译码、执行；主频不等于绝对性能 |
+| RAM | 断电丢失，随机访问 |
+| ROM | 通常用于固件，断电不丢 |
+| Cache | 比内存快，比寄存器慢，用局部性提升性能 |
+| 操作系统 | 管理进程、内存、文件、设备 |
+| 编译器 | 把高级语言翻译成机器可执行程序 |
+| 解释器 | 边解释边执行 |
+| ASCII | 7 bit 基本编码，常用字符可用 0..127 |
+| Unicode | 字符集，UTF-8 是一种编码方式 |
+| IP | 网络层地址 |
+| TCP | 面向连接、可靠传输 |
+| UDP | 无连接、不保证可靠，开销较小 |
+| HTTP | 应用层协议 |
+| 数据库主键 | 唯一标识一条记录 |
+| 排序稳定性 | 相等元素相对顺序不变 |
+
+### 2. 复杂度判断口令
+
+| 代码形态 | 复杂度 |
+|---|---|
+| 单循环 `i=1..n` | `O(n)` |
+| 双重独立循环 | `O(n^2)` |
+| `for (i=1;i<=n;i*=2)` | `O(log n)` |
+| 外层 `n`，内层 `log n` | `O(n log n)` |
+| 排序 | 通常 `O(n log n)` |
+| BFS/DFS 邻接表 | `O(n+m)` |
+| Floyd | `O(n^3)` |
+| 枚举所有子集 | `O(2^n)` |
+| 全排列 | `O(n!)` |
+| 二分查找 | `O(log n)` |
+| 递归 `T(n)=T(n/2)+O(1)` | `O(log n)` |
+| 递归 `T(n)=2T(n/2)+O(n)` | `O(n log n)` |
+
+### 3. 读程序常见语义
+
+| 语法 | 规则 |
+|---|---|
+| `a = b = c` | 从右向左赋值 |
+| `a += b` | 等价于 `a = a + b` |
+| `i++` | 表达式值是旧 `i`，然后加一 |
+| `++i` | 先加一，表达式值是新 `i` |
+| `&&` | 左边假则右边不算 |
+| `||` | 左边真则右边不算 |
+| `break` | 跳出最近一层循环 |
+| `continue` | 进入下一轮循环 |
+| 数组越界 | C++ 未定义行为，上机要避免 |
+
+### 4. 数据结构概念题
+
+| 结构 | 特征 |
+|---|---|
+| 栈 | 后进先出，括号匹配、递归调用 |
+| 队列 | 先进先出，BFS |
+| 优先队列 | 每次取最小/最大，堆实现 |
+| 集合 | 去重，判断存在 |
+| 映射 | key -> value |
+| 二叉树 | 每个节点最多两个孩子 |
+| 满二叉树 | 每层都满 |
+| 完全二叉树 | 最后一层从左到右填 |
+| 二叉搜索树 | 左小右大，中序有序 |
+| 图 | 点和边 |
+| 树 | 连通无环图，`n` 点 `n-1` 边 |
+
+### 5. 排序常识
+
+| 排序 | 平均复杂度 | 稳定性 |
+|---|---:|---|
+| 冒泡排序 | `O(n^2)` | 稳定 |
+| 插入排序 | `O(n^2)` | 稳定 |
+| 选择排序 | `O(n^2)` | 通常不稳定 |
+| 快速排序 | `O(n log n)` 平均 | 不稳定 |
+| 归并排序 | `O(n log n)` | 稳定 |
+| 堆排序 | `O(n log n)` | 不稳定 |
+| 计数排序 | `O(n+V)` | 可稳定 |
+
+
+---
+
+
+<!-- source: 03_modules/SIGN-NOIP-02-reading-program-flowchart.md -->
+## SIGN-NOIP-02 读程序、流程图、伪代码与基础程序语义
+
+模块编号：SIGN-NOIP-02
+
+模块名称：读程序和流程图速查：变量表、循环次数、递归栈、伪代码、运算符优先级和输出判断
+
+标签：签到题、NOIP初赛、CSP初赛、读程序、流程图、伪代码、程序语义、C++17
+
+一句话用途：当题目要求阅读一段程序、判断流程图输出、把伪代码翻译成代码或分析基础程序语义时，用本模块按固定步骤模拟，避免凭感觉丢签到分。
+
+题面触发词：
+
+- 阅读程序，写出运行结果。
+- 流程图、开始/结束、判断框、处理框、输入输出框。
+- 伪代码、算法描述、循环变量、递归调用。
+- `i++`、`++i`、短路求值、运算符优先级。
+- 函数传参、局部变量、全局变量、递归返回。
+
+什么时候用：
+
+- 题目不要求你设计新算法，只要求模拟已有代码。
+- 题目给一段短程序或流程图，让你填输出。
+- 模拟题规则复杂，先用本模块方法整理状态表。
+- NOIP/CSP 初赛式判断题涉及 C++ 基础语义。
+
+不要什么时候用：
+
+- 代码超过几十行且是完整算法时，应回到对应算法卷理解整体模型。
+- 题目使用非 C++ 语言时，不要套 C++ 特有规则。
+- 如果题面明确给了伪代码语义，以题面规则优先。
+
+复杂度：
+
+- 手动读程序：按循环总执行次数。
+- 流程图模拟：按路径和循环次数。
+- 递归模拟：按调用树节点数；小数据画调用栈。
+
+依赖的标准容器：
+
+- 纸上变量表即可。
+- 若要写小模拟程序，常用 `vector`、`stack`、`queue`、`map`。
+
+输入如何整理：
+
+```text
+读程序四步：
+1. 抄变量初值。
+2. 标循环边界和每轮变化。
+3. 建表记录每轮关键变量。
+4. 只在输出语句处记录输出，不要脑补。
+```
+
+接口：
+
+```text
+trace_variables(code) -> 变量表。
+count_loop_times(loop) -> 循环次数。
+simulate_recursion(f,args) -> 调用栈/返回值。
+flowchart_to_pseudocode(chart) -> 按框和箭头翻译。
+```
+
+常见坑：
+
+- `i++` 和 `++i` 在表达式中的值不同。
+- `&&` 左侧为假时右侧不执行，`||` 左侧为真时右侧不执行。
+- `=` 是赋值，`==` 是比较。
+- `/` 对整数是整除，`%` 只适合整数。
+- `else` 与最近的未匹配 `if` 配对。
+- 函数局部变量每次调用都有自己的一份。
+- 数组下标从 0 开始是 C++ 语义，但本资料算法模板统一偏向 1-index；读别人代码时按代码本身。
+
+暴力/部分分替代：
+
+- 手算困难时，在草稿纸上列 5 到 10 行变量表。
+- 递归困难时画调用树，并标每个调用的参数和返回值。
+- 流程图困难时把每个框编号，沿箭头一步步走。
+- 选择题不确定时先排除违反短路、整除、循环次数的选项。
+
+### 1. 流程图符号
+
+| 符号 | 含义 |
+|---|---|
+| 圆角矩形/椭圆 | 开始或结束 |
+| 平行四边形 | 输入或输出 |
+| 矩形 | 处理、赋值、计算 |
+| 菱形 | 判断条件，分 Yes/No |
+| 箭头 | 控制流方向 |
+
+口令：
+
+```text
+流程图就是没有语法糖的程序。
+菱形对应 if/while 条件。
+回到前面的一条箭头通常表示循环。
+```
+
+### 2. 变量表模板
+
+建议画表：
+
+| 步骤 | 条件 | i | j | ans | 输出 |
+|---:|---|---:|---:|---:|---|
+| 初始 | - |  |  |  |  |
+| 1 |  |  |  |  |  |
+| 2 |  |  |  |  |  |
+
+不要把所有变量都抄进去，只保留会影响分支、循环和输出的变量。
+
+### 3. 循环次数速查
+
+| 循环 | 执行次数 |
+|---|---:|
+| `for (int i=1;i<=n;i++)` | `n` |
+| `for (int i=0;i<n;i++)` | `n` |
+| `for (int i=1;i<n;i++)` | `n-1` |
+| `for (int i=n;i>=1;i--)` | `n` |
+| `for (int i=1;i<=n;i*=2)` | `floor(log2 n)+1` |
+| `while (x>0) x/=10` | 十进制位数 |
+| `while (x) x-=x&-x` | `x` 的二进制 1 的个数 |
+
+双层循环要看内层是否依赖外层：
+
+```cpp
+for (int i = 1; i <= n; i++) {
+    for (int j = 1; j <= i; j++) {
+        cnt++;
+    }
+}
+```
+
+总次数：
+
+```text
+1 + 2 + ... + n = n(n+1)/2
+```
+
+### 4. C++ 运算符优先级高频版
+
+从高到低记常用部分：
+
+| 优先级 | 运算符 |
+|---:|---|
+| 高 | `!`、`++`、`--`、一元负号 |
+|  | `*`、`/`、`%` |
+|  | `+`、`-` |
+|  | `<`、`<=`、`>`、`>=` |
+|  | `==`、`!=` |
+|  | `&&` |
+|  | `||` |
+| 低 | `=`、`+=`、`-=` |
+
+考场建议：
+
+```text
+读题时按优先级算。
+写代码时主动加括号，降低心智负担。
+```
+
+### 5. 自增自减
+
+```cpp
+int i = 3;
+int a = i++; // a=3, i=4
+int b = ++i; // i=5, b=5
+```
+
+不要在同一表达式里多次修改同一个变量，例如：
+
+```cpp
+int x = i++ + ++i; // 不建议，读程序题也要谨慎按语言规则
+```
+
+竞赛写代码时避免这种写法。读程序题若出现，优先看题面是否规定语言版本和行为；若是未定义行为，通常不会作为严肃考点。
+
+### 6. 短路求值
+
+```cpp
+if (p != 0 && x / p > 3) {
+    // p==0 时右边不会算，避免除以 0
+}
+```
+
+规则：
+
+| 表达式 | 左边情况 | 右边是否执行 |
+|---|---|---|
+| `A && B` | `A` 为假 | 不执行 |
+| `A && B` | `A` 为真 | 执行 |
+| `A || B` | `A` 为真 | 不执行 |
+| `A || B` | `A` 为假 | 执行 |
+
+读程序时，右侧如果有 `i++`、函数调用、输出，必须考虑是否真的执行。
+
+### 7. 函数传参
+
+C++ 常见：
+
+```cpp
+void f1(int x) { x = 10; }      // 值传递，外面不变
+void f2(int &x) { x = 10; }     // 引用传递，外面改变
+void f3(int a[]) { a[1] = 10; } // 数组传入后可改原数组
+```
+
+最小示例：
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+void add_value(int x) {
+    x++;
+}
+
+void add_ref(int &x) {
+    x++;
+}
+
+int main() {
+    int a = 5;
+    add_value(a);
+    cout << a << "\n"; // 5
+    add_ref(a);
+    cout << a << "\n"; // 6
+    return 0;
+}
+```
+
+### 8. 递归调用栈
+
+读递归三问：
+
+```text
+1. 递归终止条件是什么？
+2. 每次调用参数怎么变？
+3. 返回后还做什么？
+```
+
+例子：
+
+```cpp
+int f(int n) {
+    if (n <= 1) return 1;
+    return f(n - 1) + f(n - 2);
+}
+```
+
+`f(4)` 调用树：
+
+```text
+f(4)
+  f(3)
+    f(2)
+      f(1)=1
+      f(0)=1
+    f(1)=1
+  f(2)
+    f(1)=1
+    f(0)=1
+```
+
+所以 `f(4)=5`。
+
+### 9. 递归输出顺序
+
+```cpp
+void g(int n) {
+    if (n == 0) return;
+    cout << n << " ";
+    g(n - 1);
+    cout << n << " ";
+}
+```
+
+`g(3)` 输出：
+
+```text
+3 2 1 1 2 3
+```
+
+口令：
+
+```text
+递归调用前的输出：从大到小。
+递归返回后的输出：从小到大。
+```
+
+### 10. 伪代码翻译规则
+
+| 伪代码 | C++ |
+|---|---|
+| `x <- y` | `x = y;` |
+| `for i = 1 to n` | `for (int i=1;i<=n;i++)` |
+| `while condition` | `while (condition)` |
+| `if condition then` | `if (condition)` |
+| `return x` | `return x;` |
+| `and/or/not` | `&& / || / !` |
+
+注意：
+
+```text
+伪代码数组可能从 1 开始，C++ vector 默认 0 开始。
+为了和本资料模板统一，自己实现时优先开 n+1 用 1-index。
+```
+
+### 11. 分支配对
+
+```cpp
+if (a)
+    if (b) x = 1;
+    else x = 2;
+```
+
+`else` 与最近的未匹配 `if (b)` 配对，不是 `if (a)`。
+
+建议写法：
+
+```cpp
+if (a) {
+    if (b) x = 1;
+    else x = 2;
+}
+```
+
+### 12. 二维数组和循环顺序
+
+```cpp
+for (int i = 1; i <= n; i++) {
+    for (int j = 1; j <= m; j++) {
+        cin >> a[i][j];
+    }
+}
+```
+
+含义：
+
+```text
+i 通常是行，j 通常是列。
+先读第 1 行从左到右，再读第 2 行。
+```
+
+坐标题常用方向数组：
+
+```cpp
+int dx[5] = {0, -1, 1, 0, 0};
+int dy[5] = {0, 0, 0, -1, 1};
+```
+
+### 13. 读程序完整示例
+
+题目：
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    int n = 5, ans = 0;
+    for (int i = 1; i <= n; i++) {
+        if (i % 2 == 0) ans += i;
+        else ans += i * i;
+    }
+    cout << ans << "\n";
+    return 0;
+}
+```
+
+变量表：
+
+| i | 奇偶 | 加多少 | ans |
+|---:|---|---:|---:|
+| 1 | 奇 | 1 | 1 |
+| 2 | 偶 | 2 | 3 |
+| 3 | 奇 | 9 | 12 |
+| 4 | 偶 | 4 | 16 |
+| 5 | 奇 | 25 | 41 |
+
+输出：
+
+```text
+41
+```
+
+### 14. 看输出格式
+
+| 代码 | 输出效果 |
+|---|---|
+| `cout << x;` | 不自动换行 |
+| `cout << x << "\n";` | 输出后换行 |
+| `cout << a << " " << b;` | 中间一个空格 |
+| `cout << fixed << setprecision(2) << x;` | 保留 2 位小数 |
+
+读程序题要保留空格和换行。选择题若只问数值，通常忽略末尾空格；上机提交时不要多输出调试信息。
+
+### 15. 代码阅读排错清单
+
+- 循环从 `0` 还是 `1` 开始？
+- 结束条件是 `< n` 还是 `<= n`？
+- 变量是否在循环内部重新初始化？
+- `break`/`continue` 跳到哪里？
+- 右侧表达式是否因为短路没有执行？
+- 函数改的是副本还是原变量？
+- 递归返回后还有没有语句？
+- 输出语句执行了几次？
+
+
+---
+
+
+<!-- source: 03_modules/SIGN-OSNET-01-os-network-database.md -->
+## SIGN-OSNET-01 操作系统、网络与数据库常识
+
+模块编号：SIGN-OSNET-01
+
+模块名称：操作系统、计算机网络、数据库和 Web 常识
+
+标签：签到题、操作系统、网络、数据库、Web、SQL、HTTP、进程线程、C++17
+
+一句话用途：信息学/AI 招生题可能把 OS、网络、数据库和 Web 概念作为背景，本模块用于快速识别术语和常见计算。
+
+题面触发词：进程、线程、死锁、内存、文件系统、TCP、UDP、HTTP、IP、DNS、SQL、数据库、事务。
+
+什么时候用：
+
+- 题目是计算机常识判断或简单模拟。
+- 题目给网络带宽、延迟、请求数、数据库表格，要求计算或筛选。
+- 题目涉及 SQL 的选择、过滤、排序、分组概念。
+
+不要什么时候用：
+
+- 需要真实系统调用或网络编程，考试一般不会要求。
+- 复杂 SQL 优化和数据库事务细节，本卷只作常识。
+- IP 位运算具体代码翻 `SIGN-CS-01`。
+
+复杂度：
+
+- 概念判断 `O(1)`。
+- 表格筛选排序按 `O(n)` 或 `O(n log n)`。
+- 网络传输按字节数和带宽估算。
+
+依赖的标准容器：`vector`、`map`、`set`、`sort`、`string`。
+
+输入如何整理：
+
+```text
+网络题先统一 bps/B/s。
+数据库题先明确表头、筛选条件、排序键、聚合字段。
+OS 题先分清进程、线程、程序。
+```
+
+接口：
+
+```text
+OS 概念 -> 查表。
+网络计算 -> time = data / bandwidth + latency。
+SQL 模拟 -> filter -> group -> sort -> output。
+```
+
+常见坑：
+
+- 程序是静态文件，进程是运行中的程序实例。
+- 线程共享同一进程地址空间，进程之间相对隔离。
+- TCP 可靠有连接，UDP 简单低开销但不保证可靠。
+- DNS 负责域名到 IP 的解析。
+- SQL 的 `WHERE` 在分组前过滤，`HAVING` 在分组后过滤。
+
+暴力/部分分替代：
+
+- SQL 题不会写抽象查询时，按行模拟筛选。
+- 网络题协议复杂时，按题面公式和单位计算。
+- 资源调度题数据小可逐时间片模拟。
+
+### 1. 操作系统常识
+
+| 概念 | 说明 |
+|---|---|
+| 程序 | 存在磁盘上的代码和数据 |
+| 进程 | 程序的一次运行实例 |
+| 线程 | 进程内的执行流 |
+| 并发 | 多任务交替推进 |
+| 并行 | 多任务同时执行 |
+| 死锁 | 多个任务互相等待资源 |
+| 虚拟内存 | 给进程提供连续地址空间的抽象 |
+| 页 | 内存管理的固定大小块 |
+| 文件系统 | 管理文件命名、目录、权限、存储 |
+| 调度 | 决定哪个任务运行 |
+
+死锁四个必要条件：
+
+```text
+互斥、占有且等待、不可抢占、循环等待。
+```
+
+### 2. 网络常识
+
+| 层/协议 | 作用 |
+|---|---|
+| IP | 寻址和路由 |
+| TCP | 可靠字节流，面向连接 |
+| UDP | 无连接报文 |
+| DNS | 域名解析 |
+| HTTP | Web 请求响应 |
+| HTTPS | HTTP + TLS 加密 |
+| URL | 资源定位符 |
+| CDN | 内容分发网络 |
+
+HTTP 状态码：
+
+| 范围 | 含义 |
+|---|---|
+| 2xx | 成功 |
+| 3xx | 重定向 |
+| 4xx | 客户端错误 |
+| 5xx | 服务器错误 |
+
+### 3. 数据库和 SQL
+
+| 概念 | 说明 |
+|---|---|
+| 表 | 行和列组成 |
+| 行/记录 | 一条数据 |
+| 列/字段 | 一个属性 |
+| 主键 | 唯一标识记录 |
+| 外键 | 指向另一表主键 |
+| 索引 | 加速查找的数据结构 |
+| 事务 | 一组操作作为整体 |
+| ACID | 原子性、一致性、隔离性、持久性 |
+
+SQL 执行直觉：
+
+```text
+FROM -> WHERE -> GROUP BY -> HAVING -> SELECT -> ORDER BY -> LIMIT
+```
+
+模拟 SQL：
+
+```cpp
+struct Row {
+    string name;
+    int score;
+};
+
+vector<Row> filter_sort(vector<Row> rows, int low) {
+    vector<Row> v;
+    for (auto r : rows) {
+        if (r.score >= low) v.push_back(r);
+    }
+    sort(v.begin(), v.end(), [](const Row &a, const Row &b) {
+        if (a.score != b.score) return a.score > b.score;
+        return a.name < b.name;
+    });
+    return v;
+}
+```
+
+
+---
+
+
+<!-- source: 03_modules/SIGN-PROB-01-probability-statistics.md -->
+## SIGN-PROB-01 概率统计速查
+
+模块编号：SIGN-PROB-01
+
+模块名称：概率、期望、统计指标和描述统计
+
+标签：签到题、概率、统计、期望、方差、分位数、Bayes、C++17
+
+一句话用途：遇到概率、统计、平均数、方差、分位数、相关系数或 A/B 测试类题时，用本模块快速查公式和小代码。
+
+题面触发词：概率、条件概率、Bayes、期望、方差、标准差、中位数、众数、分位数、相关系数、直方图。
+
+什么时候用：
+
+- 题目给一组数，要求统计量。
+- 题目给事件概率，要求组合概率或条件概率。
+- 机器学习评估题需要先算基础统计。
+
+不要什么时候用：
+
+- 概率 DP 状态复杂，优先 DP 卷。
+- 组合概率涉及大组合数取模，优先第 8 卷。
+- 随机模拟只能做调试或部分分，不应替代精确算法。
+
+复杂度：
+
+- 均值/方差：`O(n)`。
+- 中位数/分位数：排序 `O(n log n)`，或 `nth_element` 平均 `O(n)`。
+- 相关系数：`O(n)`。
+
+依赖的标准容器：`vector<double>`、`vector<int>`、`sort`、`map`。
+
+输入如何整理：
+
+```text
+先确认统计的是总体还是样本。
+总体方差分母 n，样本方差分母 n-1。
+百分位定义题面可能不同，按题面为准。
+```
+
+接口：
+
+```text
+mean(a,n) -> 平均数。
+variance_population(a,n) -> 总体方差。
+median(a,n) -> 中位数。
+pearson(x,y,n) -> 皮尔逊相关系数。
+```
+
+常见坑：
+
+- 方差不要忘记平方。
+- `n=1` 时样本方差分母 `n-1` 为 0，要特判。
+- 概率相乘需要独立性；不独立时用条件概率。
+- 精度输出用 `double`，计数用 `long long`。
+
+暴力/部分分替代：
+
+- 概率推不出时，小状态可枚举所有结果。
+- 分位数规则不确定时，优先按题面样例反推。
+- 大样本统计不会优化时，先排序写 `O(n log n)`。
+
+### 1. 概率公式
+
+| 名称 | 公式 |
+|---|---|
+| 补事件 | `P(not A)=1-P(A)` |
+| 加法公式 | `P(A or B)=P(A)+P(B)-P(A and B)` |
+| 条件概率 | `P(A|B)=P(A and B)/P(B)` |
+| 乘法公式 | `P(A and B)=P(A|B)*P(B)` |
+| 独立事件 | `P(A and B)=P(A)*P(B)` |
+| Bayes | `P(A|B)=P(B|A)P(A)/P(B)` |
+| 期望线性性 | `E(X+Y)=E(X)+E(Y)` |
+| 方差 | `E(X^2)-E(X)^2` |
+
+### 2. 描述统计小代码
+
+```cpp
+double mean_value(const vector<double> &a) {
+    double s = 0;
+    for (double x : a) s += x;
+    return s / (double)a.size();
+}
+
+double variance_population(const vector<double> &a) {
+    double mu = mean_value(a), s = 0;
+    for (double x : a) s += (x - mu) * (x - mu);
+    return s / (double)a.size();
+}
+
+double median_value(vector<double> a) {
+    sort(a.begin(), a.end());
+    int n = (int)a.size();
+    if (n % 2 == 1) return a[n / 2];
+    return (a[n / 2 - 1] + a[n / 2]) / 2.0;
+}
+```
+
+### 3. 相关系数
+
+```cpp
+double pearson(const vector<double> &x, const vector<double> &y) {
+    int n = (int)x.size();
+    double mx = mean_value(x), my = mean_value(y);
+    double num = 0, sx = 0, sy = 0;
+    for (int i = 0; i < n; i++) {
+        double dx = x[i] - mx, dy = y[i] - my;
+        num += dx * dy;
+        sx += dx * dx;
+        sy += dy * dy;
+    }
+    if (sx == 0 || sy == 0) return 0;
+    return num / sqrt(sx * sy);
+}
+```
+
+### 4. 常见分布
+
+| 分布 | 使用场景 | 关键量 |
+|---|---|---|
+| Bernoulli | 一次成败 | `P(1)=p` |
+| Binomial | `n` 次独立成败 | `C(n,k)p^k(1-p)^(n-k)` |
+| Geometric | 第一次成功在第几次 | `(1-p)^(k-1)p` |
+| Poisson | 单位时间稀有事件数 | `lambda^k e^-lambda / k!` |
+| Normal | 近似连续测量误差 | z-score |
+
+
+---
+
+
+<!-- source: 03_modules/SIGN-SEC-01-security-information-theory.md -->
+## SIGN-SEC-01 信息安全、校验、压缩与信息论常识
+
+模块编号：SIGN-SEC-01
+
+模块名称：信息安全、哈希、校验、压缩和信息论基础
+
+标签：签到题、信息安全、哈希、校验和、压缩、熵、编码、CRC、C++17
+
+一句话用途：遇到校验码、哈希、加密、压缩率、熵、错误检测等常识题时，用本模块快速查概念和小公式。
+
+题面触发词：校验和、奇偶校验、CRC、哈希、MD5、SHA、加密、压缩率、熵、Huffman、错误检测。
+
+什么时候用：
+
+- 题目考概念判断：哈希 vs 加密，压缩 vs 编码。
+- 题目要求计算简单校验和、奇偶校验、压缩率。
+- 题目给频率，要求估算信息熵或 Huffman 直觉。
+
+不要什么时候用：
+
+- 不要自己实现真实密码算法，考试一般不会要求。
+- 如果题目给了具体编码树，按题面模拟，不要套概念。
+- 大规模字符串哈希算法题翻字符串卷。
+
+复杂度：
+
+- 简单校验：`O(n)`。
+- 频率统计：`O(n)`。
+- Huffman 建树：`O(k log k)`。
+
+依赖的标准容器：`string`、`vector<int>`、`priority_queue`、`map`。
+
+输入如何整理：
+
+```text
+先确认处理单位是 bit、byte 还是字符。
+压缩率常见写法：
+compressed / original 或 (original-compressed)/original，按题面。
+```
+
+接口：
+
+```text
+xor_checksum(s) -> 异或校验。
+parity(x) -> 二进制 1 的个数奇偶。
+entropy(freq) -> 信息熵。
+```
+
+常见坑：
+
+- 哈希不是加密；哈希通常不可逆，加密应可用密钥解密。
+- 编码不是压缩；Base64 反而会变大。
+- 压缩后大小可能因为头部信息而变大。
+- 奇偶校验只能检测奇数个位错误，不一定能纠错。
+
+暴力/部分分替代：
+
+- 复杂 CRC 不会时，先按题面给的小规则逐位模拟。
+- Huffman 不会时，小数据可以枚举树形很难，优先掌握优先队列贪心。
+
+### 1. 概念区分
+
+| 概念 | 目的 | 是否可逆 |
+|---|---|---|
+| 编码 | 表示数据 | 通常可逆 |
+| 压缩 | 减少大小 | 无损可逆，有损不可完全恢复 |
+| 哈希 | 摘要/查找/完整性 | 通常不可逆 |
+| 加密 | 保密 | 有密钥可逆 |
+| 签名 | 证明身份和完整性 | 验证可行，不是解密 |
+| 校验 | 检测错误 | 通常不能恢复 |
+
+### 2. 校验短代码
+
+```cpp
+int parity_ones(unsigned int x) {
+    return __builtin_popcount(x) & 1;
+}
+
+unsigned char xor_checksum(const string &s) {
+    unsigned char ans = 0;
+    for (unsigned char c : s) ans ^= c;
+    return ans;
+}
+
+int digit_sum_mod10(const string &s) {
+    int sum = 0;
+    for (char c : s) if (isdigit((unsigned char)c)) sum = (sum + c - '0') % 10;
+    return sum;
+}
+```
+
+### 3. 压缩和熵
+
+信息熵：
+
+```text
+H = -sum p_i * log2(p_i)
+```
+
+直觉：
+
+- 越均匀，熵越大。
+- 越集中，越容易压缩。
+- Huffman 编码给高频字符更短码。
+
+```cpp
+double entropy_from_counts(const vector<int> &cnt) {
+    double total = 0;
+    for (int x : cnt) total += x;
+    double h = 0;
+    for (int x : cnt) {
+        if (x == 0) continue;
+        double p = x / total;
+        h -= p * log2(p);
+    }
+    return h;
+}
+```
+
+### 4. 常见压缩率
+
+| 问法 | 公式 |
+|---|---|
+| 压缩后占原来的比例 | `compressed/original` |
+| 压缩率减少了多少 | `(original-compressed)/original` |
+| 压缩倍数 | `original/compressed` |
+| Base64 大小 | 约 `ceil(n/3)*4` byte |
+
+
+---
+
+
+<!-- source: 03_modules/SIGN-SIM-01-life-simulation-templates.md -->
+## SIGN-SIM-01 生活化签到模拟题模板
+
+模块编号：SIGN-SIM-01
+
+模块名称：生活化模拟题：日期、BMI、排名、Excel 列号、格式和小工具
+
+标签：签到题、生活模拟、日期、BMI、排名、Excel列号、格式化、C++17
+
+一句话用途：把最常见的生活化签到题做成可抄模板，重点保证输入输出合法、边界不丢分。
+
+题面触发词：BMI、成绩等级、GPA、排名、同分、Excel 列号、日期差、星期、单位换算、括号匹配、状态机。
+
+什么时候用：
+
+- 题目是现实规则模拟，算法不难但规则细。
+- 输出格式要求固定小数、补零、对齐或分类文字。
+- 需要把字符串编号转换成数字，或把数字转编号。
+
+不要什么时候用：
+
+- 日期题涉及历史儒略历/格里高利历切换、夏令时数据库，优先 `SIM-06`。
+- 表达式、JSON、脚本等复杂解析，优先 `SIM-03/04/05`。
+- 方程求解优先 `SIM-07`。
+
+复杂度：多数 `O(1)`；字符串扫描 `O(len)`；排名排序 `O(n log n)`。
+
+依赖的标准容器：`string`、`vector`、`algorithm`、`stack`、`iomanip`。
+
+输入如何整理：
+
+```text
+先读规则，再把每条规则写成 if/else 或小函数。
+有多组数据时每组清空状态。
+涉及格式输出时统一放到最后输出。
+```
+
+接口：
+
+```text
+bmi(weight,height) -> BMI。
+excel_col_to_num(s) -> A1 风格列号转数字。
+excel_num_to_col(x) -> 数字转列号。
+days_from_civil(y,m,d) -> 日期转序号。
+rank_with_ties(score) -> 同分排名。
+```
+
+常见坑：
+
+- 身高若输入厘米，BMI 要除以 100 转米。
+- Excel 列号是 1-index：A=1，Z=26，AA=27。
+- 排名有 dense ranking 和 competition ranking，按题面。
+- 日期差是否包含起止当天，要看题面样例。
+
+暴力/部分分替代：
+
+- 日期公式忘记时，小范围逐日加。
+- 排名规则复杂时，先排序输出普通名次。
+- 状态机不会抽象时，用 `if/else` 按字符扫描。
+
+### 1. 高频短规则
+
+| 模型 | 规则 |
+|---|---|
+| BMI | `weight_kg / height_m^2` |
+| 成绩等级 | 从高到低写 `if`，避免区间重叠 |
+| GPA | 加权平均：`sum(score*credit)/sum(credit)` |
+| 同分排名 | 比自己分高的人数 + 1 |
+| Excel 列号 | 26 进制但没有 0 |
+| 括号匹配 | 栈 |
+| 自动机 | `state = trans[state][input]` |
+
+### 2. 完整可运行小工具
+
+这个程序故意覆盖多个签到常识：BMP 大小、三角形面积、日期差、二分类指标、进制转换、BMI、Excel 列号。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+using ll = long long;
+const double PI = acos(-1.0);
+
+bool triangle_ok(double a, double b, double c) {
+    return a + b > c && a + c > b && b + c > a;
+}
+
+double triangle_area(double a, double b, double c) {
+    if (!triangle_ok(a, b, c)) return -1.0;
+    double s = (a + b + c) / 2.0;
+    return sqrt(max(0.0, s * (s - a) * (s - b) * (s - c)));
+}
+
+ll bmp_pixel_bytes(ll w, ll h, int bpp) {
+    ll row_bits = w * bpp;
+    ll row_bytes = ((row_bits + 31) / 32) * 4;
+    return row_bytes * h;
+}
+
+ll days_from_civil(int y, int m, int d) {
+    y -= m <= 2;
+    const int era = (y >= 0 ? y : y - 399) / 400;
+    const unsigned yoe = (unsigned)(y - era * 400);
+    const unsigned doy = (153 * (m + (m > 2 ? -3 : 9)) + 2) / 5 + d - 1;
+    const unsigned doe = yoe * 365 + yoe / 4 - yoe / 100 + doy;
+    return era * 146097LL + (ll)doe - 719468LL;
+}
+
+int hex_value(char c) {
+    if ('0' <= c && c <= '9') return c - '0';
+    if ('a' <= c && c <= 'f') return c - 'a' + 10;
+    if ('A' <= c && c <= 'F') return c - 'A' + 10;
+    return -1;
+}
+
+ll to_decimal(const string &s, int base) {
+    ll ans = 0;
+    for (char c : s) ans = ans * base + hex_value(c);
+    return ans;
+}
+
+ll excel_col_to_num(const string &s) {
+    ll ans = 0;
+    for (char c : s) ans = ans * 26 + (c - 'A' + 1);
+    return ans;
+}
+
+string excel_num_to_col(ll x) {
+    string s;
+    while (x > 0) {
+        x--;
+        s.push_back(char('A' + x % 26));
+        x /= 26;
+    }
+    reverse(s.begin(), s.end());
+    return s;
+}
+
+void solve_metrics() {
+    int n;
+    cin >> n;
+    int tp = 0, fp = 0, fn = 0, tn = 0;
+    for (int i = 1; i <= n; i++) {
+        int y, p;
+        cin >> y >> p;
+        if (y == 1 && p == 1) tp++;
+        else if (y == 0 && p == 1) fp++;
+        else if (y == 1 && p == 0) fn++;
+        else tn++;
+    }
+    double acc = (double)(tp + tn) / max(1, n);
+    double precision = (tp + fp == 0 ? 0 : (double)tp / (tp + fp));
+    double recall = (tp + fn == 0 ? 0 : (double)tp / (tp + fn));
+    double f1 = (precision + recall == 0 ? 0 : 2 * precision * recall / (precision + recall));
+    cout << fixed << setprecision(6) << acc << ' ' << precision << ' ' << recall << ' ' << f1 << "\n";
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    string mode;
+    cin >> mode;
+    cout << fixed << setprecision(6);
+
+    if (mode == "triangle") {
+        double a, b, c;
+        cin >> a >> b >> c;
+        double area = triangle_area(a, b, c);
+        if (area < 0) cout << "INVALID\n";
+        else cout << area << "\n";
+    } else if (mode == "bmp") {
+        ll w, h;
+        int bpp;
+        cin >> w >> h >> bpp;
+        cout << bmp_pixel_bytes(w, h, bpp) << "\n";
+    } else if (mode == "datediff") {
+        int y1, m1, d1, y2, m2, d2;
+        cin >> y1 >> m1 >> d1 >> y2 >> m2 >> d2;
+        cout << llabs(days_from_civil(y1, m1, d1) - days_from_civil(y2, m2, d2)) << "\n";
+    } else if (mode == "metrics") {
+        solve_metrics();
+    } else if (mode == "base") {
+        string s;
+        int b;
+        cin >> s >> b;
+        cout.unsetf(ios::floatfield);
+        cout << to_decimal(s, b) << "\n";
+    } else if (mode == "bmi") {
+        double kg, cm;
+        cin >> kg >> cm;
+        double h = cm / 100.0;
+        cout << kg / (h * h) << "\n";
+    } else if (mode == "excel_to_num") {
+        string s;
+        cin >> s;
+        cout.unsetf(ios::floatfield);
+        cout << excel_col_to_num(s) << "\n";
+    } else if (mode == "excel_to_col") {
+        ll x;
+        cin >> x;
+        cout << excel_num_to_col(x) << "\n";
+    }
+    return 0;
+}
+```
+
+### 3. 最小测试样例
+
+```text
+triangle
+3 4 5
+=> 6.000000
+
+bmp
+3 2 24
+=> 24
+
+datediff
+2024 2 28 2024 3 1
+=> 2
+
+excel_to_num
+AA
+=> 27
 ```
 
 

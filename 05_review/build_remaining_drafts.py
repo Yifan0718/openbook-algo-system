@@ -25,7 +25,7 @@ VOLUMES: list[tuple[str, str, str, list[str]]] = [
     (
         "volume_6_math_string.md",
         "第 6 卷：数学与字符串",
-        "自动由 MATH/STR/SIM 模块重建。定位是常用数论、组合、矩阵、字符串和高精度补充。",
+        "自动由 MATH/STR/SIM 模块重建。定位是常用数论、组合、矩阵、方程求解、字符串和模拟补充。",
         ["MATH-[0-9]*.md", "STR-*.md", "SIM-*.md"],
     ),
     (
@@ -51,6 +51,12 @@ VOLUMES: list[tuple[str, str, str, list[str]]] = [
         "第 10 卷：AI 专项可能题型补充",
         "自动由 AI 模块重建。定位是人工智能专项招生中可能包装成算法题的搜索、分类、相似度和模拟主题。",
         ["AI-*.md"],
+    ),
+    (
+        "volume_11_signoff_encyclopedia.md",
+        "第 11 卷：签到题百科",
+        "自动由 SIGN 模块重建。定位是常用数学、计算机常识、微积分、线性代数、概率统计、机器学习和生活模拟签到题。",
+        ["SIGN-*.md"],
     ),
 ]
 
@@ -102,6 +108,7 @@ INTRO_BY_FILENAME = {
 | `JSON/CSV/INI 解析` | `SIM-04` |
 | `手写解释器/小语言模拟` | `SIM-05` |
 | `日期/时区/历法` | `SIM-06` |
+| `方程组/高斯消元/求根` | `SIM-07` |
 | `字符串匹配/前缀/哈希` | `STR-02/03` |
 | `最长回文/回文半径/区间回文判断` | `STR-05 Manacher` |
 """,
@@ -148,6 +155,32 @@ INTRO_BY_FILENAME = {
 | 脚本/规则/配置 | SIM-03/04/05 解析和解释 |
 
 这卷的核心判断：AI 背景不是新语法，也不是深度学习框架；它通常是搜索、统计、排序、字符串、模拟和数学公式的包装。
+""",
+    "volume_11_signoff_encyclopedia.md": """## 签到题百科使用原则
+
+| 题面信号 | 先翻模块 |
+|---|---|
+| 初赛/CSP 概念、读程序、稳定排序、数据结构概念 | `SIGN-NOIP-01` |
+| 读程序、流程图、递归栈、伪代码、运算符优先级 | `SIGN-NOIP-02` |
+| CPU、Cache、内存层次、性能估算 | `SIGN-ARCH-01` |
+| 进制、补码、浮点、字节序、内存和对齐 | `SIGN-ARCH-02` |
+| 复杂度、内存限制、数量级估算 | `SIGN-COMP-01` |
+| 三角形、面积、折扣、等差等比、单位换算 | `SIGN-MATH-01` |
+| 导数、积分、梯度、数值近似 | `SIGN-CALC-01` |
+| 向量、矩阵、距离、投影、Markov | `SIGN-LA-01` |
+| Markov 性质、转移矩阵、平稳分布、HMM/MDP | `SIGN-MARKOV-01` |
+| 命题逻辑、集合关系、自动机、正则常识 | `SIGN-LOGIC-01` |
+| 均值、方差、概率、Bayes、相关系数 | `SIGN-PROB-01` |
+| AI 原理、监督/无监督/强化学习、神经网络概念 | `SIGN-AI-02` |
+| Token、Embedding、Attention、Transformer、RAG | `SIGN-AI-03` |
+| 混淆矩阵、F1、kNN、k-means、softmax | `SIGN-ML-01` |
+| bit/byte、BMP、音频视频、IP、编码 | `SIGN-CS-01` |
+| 图片、音频、视频、颜色、压缩率 | `SIGN-MEDIA-02` |
+| 操作系统、网络、数据库、Web、SQL | `SIGN-OSNET-01` |
+| 安全、哈希、校验、压缩、信息熵 | `SIGN-SEC-01` |
+| BMI、排名、Excel 列号、日期差、括号 | `SIGN-SIM-01` |
+
+这卷的使用方式：先查公式和单位，再写小函数；不要为了签到题临场推导。复杂算法仍回到前面对应卷。
 """,
 }
 

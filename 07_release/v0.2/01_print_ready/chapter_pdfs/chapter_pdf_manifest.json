@@ -1,8 +1,8 @@
 {
   "version": "0.2",
   "kind": "chapter_pdfs",
-  "count": 13,
-  "output_dir": "<repo>\\06_output\\chapter_pdfs",
+  "count": 14,
+  "output_dir": "C:\\Users\\Yifan\\Documents\\Codex\\2026-05-17\\files-mentioned-by-the-user-pdf\\zhongguancun-algo-openbook-system\\08_github_repo\\openbook-algo-system-v0.2\\06_output\\chapter_pdfs",
   "chapters": [
     {
       "no": "00",
@@ -72,9 +72,9 @@
       "title": "第6卷 数学与字符串模板",
       "pdf": "06_math_string.pdf",
       "source": "volume_6_math_string.md",
-      "when": "快速幂、组合数、筛法、KMP、Trie、Hash、字符串 DP 时翻。",
-      "keywords": "gcd/lcm；快速幂；逆元；组合数；筛；质因数；KMP；Z；Trie；Hash；Manacher；回文。",
-      "detail": "主查常用数学与字符串：gcd/lcm、模运算、快速幂、逆元、组合数、筛法、质因数分解、KMP/Z、Trie、Hash、Manacher 和回文。"
+      "when": "快速幂、组合数、筛法、方程求解、KMP、Trie、Hash、字符串 DP 时翻。",
+      "keywords": "gcd/lcm；快速幂；逆元；组合数；筛；质因数；高斯消元；二分求根；KMP；Z；Trie；Hash；Manacher。",
+      "detail": "主查常用数学与字符串：gcd/lcm、模运算、快速幂、逆元、组合数、筛法、质因数分解、方程组求解、一元方程求根、KMP/Z、Trie、Hash 和 Manacher。"
     },
     {
       "no": "07",
@@ -111,86 +111,101 @@
       "when": "题面带 AI/ML/聚类/回归/神经网络/自动求导/模型评测时翻。",
       "keywords": "搜索规划；KNN；TF-IDF；聚类；回归；Viterbi；DNN；SVM；反向传播；自动求导；SPJ。",
       "detail": "主查 AI 相关模拟题：搜索规划、KNN、相似度、TF-IDF、聚类、回归、HMM/Viterbi、SVM、DNN、反向传播、自动求导和 SPJ。"
+    },
+    {
+      "no": "11",
+      "title": "第11卷 签到题百科",
+      "pdf": "11_signoff_encyclopedia.pdf",
+      "source": "volume_11_signoff_encyclopedia.md",
+      "when": "题面是公式、单位、图片大小、日期、统计指标、机器学习小模拟或计算机常识时翻。",
+      "keywords": "BMP；三角形面积；单位换算；微积分；线性代数；Markov；概率统计；F1；kNN；bit/byte；补码；浮点；流程图；AI术语；日期；Excel列号。",
+      "detail": "主查签到题常识：常用数学、微积分、线代、Markov、概率统计、机器学习指标、文件媒体大小、进制补码浮点、读程序流程图、编码网络和生活模拟模板。"
     }
   ],
   "files": [
     {
       "file": "00_which_book_index.pdf",
       "pages": 1,
-      "sha256": "015a1c76113b2db8811bec37c35438aafa43ec196b14d754068f97310c53af9d",
-      "bytes": 212690
+      "sha256": "55e9a6f9da01473d1ed026f49f1f2d83b2dc50533000236849d34ebb2585af1b",
+      "bytes": 222827
     },
     {
       "file": "00_route.pdf",
-      "pages": 44,
-      "sha256": "cb401c90a8bc553fbafd85dbcfebbd3a1de6c1dd9256f33ccf4aa146c19ad1f2",
-      "bytes": 586521
+      "pages": 26,
+      "sha256": "2dc6c643a8db545a95302cca6e592f394bf337c06bfb216cce819cebcac16059",
+      "bytes": 509699
     },
     {
       "file": "01_cpp_stl_io.pdf",
-      "pages": 70,
-      "sha256": "19afad831fdc420715eb5a555aae4db44982ae0819baebcb19ee41a4d094eac7",
-      "bytes": 703509
+      "pages": 54,
+      "sha256": "0179b86b8891f1036cb4a2f4418f3ffa44f187fc4b029f621303fc0435c4d7e7",
+      "bytes": 635771
     },
     {
       "file": "02_brute_memo.pdf",
-      "pages": 58,
-      "sha256": "0d149d344a2ce62fa573a919695fd37f3871ddbdaba29d58a2e3ef956496b13e",
-      "bytes": 584856
+      "pages": 41,
+      "sha256": "8c3a8098e7785d4568b383fb18ebf6a7aa864eacc199dfa111dfda55aa34874f",
+      "bytes": 497164
     },
     {
       "file": "03_dp.pdf",
-      "pages": 138,
-      "sha256": "1b79dfbd3da6f0b1eb7a3b9e3f681f683d22f98cf7b7ac29b4958c98d0a2a25e",
-      "bytes": 1008944
+      "pages": 116,
+      "sha256": "2255b1c2ad679fa810f3e4554827c8976e11b9b961aa079e8ca016185bb8bd34",
+      "bytes": 924864
     },
     {
       "file": "03A_greedy_dp.pdf",
-      "pages": 28,
-      "sha256": "15d5a6f573c9a1aad741cc0ec99f10fbac2f4dceb56a1c6add45c73673c6943d",
-      "bytes": 437871
+      "pages": 13,
+      "sha256": "db86d6d63b0a65ff32c22acbf8f1454d0de149e52f36b7e4f0005c55c6961a4f",
+      "bytes": 354572
     },
     {
       "file": "04_ds.pdf",
-      "pages": 48,
-      "sha256": "6e299d4e5c0ba18f62cbdadaefb6c4a453f24404b0a7beca762b0a8e963d1bf1",
-      "bytes": 530652
+      "pages": 29,
+      "sha256": "27bdd676eade21e7c14913a09984bb5bde5b3a107862e8d6fc55f23bd9a83ad5",
+      "bytes": 434621
     },
     {
       "file": "05_graph_tree.pdf",
-      "pages": 83,
-      "sha256": "c3d088a068f5609d88a9b77266a448e19c9d4e3671acf1f5ee358283d9ebc6a9",
-      "bytes": 693862
+      "pages": 62,
+      "sha256": "7869b923a89f1a34e84c176f694948b847bea0eae321f226d99b0b239faea262",
+      "bytes": 600124
     },
     {
       "file": "06_math_string.pdf",
-      "pages": 100,
-      "sha256": "bb9ca25fc6cb8e937525cfba43098d0a25956d53068b61bee9364e66f88087ca",
-      "bytes": 764055
+      "pages": 94,
+      "sha256": "5adbf8735c3c5e9f1e7f84d12933542a40f375d6a7a4ded762909fcdd7b32775",
+      "bytes": 741732
     },
     {
       "file": "07_debug.pdf",
-      "pages": 24,
-      "sha256": "b5e6779f026967d2e6413449c4d44bd2c0a7f598de86ea97f036b35b780755c7",
-      "bytes": 458218
+      "pages": 10,
+      "sha256": "36ffef0c5a1232fe3e524d7e107e993a5934d3ba27acf62b40842c1b095ca089",
+      "bytes": 368284
     },
     {
       "file": "08_math_ref.pdf",
-      "pages": 48,
-      "sha256": "036f534c9e5381705d0e1d5d0ac601ece3ec115657e75a2a1bc669f97726c551",
-      "bytes": 549185
+      "pages": 33,
+      "sha256": "2b0be20199d0a7523c270115418ca0a4c3aff23db1dfee782b9321d701679401",
+      "bytes": 473464
     },
     {
       "file": "09_python.pdf",
-      "pages": 37,
-      "sha256": "ab66c1a9d45fab61313c9cef910174a6d7321ab1fb3b62178f0c3e716e3ad11c",
-      "bytes": 532231
+      "pages": 24,
+      "sha256": "3f9ae1e9d7d3e4b2c2e0ce2f187921b09f580b8006812030f2e573324693cf22",
+      "bytes": 467048
     },
     {
       "file": "10_ai.pdf",
-      "pages": 61,
-      "sha256": "cb11b724eb11cebe4362bc3770d7837c8671716e6022b05f596e3406b3643265",
-      "bytes": 643164
+      "pages": 43,
+      "sha256": "1bcf785e6b97593866ec87e88d80c91baf218cc98b26a2568dc8386ef3e7e26a",
+      "bytes": 557351
+    },
+    {
+      "file": "11_signoff_encyclopedia.pdf",
+      "pages": 58,
+      "sha256": "232a2ed5a1a6796e04ef78cffbdcf2dfbdd0ed23f5ba56c14040cd0f7805278b",
+      "bytes": 749692
     }
   ]
 }

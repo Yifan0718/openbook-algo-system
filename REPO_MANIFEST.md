@@ -4,8 +4,8 @@
 - version: `0.2`
 - status: `public-release-ready`
 - license: `MIT`
-- file_count: `311`
-- total_bytes: `69465980`
+- file_count: `335`
+- total_bytes: `67615456`
 
 ## Top-Level Counts
 
@@ -16,11 +16,11 @@
 | `00_management` | 5 |
 | `01_source_rules` | 1 |
 | `02_blueprint` | 4 |
-| `03_modules` | 143 |
-| `04_generated_drafts` | 19 |
+| `03_modules` | 164 |
+| `04_generated_drafts` | 20 |
 | `05_review` | 50 |
-| `06_output` | 28 |
-| `07_release` | 51 |
+| `06_output` | 29 |
+| `07_release` | 52 |
 | `BUILD.md` | 1 |
 | `LICENSE` | 1 |
 | `PUBLICATION_CHECKLIST.md` | 1 |
@@ -35,8 +35,8 @@
 | Extension | Count |
 |---|---:|
 | `.json` | 11 |
-| `.md` | 232 |
-| `.pdf` | 32 |
+| `.md` | 254 |
+| `.pdf` | 34 |
 | `.py` | 27 |
 | `.txt` | 2 |
 | `.zip` | 1 |
@@ -46,9 +46,10 @@
 
 | File | SHA256 |
 |---|---|
-| `07_release/openbook-v0.2.zip` | `d3ed04ae22c74cb1bd89070e5560b8bd1532e977fef7261d72daab6356dd1f79` |
-| `07_release/v0.2/01_print_ready/chapter_pdfs/06_math_string.pdf` | `bb9ca25fc6cb8e937525cfba43098d0a25956d53068b61bee9364e66f88087ca` |
-| `07_release/v0.2/01_print_ready/openbook_printable_full.pdf` | `b5ecd23628d2aae92d739dce0d7c91951c906212cf69cf0c292c08b1f38db30f` |
+| `07_release/openbook-v0.2.zip` | `ceb92165b59ea65547205fe8fdb088e5c22eaa07eaf36d6852b1bb80a6eb1ea4` |
+| `07_release/v0.2/01_print_ready/chapter_pdfs/11_signoff_encyclopedia.pdf` | `232a2ed5a1a6796e04ef78cffbdcf2dfbdd0ed23f5ba56c14040cd0f7805278b` |
+| `07_release/v0.2/01_print_ready/chapter_pdfs/06_math_string.pdf` | `5adbf8735c3c5e9f1e7f84d12933542a40f375d6a7a4ded762909fcdd7b32775` |
+| `07_release/v0.2/01_print_ready/openbook_printable_full.pdf` | `8657e4f616798de6cc8d95b3d1cd9132057f55c04823b5d21327f5d79d8f7088` |
 
 ## Notes
 

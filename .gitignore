@@ -8,6 +8,8 @@ tmp/
 05_review/tmp*/
 05_review/v02_examples/
 06_output/v02_preview/
+06_output/chapter_pdfs/_build_md/
+06_output/chapter_pdfs/*.tex
 
 # Generated compiler/test intermediates
 *.exe
@@ -37,4 +39,3 @@ Thumbs.db
 !07_release/**/*.pdf
 !07_release/**/*.zip
 !06_output/**/*.pdf
-

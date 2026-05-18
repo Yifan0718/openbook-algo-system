@@ -98,9 +98,9 @@ CHAPTERS = [
         "volume_6_math_string.md",
         "06_math_string.pdf",
         "第6卷 数学与字符串模板",
-        "快速幂、组合数、筛法、KMP、Trie、Hash、字符串 DP 时翻。",
-        "gcd/lcm；快速幂；逆元；组合数；筛；质因数；KMP；Z；Trie；Hash；Manacher；回文。",
-        "主查常用数学与字符串：gcd/lcm、模运算、快速幂、逆元、组合数、筛法、质因数分解、KMP/Z、Trie、Hash、Manacher 和回文。",
+        "快速幂、组合数、筛法、方程求解、KMP、Trie、Hash、字符串 DP 时翻。",
+        "gcd/lcm；快速幂；逆元；组合数；筛；质因数；高斯消元；二分求根；KMP；Z；Trie；Hash；Manacher。",
+        "主查常用数学与字符串：gcd/lcm、模运算、快速幂、逆元、组合数、筛法、质因数分解、方程组求解、一元方程求根、KMP/Z、Trie、Hash 和 Manacher。",
     ),
     Chapter(
         "07",
@@ -137,6 +137,15 @@ CHAPTERS = [
         "题面带 AI/ML/聚类/回归/神经网络/自动求导/模型评测时翻。",
         "搜索规划；KNN；TF-IDF；聚类；回归；Viterbi；DNN；SVM；反向传播；自动求导；SPJ。",
         "主查 AI 相关模拟题：搜索规划、KNN、相似度、TF-IDF、聚类、回归、HMM/Viterbi、SVM、DNN、反向传播、自动求导和 SPJ。",
+    ),
+    Chapter(
+        "11",
+        "volume_11_signoff_encyclopedia.md",
+        "11_signoff_encyclopedia.pdf",
+        "第11卷 签到题百科",
+        "题面是公式、单位、图片大小、日期、统计指标、机器学习小模拟或计算机常识时翻。",
+        "BMP；三角形面积；单位换算；微积分；线性代数；Markov；概率统计；F1；kNN；bit/byte；补码；浮点；流程图；AI术语；日期；Excel列号。",
+        "主查签到题常识：常用数学、微积分、线代、Markov、概率统计、机器学习指标、文件媒体大小、进制补码浮点、读程序流程图、编码网络和生活模拟模板。",
     ),
 ]
 
@@ -310,7 +319,7 @@ def write_index_tex() -> Path:
 
 \fcolorbox{black}{gray!8}{\begin{minipage}{0.972\textwidth}
 {\fontsize{9pt}{10.5pt}\selectfont
-\textbf{装订建议：}00/01 放最前；02 和 03 高频；04/05/06 是模板主力；08/09/10 作为补充。考试中先交部分分，再升级。}
+\textbf{装订建议：}00/01 放最前；02 和 03 高频；04/05/06 是模板主力；08/09/10/11 作为补充。考试中先交部分分，再升级。}
 \end{minipage}}
 \end{document}
 """

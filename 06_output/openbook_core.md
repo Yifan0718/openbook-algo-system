@@ -924,6 +924,7 @@ l=r
 | SVM、DNN、反向传播、自动求导 | AI 公式模拟 | 计算图 / 矩阵向量 | AI-11..15 | SIM-03 | 数据大时先 baseline |
 | JSON/CSV/INI、表达式、脚本规则 | 解析模拟 | Token / AST | SIM-03/04/05 | string / map | 不要临场乱写半解析 |
 | 日期、时区、经过天数、历法 | 日期模拟 | Date / day number | SIM-06 | 数学取模 | 夏令时规则不明时按题面 |
+| BMP、单位换算、三角形面积、F1、Markov、补码浮点、流程图、AI术语、bit/byte、Excel列号 | 签到题百科 | Formula / Rule | SIGN-00..SIM | C++ 小函数 | 复杂算法题不要停留在常识页 |
 | 区间合并、区间删除、括号匹配 | 区间 DP | Array | IntervalDP | PrefixSum | `n` 很大 |
 | `n <= 20` 且访问集合 | 状压 | State mask | BitmaskDP / DFS | Floyd/Dijkstra | `n > 22` 基本爆 |
 | 1..N、数位限制、上界很大 | 数位 DP | digits + state | DP-17 | DFS memo | 小范围普通枚举 |
@@ -7780,6 +7781,11 @@ d2[i]：以 i-1 和 i 中间为中心的偶数回文半径。
 | `n <= 2000` | 中心扩展或区间 DP 都能尝试 |
 | `n <= 1e5` | Manacher 稳 |
 | `n <= 1e6` | Manacher + 静态全局数组，避免反复分配 |
+
+依赖的标准容器：
+
+- `string`：存原串和 1-index 处理串。
+- 静态全局数组 `d1[]/d2[]`：存奇偶回文半径。
 
 输入如何整理：
 

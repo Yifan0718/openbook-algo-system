@@ -2,12 +2,12 @@
 
 编译器：WSL `g++ -std=c++17 -O2 -pipe -Wall -Wextra -Werror`
 
-- 唯一 standalone 单元：265
-- manifest 覆盖单元：73
+- 唯一 standalone 单元：272
+- manifest 覆盖单元：80
 - 未登记运行用例单元：192
 - manifest 过期单元：0
 - 编译失败单元：0
-- 运行用例数：102
+- 运行用例数：123
 - 运行失败用例：0
 
 ## 未登记运行用例（覆盖提示，不代表失败）
@@ -220,12 +220,14 @@
 | OK | `1ad4d11e62cbbad8` | `03_modules\DP-26-aftereffect-state-augmentation.md#1` | grid-no-two-down | 103<br> | 103<br> |  | compare=trim |
 | OK | `1adbd0e5a648ced0` | `03_modules\CPP-002-basic-containers.md#1` | basic-vector-string-set-map | a 5 1<br>1 3 5<br> | a 5 1<br>1 3 5<br> |  | compare=trim |
 | OK | `1c101394c2f5ed6a` | `03_modules\CPP-011-string-reference.md#13` | getline-after-cin | hello world<br><br>abc<br> | hello world<br><br>abc<br> |  | compare=exact |
+| OK | `1d8243b826ef0d6a` | `03_modules\SIGN-ARCH-02-number-memory-representation.md#7` | arch-endian-current-wsl | 78 56 34 12<br> | 78 56 34 12<br> |  | compare=trim |
 | OK | `1f822dce878d85c6` | `03_modules\BRUTE-10-unordered-map-encoded-memo.md#2` | encoded-memo-knapsack | 12<br> | 12<br> |  | compare=trim |
 | OK | `27a4b9aa46fd891d` | `03_modules\BRUTE-11-bfs-state-search.md#2` | grid-bfs-missing-start | -1<br> | -1<br> |  | compare=trim |
 | OK | `27a4b9aa46fd891d` | `03_modules\BRUTE-11-bfs-state-search.md#2` | grid-bfs-shortest | 4<br> | 4<br> |  | compare=trim |
 | OK | `299dfbdadb4c257c` | `03_modules\SIM-05-mini-interpreter.md#2` | mini-interpreter-if-expression | -14<br>1<br>1<br> | -14<br>1<br>1<br> |  | compare=trim |
 | OK | `299dfbdadb4c257c` | `03_modules\SIM-05-mini-interpreter.md#2` | mini-interpreter-unary-loop | 3<br>2<br>1<br>99<br> | 3<br>2<br>1<br>99<br> |  | compare=trim |
 | OK | `299dfbdadb4c257c` | `03_modules\SIM-05-mini-interpreter.md#2` | mini-interpreter-while-sum | 15<br> | 15<br> |  | compare=trim |
+| OK | `32441dd9c24c002c` | `03_modules\SIGN-NOIP-02-reading-program-flowchart.md#6` | noip-pass-by-value-and-reference | 5<br>6<br> | 5<br>6<br> |  | compare=trim |
 | OK | `32e5bf60cf97acc2` | `03_modules\AI-05-text-tfidf-tokenizer.md#2` | tfidf-basic-query | 1 0.707107<br> | 1 0.707107<br> |  | compare=trim |
 | OK | `39274914cba6a620` | `03_modules\AI-13-linear-regression-gd.md#2` | linear-regression-one-step | 8.000000<br> | 8.000000<br> |  | compare=trim |
 | OK | `3a8d8143342b8584` | `03_modules\AI-14-backpropagation.md#2` | backprop-one-sample | 0.531209<br> | 0.531209<br> |  | compare=trim |
@@ -259,6 +261,9 @@
 | OK | `6d99ab110fe7247b` | `03_modules\CPP-008-integers-overflow.md#1` | overflow-and-int128 | OVER<br>1000000000000000000000000<br>500000000000000000<br> | OVER<br>1000000000000000000000000<br>500000000000000000<br> |  | compare=trim |
 | OK | `6f81cae2cda4a848` | `03_modules\CPP-007-coordinate-compression.md#1` | coordinate-compression | 2 1 2 3 1<br>2<br> | 2 1 2 3 1<br>2<br> |  | compare=trim |
 | OK | `74e15f1713240e16` | `03_modules\BRUTE-06-backtracking-pruning.md#2` | backtracking-pruning-knapsack | 20<br> | 20<br> |  | compare=trim |
+| OK | `77e56bfbb759bd89` | `03_modules\SIGN-MARKOV-01-markov-property.md#5` | markov-power-ten-steps | 0.285719 0.714281<br> | 0.285719 0.714281<br> |  | compare=trim |
+| OK | `77e56bfbb759bd89` | `03_modules\SIGN-MARKOV-01-markov-property.md#5` | markov-stationary-iter | 0.285714 0.714286<br> | 0.285714 0.714286<br> |  | compare=trim |
+| OK | `77e56bfbb759bd89` | `03_modules\SIGN-MARKOV-01-markov-property.md#5` | markov-step-two-steps | 0.350000 0.650000<br> | 0.350000 0.650000<br> |  | compare=trim |
 | OK | `84056bb6acc6aa38` | `03_modules\DP-26-aftereffect-state-augmentation.md#5` | stock-cooldown | 3<br> | 3<br> |  | compare=trim |
 | OK | `86b0ca20dfad77a7` | `03_modules\CPP-10-io-formatting.md#3` | cin-cout-sum | 60<br> | 60<br> |  | compare=trim |
 | OK | `86fe4694481b95cb` | `03_modules\BRUTE-01-complexity-cheatsheet.md#2` | complexity-cheatsheet-safe | very_safe<br> | very_safe<br> |  | compare=trim |
@@ -273,6 +278,14 @@
 | OK | `98a2b9c85a0f49c3` | `03_modules\AI-02-lightweight-ml-classification.md#2` | knn-classification-basic | 1<br>2<br>1<br> | 1<br>2<br>1<br> |  | compare=trim |
 | OK | `9a12f6e7ef2a7f86` | `03_modules\BRUTE-12-meet-in-the-middle.md#2` | meet-in-middle-no-positive-fit | 0<br> | 0<br> |  | compare=trim |
 | OK | `9a12f6e7ef2a7f86` | `03_modules\BRUTE-12-meet-in-the-middle.md#2` | meet-in-middle-subset-sum | 10<br> | 10<br> |  | compare=trim |
+| OK | `9b81af8a5e974820` | `03_modules\SIGN-SIM-01-life-simulation-templates.md#1` | sign-base-hex-to-decimal | 255<br> | 255<br> |  | compare=trim |
+| OK | `9b81af8a5e974820` | `03_modules\SIGN-SIM-01-life-simulation-templates.md#1` | sign-binary-metrics | 0.600000 0.666667 0.666667 0.666667<br> | 0.600000 0.666667 0.666667 0.666667<br> |  | compare=trim |
+| OK | `9b81af8a5e974820` | `03_modules\SIGN-SIM-01-life-simulation-templates.md#1` | sign-bmi-centimeter | 22.857143<br> | 22.857143<br> |  | compare=trim |
+| OK | `9b81af8a5e974820` | `03_modules\SIGN-SIM-01-life-simulation-templates.md#1` | sign-bmp-row-align-24bit | 24<br> | 24<br> |  | compare=trim |
+| OK | `9b81af8a5e974820` | `03_modules\SIGN-SIM-01-life-simulation-templates.md#1` | sign-date-diff-leap-year | 2<br> | 2<br> |  | compare=trim |
+| OK | `9b81af8a5e974820` | `03_modules\SIGN-SIM-01-life-simulation-templates.md#1` | sign-excel-col-to-num | 27<br> | 27<br> |  | compare=trim |
+| OK | `9b81af8a5e974820` | `03_modules\SIGN-SIM-01-life-simulation-templates.md#1` | sign-excel-num-to-col | AAA<br> | AAA<br> |  | compare=trim |
+| OK | `9b81af8a5e974820` | `03_modules\SIGN-SIM-01-life-simulation-templates.md#1` | sign-triangle-heron-345 | 6.000000<br> | 6.000000<br> |  | compare=trim |
 | OK | `9becfcd0c0bcf86b` | `03_modules\CPP-013-stl-containers-reference.md#11` | priority-queue-struct-order | 2 2<br>5 1<br>5 3<br> | 2 2<br>5 1<br>5 3<br> |  | compare=trim |
 | OK | `ad1d8c9470ecb672` | `03_modules\CPP-001-main-io.md#3` | main-io-sum | 60<br> | 60<br> |  | compare=trim |
 | OK | `af75600658959899` | `03_modules\GREEDY-00-routing.md#2` | greedy-routing-non-touching | 2<br>2<br> | 2<br>2<br> |  | compare=trim |
@@ -280,6 +293,7 @@
 | OK | `b1c9b8d6d7daa712` | `03_modules\AI-09-reinforcement-learning-mdp.md#2` | mdp-value-iteration-basic | 5.000000 5.000000 0.000000<br> | 5.000000 5.000000 0.000000<br> |  | compare=trim |
 | OK | `b4314b0a81030edc` | `03_modules\CPP-011-string-reference.md#27` | string-reference-full | ABRA<br>1<br>one<br>two<br>three<br>124 1234567890123<br> | ABRA<br>1<br>one<br>two<br>three<br>124 1234567890123<br> |  | compare=trim |
 | OK | `b8db89ddce36889a` | `03_modules\AI-10-special-judge-model-strategy.md#2` | spj-binary-f1 | 0.666667<br> | 0.666667<br> |  | compare=trim |
+| OK | `beee3d6beb1041d1` | `03_modules\SIGN-AI-03-modern-ai-terms.md#2` | modern-ai-topk-cosine | 1 3<br> | 1 3<br> |  | compare=trim |
 | OK | `bfa75b9e3eb81264` | `03_modules\CPP-006-bitset-bit-operations.md#1` | bitset-and-bit-ops | 1<br>1<br> | 1<br>1<br> |  | compare=trim |
 | OK | `bfa75b9e3eb81264` | `03_modules\CPP-006-bitset-bit-operations.md#1` | negative-odd-count | 1<br>1<br> | 1<br>1<br> |  | compare=trim |
 | OK | `c1044a5f3d99f0ab` | `03_modules\BRUTE-02-legal-fallback-output.md#2` | legal-fallback-output | 0<br> | 0<br> |  | compare=trim |
@@ -289,6 +303,7 @@
 | OK | `c33a1ecce6e36d27` | `03_modules\AI-03-similarity-recommendation-text.md#2` | ai-similarity-jaccard | 0.400000<br> | 0.400000<br> |  | compare=trim |
 | OK | `c365f7527afbba06` | `03_modules\DP-22-edit-distance-modeling-example.md#7` | edit-distance-bottom-up-sample | 4<br> | 4<br> |  | compare=trim |
 | OK | `c489a78ea6444778` | `03_modules\DS-05-advanced-segtree.md#3` | persistent-segtree-kth | 3<br>1<br>-1<br> | 3<br>1<br>-1<br> |  | compare=trim |
+| OK | `ca43debfb1c08a5e` | `03_modules\SIGN-NOIP-02-reading-program-flowchart.md#13` | noip-trace-branch-loop | 41<br> | 41<br> |  | compare=trim |
 | OK | `ce6a029d246fb05c` | `03_modules\AI-06-clustering-regression.md#2` | kmeans-two-clusters | 1 1 2 2<br>0.500000<br>10.500000<br> | 1 1 2 2<br>0.500000<br>10.500000<br> |  | compare=trim |
 | OK | `cecc59722c27aa2f` | `03_modules\DIVIDE-00-divide-and-conquer.md#4` | binary-lifting-bit60 | 0<br> | 0<br> |  | compare=trim |
 | OK | `cecc59722c27aa2f` | `03_modules\DIVIDE-00-divide-and-conquer.md#4` | binary-lifting-jump-small | 3<br>3<br>3<br> | 3<br>3<br>3<br> |  | compare=trim |
@@ -301,6 +316,12 @@
 | OK | `dc80eddee79f8385` | `03_modules\SIM-02-big-integer-class.md#2` | bigint-class-core-ops | 1000<br>-999<br>-5535<br>142<br>-6<br>-142<br>6<br>1<br>1<br>1<br>0<br>0<br>-1<br>12345<br>1<br>1<br>0<br>0<br> | 1000<br>-999<br>-5535<br>142<br>-6<br>-142<br>6<br>1<br>1<br>1<br>0<br>0<br>-1<br>12345<br>1<br>1<br>0<br>0<br> |  | compare=trim |
 | OK | `dc80eddee79f8385` | `03_modules\SIM-02-big-integer-class.md#2` | bigint-class-large-ops | 1111111111111111110<br>999999999999999999999999<br>121932631112635269<br>987654321<br>0<br>999999999999999998000000000000000001<br>100000000000000000000000000000<br>0<br> | 1111111111111111110<br>999999999999999999999999<br>121932631112635269<br>987654321<br>0<br>999999999999999998000000000000000001<br>100000000000000000000000000000<br>0<br> |  | compare=trim |
 | OK | `dc80eddee79f8385` | `03_modules\SIM-02-big-integer-class.md#2` | bigint-class-sign-division | -2<br>-1<br>-2<br>1<br>2<br>-1<br>1<br>0<br>1<br>-100<br>146<br>1<br> | -2<br>-1<br>-2<br>1<br>2<br>-1<br>1<br>0<br>1<br>-100<br>146<br>1<br> |  | compare=trim |
+| OK | `de8812f22a7da1b2` | `03_modules\SIM-07-equation-solving.md#2` | equation-linear-congruence | 45 50<br> | 45 50<br> |  | compare=trim |
+| OK | `de8812f22a7da1b2` | `03_modules\SIM-07-equation-solving.md#2` | equation-mod-gauss-unique | UNIQUE<br>2 1<br> | UNIQUE<br>2 1<br> |  | compare=trim |
+| OK | `de8812f22a7da1b2` | `03_modules\SIM-07-equation-solving.md#2` | equation-poly-bisect | 1.4142135624 0.0000000000<br> | 1.4142135624 0.0000000000<br> |  | compare=trim |
+| OK | `de8812f22a7da1b2` | `03_modules\SIM-07-equation-solving.md#2` | equation-poly-eval | 10.0000000000<br> | 10.0000000000<br> |  | compare=trim |
+| OK | `de8812f22a7da1b2` | `03_modules\SIM-07-equation-solving.md#2` | equation-quadratic-formula | 2<br>1.0000000000<br>2.0000000000<br> | 2<br>1.0000000000<br>2.0000000000<br> |  | compare=trim |
+| OK | `de8812f22a7da1b2` | `03_modules\SIM-07-equation-solving.md#2` | equation-real-gauss-unique | UNIQUE<br>2.0000000000 1.0000000000<br> | UNIQUE<br>2.0000000000 1.0000000000<br> |  | compare=trim |
 | OK | `e22beec204dd1b2d` | `03_modules\CPP-004-queues-stacks-heaps.md#1` | queue-stack-heap | 5 1<br>4<br> | 5 1<br>4<br> |  | compare=trim |
 | OK | `e2dced9066806ba7` | `03_modules\CPP-10-io-formatting.md#16` | fast-read-write-llong-min | -9223372036854775808<br> | -9223372036854775808<br> |  | compare=trim |
 | OK | `e2dced9066806ba7` | `03_modules\CPP-10-io-formatting.md#16` | fast-read-write-sum | 60<br> | 60<br> |  | compare=trim |

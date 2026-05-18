@@ -19,6 +19,7 @@ ORDER = [
     "volume_8_competition_math_reference.md",
     "volume_9_python_complement.md",
     "volume_10_ai_special_topics.md",
+    "volume_11_signoff_encyclopedia.md",
 ]
 
 MODULE_PREFIX_ORDER = [
@@ -40,6 +41,7 @@ MODULE_PREFIX_ORDER = [
     "MATHREF",
     "MATH-LA",
     "STR",
+    "SIGN",
     "TRAIN",
 ]
 
