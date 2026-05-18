@@ -5,7 +5,7 @@
 - status: `public-release-ready`
 - license: `MIT`
 - file_count: `694`
-- total_bytes: `210840478`
+- total_bytes: `211764294`
 
 ## Top-Level Counts
 
@@ -50,10 +50,10 @@
 
 | File | SHA256 |
 |---|---|
-| `07_release/openbook-v0.32.zip` | `77b408a7e05f404235e8e3bcdf279a36a05f3138574c9624cd6ded89b89bb0e4` |
-| `07_release/v0.32/01_print_ready/openbook_printable_full.pdf` | `c226f5df73756aaa7667e0f893b30ee8f61c8c8dedc926a061eb0ed2233cbcc3` |
-| `07_release/v0.32/01_print_ready/chapter_pdfs/12_zhongguancun_machine_exam_companion.pdf` | `4ada69b3cf89ef81227d6b740074e07a359924e11cd134cbea2ccd2e15a6e2e7` |
-| `07_release/v0.32/01_print_ready/chapter_pdfs/00_which_book_index.pdf` | `c2a661d91113fe37453df51f07ad6c3deafe3c38a3f09bf34cab0b4d752cc74a` |
+| `07_release/openbook-v0.32.zip` | `3248ab3d6ed21434d213c14a6f2614b174b720431dccb5aedc7e42e98b8ef1ec` |
+| `07_release/v0.32/01_print_ready/openbook_printable_full.pdf` | `03262523b26cffcbe2b4c153e2f97f419fbe1a917b343e3334848d015e2ea8c2` |
+| `07_release/v0.32/01_print_ready/chapter_pdfs/12_zhongguancun_machine_exam_companion.pdf` | `c37508caf9e142cf184189839561d4331a90749a3fdfe3cb36db62531006d12e` |
+| `07_release/v0.32/01_print_ready/chapter_pdfs/00_which_book_index.pdf` | `e8460ceb0099b3a177ab5db60decf504b85c53cec8f2c2c7acb28606f584bf82` |
 
 ## Notes
 
